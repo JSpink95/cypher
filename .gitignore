@@ -96,6 +96,9 @@ StyleCopReport.xml
 # generated files
 ProjectFiles/*
 *.sln
+*.vcproj
+*.vcxproj
+*.vcxproj.*
 
 # Chutzpah Test files
 _Chutzpah*
