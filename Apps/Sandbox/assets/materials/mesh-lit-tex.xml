@@ -1,0 +1,11 @@
+<material id="mesh-lit-tex">
+  <program>
+    <shader type="vertex" path="assets/shaders/vertex/mesh-lit-tex.vs"/>
+    <shader type="pixel" path="assets/shaders/pixel/mesh-lit-tex.ps"/>
+  </program>
+  <parameters>
+    <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
+    <parameter id="PerObject" type="materialblock-perobject" binding="1"/>
+    <parameter id="uTexture" type="texture2D" binding="0" value="engine:white"/>
+  </parameters>
+</material>

@@ -1,0 +1,13 @@
+<material id="particle-pos-size">
+  <program>
+    <shader type="vertex" path="assets/shaders/vertex/particle-pos-size.vs"/>
+    <shader type="geometry" path="assets/shaders/geometry/particle-pos-size.gs"/>
+    <shader type="pixel" path="assets/shaders/pixel/particle-pos-size.ps"/>
+  </program>
+  <parameters>
+    <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
+    <parameter id="PerObject" type="materialblock-perobject" binding="1"/>
+    <parameter id="ParticleExtra" type="materialblock-custom" binding="2" memory_size="16"/>
+    <parameter id="uTexture" type="texture2D" binding="0"/>
+  </parameters>
+</material>

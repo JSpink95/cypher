@@ -1,0 +1,37 @@
+#version 440 core
+
+in vec2 fScreenCoord;
+
+layout(std140, binding=0) uniform ScreenInfo
+{
+	vec2 screenSize;
+	vec2 blendMode;
+};
+
+uniform sampler2D uTexture0;
+uniform sampler2D uTexture1;
+
+layout(location = 0) out vec4 oColor;
+
+void main()
+{
+	vec2 fTexcoord = gl_FragCoord.xy / screenSize;
+
+	vec4 sample0 = texture(uTexture0, fTexcoord);
+	vec4 sample1 = texture(uTexture1, fTexcoord);
+
+	vec3 blended = vec3(0.0);
+
+	// linear scale based on alpha channel
+	if (int(blendMode.x) == 0)
+	{
+		blended = mix(sample0.rgb, sample1.rgb, sample1.a);
+	}
+	// multiply
+	else if (int(blendMode.x) == 1)
+	{
+		blended = sample0.rgb * sample1.rgb;
+	}
+
+	oColor = vec4(blended, 1.0);
+}

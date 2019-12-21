@@ -1,0 +1,12 @@
+<material id="mesh-lit">
+  <program>
+    <shader type="vertex" path="assets/shaders/vertex/mesh-pbr.vs"/>
+    <shader type="fragment" path="assets/shaders/vertex/mesh-pbr.ps"/>
+  </program>
+  <parameters>
+    <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
+    <parameter id="PerObject" type="materialblock-perobject" binding="1"/>
+    <parameter id="uAlbedo" type="texture2D" binding="0"/>
+    <parameter id="uNormal" type="texture2D" binding="1"/>
+  </parameters>
+</material>

@@ -1,0 +1,22 @@
+#version 440 core
+
+in vec3 fPos;
+in vec3 fNor;
+
+layout(std140, binding=2) uniform MeshLit
+{
+	vec4 albedo;
+	vec4 diffuse;
+	vec4 specular;
+};
+
+layout(location = 0) out vec4 oAlbedo;
+layout(location = 1) out vec4 oPosition;
+layout(location = 2) out vec4 oNormal;
+
+void main()
+{
+	oAlbedo = albedo;
+	oPosition = vec4(fPos, 1.0);
+	oNormal = vec4(fNor, 1.0);
+}

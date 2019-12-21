@@ -1,0 +1,97 @@
+#version 440 core
+
+struct Light
+{
+	vec4 position_radius;
+	vec4 color;
+};
+
+struct ShadowLight
+{
+	vec4 position_type;
+	mat4 sourceMatrix;
+};
+
+in vec2 fTexcoord;
+
+uniform sampler2D uAlbedo;
+uniform sampler2D uWorldPos;
+uniform sampler2D uObjectNormal;
+
+uniform sampler2D uDirectionalShadowMap;
+
+layout(std140, binding=0) uniform Lights
+{
+	Light lights[16];
+	int lightCount;
+};
+
+layout(std140, binding=1) uniform ShadowMatrices
+{
+	ShadowLight shadowCasters[16];
+	int shadowCasterCount;
+};
+
+layout(location = 0) out vec4 oColor;
+
+float CalculateShadow(vec4 lightSpaceCoord, float nl)
+{
+	vec3 projCoords = lightSpaceCoord.xyz / lightSpaceCoord.w;
+	projCoords = projCoords * 0.5 + 0.5;
+
+	float closestDepth = texture(uDirectionalShadowMap, projCoords.xy).r;
+	float currentDepth = projCoords.z;
+
+	const float bias = 0.002;
+	return (currentDepth - bias) < closestDepth ? 1.0 : 0.0;
+}
+
+void main()
+{
+	vec4 albedo = texture(uAlbedo, fTexcoord);
+	vec3 worldPosition = texture(uWorldPos, fTexcoord).xyz;
+	vec3 objectNormal = texture(uObjectNormal, fTexcoord).xyz;
+
+	float shadowValue = 1.0;
+	vec3 ambient = albedo.rgb * 0.25;
+	vec3 diffuse = vec3(0.0);
+
+	for (int sIndex = 0; sIndex < shadowCasterCount; ++sIndex)
+	{
+		ShadowLight shadowLight = shadowCasters[sIndex];
+
+		float multiplier = 1.0;
+		if (int(shadowLight.position_type.w) == 0)
+		{
+			// directional
+			vec3 direction = normalize(shadowLight.position_type.xyz);
+			float nl = max(dot(objectNormal, direction), 0.0);
+			diffuse += albedo.rgb * nl;
+			multiplier = nl;
+		}
+
+		vec4 worldPositionInLightSpace = shadowLight.sourceMatrix * vec4(worldPosition, 1.0);
+		shadowValue = min(CalculateShadow(worldPositionInLightSpace, 0.0), shadowValue) * multiplier;
+	}
+
+	for (int lIndex = 0; lIndex < lightCount; ++lIndex)
+	{
+		Light light = lights[lIndex];
+
+		vec3 lightPosition = light.position_radius.xyz;
+		float lightRadius = light.position_radius.w;
+		vec4 color = light.color;
+
+		vec3 wpToLp = (lightPosition - worldPosition);
+		float dist = distance(worldPosition, lightPosition);
+		float nl = max(dot(objectNormal, normalize(wpToLp)), 0.0);
+
+		float att = clamp(1.0 - dist * dist / (lightRadius * lightRadius), 0.0, 1.0);
+		//att *= att;
+
+		diffuse += albedo.rgb * nl * color.rgb * att;
+	}
+
+	oColor = vec4((ambient * shadowValue) + diffuse, albedo.a);
+	//oColor = albedo;
+}

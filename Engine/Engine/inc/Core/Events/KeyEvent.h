@@ -1,0 +1,56 @@
+//////////////////////////////////////////////////////////////////////////
+//    File        	: KeyEvent.h
+//    Created By    : Jack Spink
+//    Created On 	: [3/9/2019]
+//////////////////////////////////////////////////////////////////////////
+
+#pragma once
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Core/Events/Event.h"
+#include "Core/Types.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+class KeyEvent : public Event
+{
+public:
+    KeyEvent(const s32 key);
+
+    EVENT_CATEGORY_TYPE(EventCategory::Keyboard | EventCategory::Input)
+
+    inline s32 GetKey() const { return key; }
+
+protected:
+    s32 key;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class KeyPressedEvent : public KeyEvent
+{
+public:
+    KeyPressedEvent(const s32 key, const bool held);
+
+    EVENT_CLASS_TYPE(KeyPressed)
+
+public:
+
+    inline const bool IsHeld() const { return held; }
+
+private:
+    bool held;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class KeyReleasedEvent : public KeyEvent
+{
+public:
+    KeyReleasedEvent(const s32 key);
+
+    EVENT_CLASS_TYPE(KeyReleased)
+};
+
+//////////////////////////////////////////////////////////////////////////

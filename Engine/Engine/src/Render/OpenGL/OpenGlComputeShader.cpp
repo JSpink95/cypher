@@ -1,0 +1,62 @@
+//////////////////////////////////////////////////////////////////////////
+//    File        	: OpenGlComputeShader.cpp
+//    Created By    : Jack Spink
+//    Created On 	: [6/9/2019]
+//////////////////////////////////////////////////////////////////////////
+
+#include "Render/OpenGl/OpenGlComputeShader.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Core/Utility/FileUtils.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "glfw.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+OpenGlComputeShader::OpenGlComputeShader(const std::string& shaderpath)
+{
+	std::optional<std::string> source = File::LoadAsString(shaderpath);
+
+	if (source)
+	{
+		const char* src = source.value().c_str();
+
+		id = glCreateProgram();
+
+		u32 shader = glCreateShader(GL_COMPUTE_SHADER);
+		glShaderSource(shader, 1, &src, nullptr);
+		glCompileShader(shader);
+
+		glAttachShader(id, shader);
+		glDeleteShader(shader);
+
+		glLinkProgram(id);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+OpenGlComputeShader::~OpenGlComputeShader()
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void OpenGlComputeShader::Disptach(const uint3& workGroups)
+{
+	glUseProgram(id);
+	glDispatchCompute(workGroups.x, workGroups.y, workGroups.z);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void OpenGlComputeShader::WaitForFinish()
+{
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+}
+
+//////////////////////////////////////////////////////////////////////////

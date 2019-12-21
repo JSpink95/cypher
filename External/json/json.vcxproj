@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug OpenGL|Win32">
+      <Configuration>Debug OpenGL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Dx11|Win32">
+      <Configuration>Debug Dx11</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release OpenGL|Win32">
+      <Configuration>Release OpenGL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Dx11|Win32">
+      <Configuration>Release Dx11</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9F27997C-8B5E-9A0D-344B-80102061160F}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>json</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug OpenGL|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Dx11|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release OpenGL|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Dx11|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug OpenGL|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug Dx11|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release OpenGL|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release Dx11|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug OpenGL|Win32'">
+    <OutDir>..\..\ProjectFiles\vs2017\</OutDir>
+    <IntDir>obj\OpenGL\Debug\</IntDir>
+    <TargetName>json</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Dx11|Win32'">
+    <OutDir>..\..\ProjectFiles\vs2017\</OutDir>
+    <IntDir>obj\Dx11\Debug\</IntDir>
+    <TargetName>json</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release OpenGL|Win32'">
+    <OutDir>..\..\ProjectFiles\vs2017\</OutDir>
+    <IntDir>obj\OpenGL\Release\</IntDir>
+    <TargetName>json</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Dx11|Win32'">
+    <OutDir>..\..\ProjectFiles\vs2017\</OutDir>
+    <IntDir>obj\Dx11\Release\</IntDir>
+    <TargetName>json</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug OpenGL|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DEBUG;_OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Dx11|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DEBUG;_DX11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release OpenGL|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>RELEASE;_OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Dx11|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>RELEASE;_DX11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\nlohmann\adl_serializer.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\conversions\from_json.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\conversions\to_chars.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\conversions\to_json.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\exceptions.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\input\binary_reader.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\input\input_adapters.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\input\json_sax.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\input\lexer.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\input\parser.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\input\position_t.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\iterators\internal_iterator.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\iterators\iter_impl.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\iterators\iteration_proxy.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\iterators\iterator_traits.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\iterators\json_reverse_iterator.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\iterators\primitive_iterator.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\json_pointer.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\json_ref.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\macro_scope.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\macro_unscope.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\meta\cpp_future.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\meta\detected.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\meta\is_sax.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\meta\type_traits.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\meta\void_t.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\output\binary_writer.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\output\output_adapters.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\output\serializer.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\value_t.hpp" />
+    <ClInclude Include="inc\nlohmann\json.hpp" />
+    <ClInclude Include="inc\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="inc\nlohmann\thirdparty\hedley\hedley.hpp" />
+    <ClInclude Include="inc\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

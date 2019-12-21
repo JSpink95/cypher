@@ -1,0 +1,19 @@
+#version 440 core
+
+in vec3 fWorldPos;
+in vec3 fObjectNormal;
+in vec2 fTexcoord;
+
+uniform sampler2D uAlbedo;
+uniform sampler2D uNormal;
+
+layout(location = 0) out vec4 oAlbedo;
+layout(location = 1) out vec4 oPosition;
+layout(location = 2) out vec4 oNormal;
+
+void main()
+{
+	oAlbedo = texture(uAlbedo, fTexcoord);
+	oPosition = vec4(fWorldPos, 1.0);
+	oNormal = normalize(texture(uNormal, fTexcoord).rgb * 2.0 - 1.0)
+}

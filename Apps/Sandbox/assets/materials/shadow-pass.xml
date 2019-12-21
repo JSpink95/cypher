@@ -1,0 +1,10 @@
+<material id="shadow-pass">
+  <program>
+    <shader type="vertex" path="assets/shaders/vertex/shadow-pass.vs"/>
+    <shader type="pixel" path="assets/shaders/pixel/shadow-pass.ps"/>
+  </program>
+  <parameters>
+    <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
+    <parameter id="PerObject" type="materialblock-perobject" binding="1"/>
+  </parameters>
+</material>

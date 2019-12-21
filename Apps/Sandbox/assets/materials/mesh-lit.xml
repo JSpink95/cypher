@@ -1,0 +1,11 @@
+<material id="mesh-lit">
+  <program>
+    <shader type="vertex" path="assets/shaders/vertex/mesh-lit.vs"/>
+    <shader type="pixel" path="assets/shaders/pixel/mesh-lit.ps"/>
+  </program>
+  <parameters>
+    <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
+    <parameter id="PerObject" type="materialblock-perobject" binding="1"/>
+    <parameter id="MeshProperties" type="materialblock-custom" binding="2" memory_size="16"/>
+  </parameters>
+</material>

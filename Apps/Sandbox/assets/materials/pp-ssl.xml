@@ -1,0 +1,19 @@
+<material id="pp-ssl">
+  <program>
+    <shader type="vertex" path="assets/shaders/vertex/pp-passthrough.vs"/>
+    <shader type="pixel" path="assets/shaders/pixel/pp-ssl.ps"/>
+  </program>
+  <parameters>
+    <!-- Uniform Blocks -->
+    <parameter id="Lights" type="materialblock-custom" binding="0" memory_size="516"/>
+    <parameter id="ShadowMatrices" type="materialblock-custom" binding="1" memory_size="1284"/>
+    
+    <!-- Textures -->
+    <parameter id="uAlbedo" type="texture2D" binding="0" value="engine:error"/>
+    <parameter id="uWorldPos" type="texture2D" binding="1" value="engine:error"/>
+    <parameter id="uObjectNormal" type="texture2D" binding="2" value="engine:error"/>
+    
+    <!-- Shadow Maps -->
+    <parameter id="uDirectionalShadowMap" type="texture2D" binding="3" value="engine:white"/>
+  </parameters>
+</material>

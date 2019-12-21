@@ -1,0 +1,43 @@
+//////////////////////////////////////////////////////////////////////////
+//    File        	: MeshLibrary.h
+//    Created By    : Jack Spink
+//    Created On 	: [5/12/2019]
+//////////////////////////////////////////////////////////////////////////
+
+#pragma once
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Core/Singleton.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+class VertexArray;
+
+//////////////////////////////////////////////////////////////////////////
+
+class MeshLibrary : public Singleton<MeshLibrary>
+{
+public:
+    static void Initialise();
+
+    static Ref<VertexArray> RegisterMesh(const std::string& id, Ref<VertexArray> mesh);
+
+    static Ref<VertexArray> GetMesh(const std::string& id);
+
+private:
+    void InitialiseImpl();
+
+    Ref<VertexArray> RegisterMeshImpl(const std::string& id, Ref<VertexArray> mesh);
+
+    Ref<VertexArray> GetMeshImpl(const std::string& id);
+
+private:
+    std::unordered_map<std::string, Ref<VertexArray>> meshes;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+static inline Ref<MeshLibrary> GetMeshLibrary() { return MeshLibrary::Get(); }
+
+//////////////////////////////////////////////////////////////////////////

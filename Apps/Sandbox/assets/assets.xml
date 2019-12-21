@@ -1,0 +1,11 @@
+<textures>
+    <texture id="game:default-floor" path="assets/tiles/wall_tile_1.png">
+        <parameter id="wrap-mode" value="repeat"/>
+        <parameter id="filter-mode" value="nearest"/>
+    </texture>
+</textures>
+
+<materials>
+    <material id="game:mesh-lit" path="assets/materials/mesh-lit.xml"/>
+    <material id="game:mesh-lit-tex" path="assets/materials/mesh-lit-tex.xml"/>
+</materials>

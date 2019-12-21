@@ -1,0 +1,31 @@
+{
+  "exits": {
+    "left": true,
+    "right": true,
+    "front": false,
+    "back": false
+  },
+  "layout": [
+    {
+      "x": 3,
+      "z": 3,
+      "type": "wall"
+    },
+    {
+      "x": 12,
+      "z": 3,
+      "type": "wall"
+    },
+    {
+      "x": 3,
+      "z": 12,
+      "type": "wall"
+    },
+    {
+      "x": 12,
+      "z": 12,
+      "type": "wall"
+    }
+  ]
+}
+    

@@ -1,0 +1,70 @@
+#version 440 core
+
+#define MAX_KERNEL_SIZE 32
+
+in vec2 fTexcoord;
+
+layout(std140, binding=0) uniform PerFrame
+{
+	mat4 view, projection;
+	mat4 viewProjection;
+};
+
+layout(std140, binding=1) uniform SsaoInput
+{
+	vec4 kernel[MAX_KERNEL_SIZE];
+	vec2 noiseScale;
+};
+
+uniform sampler2D uPosition;
+uniform sampler2D uNormal;
+uniform sampler2D uNoise;
+
+layout(location = 0) out vec4 oColor;
+
+float zNear = 0.1;
+float zFar = 1000.0;
+
+float LinearizeDepth(float depthSample)
+{
+	float zLinear = (2.0 * zNear) / (zFar + zNear - depthSample * (zFar - zNear));
+    return zLinear;
+}
+
+void main()
+{
+	vec3 fragPos   = (view * vec4(texture(uPosition, fTexcoord).xyz, 1.0)).xyz;
+	float fragDepth = fragPos.z;
+
+	vec3 normal    = normalize(mat3(view) * texture(uNormal, fTexcoord).xyz);
+	vec3 randomVec = texture(uNoise, fTexcoord * noiseScale).xyz;
+
+	vec3 tangent   = normalize(randomVec - normal * dot(randomVec, normal));
+	vec3 bitangent = cross(normal, tangent);
+	mat3 TBN       = mat3(tangent, bitangent, normal);
+
+	const float radius = 1.2;
+	const float bias = 0.0005;
+
+	float occlusion = 0.0;
+	for (int index = 0; index < MAX_KERNEL_SIZE; ++index)
+	{
+		// get sample position
+		vec3 viewSpaceSample = TBN * kernel[index].xyz; // From tangent to view-space
+		viewSpaceSample = fragPos + viewSpaceSample * radius;
+
+		vec4 offset = vec4(viewSpaceSample, 1.0);
+		offset      = projection * offset;    // from view to clip-space
+		offset.xyz /= offset.w;               // perspective divide
+		offset.xyz  = offset.xyz * 0.5 + 0.5; // transform to range 0.0 - 1.0
+
+		float sampleDepth = (view * vec4(texture(uPosition, offset.xy).xyz, 1.0)).z;
+
+		float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragDepth - sampleDepth));
+		occlusion += (sampleDepth >= viewSpaceSample.z + bias ? 1.0 : 0.0) * rangeCheck;  
+	}
+
+	occlusion = 1.0 - (occlusion / float(MAX_KERNEL_SIZE));
+	//occlusion = 1.0 - sin(occlusion * 3.14159265);
+	oColor = vec4(occlusion);
+}

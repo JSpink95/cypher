@@ -1,0 +1,9 @@
+<material id="pp-blur">
+  <program>
+    <shader type="vertex" path="assets/shaders/vertex/pp-passthrough.vs"/>
+    <shader type="pixel" path="assets/shaders/pixel/pp-blur.ps"/> 
+  </program>
+  <parameters>
+    <parameter id="uTexture" type="texture2D"/>
+  </parameters>
+</material>

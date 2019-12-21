@@ -1,0 +1,106 @@
+//////////////////////////////////////////////////////////////////////////
+//    File        	: Application.h
+//    Created By    : Jack Spink
+//    Created On 	: [3/9/2019]
+//////////////////////////////////////////////////////////////////////////
+
+#pragma once
+
+//////////////////////////////////////////////////////////////////////////
+
+#include <memory>
+#include <future>
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Core/Types.h"
+#include "Events/EventDispatcher.h"
+#include "Events/MouseEvent.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+class Window;
+class Event;
+class WindowCloseEvent;
+
+//////////////////////////////////////////////////////////////////////////
+
+class Application
+{
+public:
+    Application();
+    virtual ~Application();
+
+    void Create();
+    void Destroy();
+
+    // called from the GameThread
+    virtual void OnPreUpdate(const f32 dt);
+    virtual void OnPostUpdate();
+
+    // called from the PhysicsThread
+    virtual void OnPrePhysics();
+    virtual void OnPostPhysics();
+
+    // called from the RenderThread
+    virtual void OnPreRender();
+    virtual void OnPostRender();
+
+    // called from the MainThread
+    virtual void OnAppTick();
+
+    virtual bool RequestedShutdown() const { return windowClosed; }
+    virtual inline Ref<Window> GetWindowContext() const { return window; }
+
+protected:
+
+    virtual void OnCreate() = 0;
+    virtual void OnDestroy() = 0;
+
+    virtual void OnEvent(Event& evt);
+    virtual void OnWindowClosed(WindowCloseEvent& closeEvent);
+    virtual void OnMouseMoved(MouseMovedEvent& mouseMovedEvent);
+
+private:
+    virtual void RenderTask_OnCreate();
+
+protected:
+    Ref<Window> window;
+
+private:
+    f32 time, deltaTime;
+    bool windowClosed;
+
+public:
+    static inline Application* GetInstance() { return instance; }
+
+private:
+    static inline Application* instance = nullptr;
+
+public:
+    template<typename TApplication>
+    static void Main();
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+static Application* GetApplication() { return Application::GetInstance(); }
+
+//////////////////////////////////////////////////////////////////////////
+
+template<typename TApplication>
+void Application::Main()
+{
+    TApplication application;
+    application.Create();
+
+    while (!application.RequestedShutdown())
+    {
+        application.OnAppTick();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+
+    application.Destroy();
+}
+
+//////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug OpenGL|Win32">
+      <Configuration>Debug OpenGL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Dx11|Win32">
+      <Configuration>Debug Dx11</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release OpenGL|Win32">
+      <Configuration>Release OpenGL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Dx11|Win32">
+      <Configuration>Release Dx11</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F4C124E3-60A1-A37E-69B9-2E55D5170AE0}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Sandbox</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug OpenGL|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Dx11|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release OpenGL|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Dx11|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug OpenGL|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug Dx11|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release OpenGL|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release Dx11|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug OpenGL|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\ProjectFiles\vs2017\</OutDir>
+    <IntDir>obj\OpenGL\Debug\</IntDir>
+    <TargetName>Sandbox</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Dx11|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\ProjectFiles\vs2017\</OutDir>
+    <IntDir>obj\Dx11\Debug\</IntDir>
+    <TargetName>Sandbox</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release OpenGL|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\ProjectFiles\vs2017\</OutDir>
+    <IntDir>obj\OpenGL\Release\</IntDir>
+    <TargetName>Sandbox</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Dx11|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\ProjectFiles\vs2017\</OutDir>
+    <IntDir>obj\Dx11\Release\</IntDir>
+    <TargetName>Sandbox</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug OpenGL|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DEBUG;_OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\External\glm\inc;..\..\External\stb\inc;..\..\External\spdlog\inc;..\..\External\json\inc;..\..\External\pugixml\inc;..\..\External\bullet\src;..\..\Engine\Engine\inc;inc;src;..\..\Dependencies\OpenGL\Include;..\..\External\glfw\inc;glsl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ProjectFiles\vs2017;..\..\Dependencies\OpenGL\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Dx11|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DEBUG;_DX11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\External\glm\inc;..\..\External\stb\inc;..\..\External\spdlog\inc;..\..\External\json\inc;..\..\External\pugixml\inc;..\..\External\bullet\src;..\..\Engine\Engine\inc;inc;src;..\..\Scripts\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>..\..\ProjectFiles\vs2017\glm.lib;..\..\ProjectFiles\vs2017\stb.lib;..\..\ProjectFiles\vs2017\spdlog.lib;..\..\ProjectFiles\vs2017\Engine.lib;..\..\ProjectFiles\vs2017\pugixml.lib;..\..\ProjectFiles\vs2017\bullet.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ProjectFiles\vs2017;..\..\Scripts\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release OpenGL|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>RELEASE;_OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\External\glm\inc;..\..\External\stb\inc;..\..\External\spdlog\inc;..\..\External\json\inc;..\..\External\pugixml\inc;..\..\External\bullet\src;..\..\Engine\Engine\inc;inc;src;..\..\Dependencies\OpenGL\Include;..\..\External\glfw\inc;glsl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ProjectFiles\vs2017;..\..\Dependencies\OpenGL\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Dx11|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>RELEASE;_DX11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\External\glm\inc;..\..\External\stb\inc;..\..\External\spdlog\inc;..\..\External\json\inc;..\..\External\pugixml\inc;..\..\External\bullet\src;..\..\Engine\Engine\inc;inc;src;..\..\Scripts\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>..\..\ProjectFiles\vs2017\glm.lib;..\..\ProjectFiles\vs2017\stb.lib;..\..\ProjectFiles\vs2017\spdlog.lib;..\..\ProjectFiles\vs2017\Engine.lib;..\..\ProjectFiles\vs2017\pugixml.lib;..\..\ProjectFiles\vs2017\bullet.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ProjectFiles\vs2017;..\..\Scripts\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\Dungeon\DungeonCell.h" />
+    <ClInclude Include="inc\Dungeon\DungeonRoom.h" />
+    <ClInclude Include="inc\Dungeon\FpsCameraController.h" />
+    <ClInclude Include="inc\Dungeon\Weapon.h" />
+    <ClInclude Include="inc\Player.h" />
+    <ClInclude Include="inc\SandboxApplication.h" />
+    <ClInclude Include="inc\ShaderInput.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Dungeon\DungeonCell.cpp" />
+    <ClCompile Include="src\Dungeon\DungeonRoom.cpp" />
+    <ClCompile Include="src\Dungeon\FpsCameraController.cpp" />
+    <ClCompile Include="src\Dungeon\Weapon.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\SandboxApplication.cpp" />
+    <ClCompile Include="src\ShaderInput.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\assets.xml" />
+    <None Include="assets\materials\mesh-lit-tex-error.xml" />
+    <None Include="assets\materials\mesh-lit-tex.xml" />
+    <None Include="assets\materials\mesh-lit.xml" />
+    <None Include="assets\materials\mesh-pbr.xml" />
+    <None Include="assets\materials\particle-pos-size.xml" />
+    <None Include="assets\materials\pp-blur.xml" />
+    <None Include="assets\materials\pp-image-render.xml" />
+    <None Include="assets\materials\pp-overlay.xml" />
+    <None Include="assets\materials\pp-ssao.xml" />
+    <None Include="assets\materials\pp-ssl.xml" />
+    <None Include="assets\materials\shadow-pass.xml" />
+    <None Include="assets\shaders\geometry\particle-pos-size.gs" />
+    <None Include="assets\shaders\pixel\mesh-lit-tex.ps" />
+    <None Include="assets\shaders\pixel\mesh-lit.ps" />
+    <None Include="assets\shaders\pixel\mesh-pbr.ps" />
+    <None Include="assets\shaders\pixel\particle-pos-size.ps" />
+    <None Include="assets\shaders\pixel\pp-blur.ps" />
+    <None Include="assets\shaders\pixel\pp-image-render.ps" />
+    <None Include="assets\shaders\pixel\pp-overlay.ps" />
+    <None Include="assets\shaders\pixel\pp-ssao.ps" />
+    <None Include="assets\shaders\pixel\pp-ssl.ps" />
+    <None Include="assets\shaders\pixel\shadow-pass.ps" />
+    <None Include="assets\shaders\vertex\mesh-lit-tex.vs" />
+    <None Include="assets\shaders\vertex\mesh-lit.vs" />
+    <None Include="assets\shaders\vertex\mesh-pbr.vs" />
+    <None Include="assets\shaders\vertex\particle-pos-size.vs" />
+    <None Include="assets\shaders\vertex\pp-image-render.vs" />
+    <None Include="assets\shaders\vertex\pp-passthrough.vs" />
+    <None Include="assets\shaders\vertex\ppv-passthrough.vs" />
+    <None Include="assets\shaders\vertex\shadow-pass.vs" />
+    <None Include="level\00\layout_00.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\glm\glm.vcxproj">
+      <Project>{6577880B-D180-887C-5AFC-9E7CC604947C}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\stb\stb.vcxproj">
+      <Project>{6EAB880B-DAB4-887C-6330-9F7CCF38947C}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\spdlog\spdlog.vcxproj">
+      <Project>{8EAD431C-7A4F-6EF2-630A-82464F4BF542}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Engine\Engine.vcxproj">
+      <Project>{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\pugixml\pugixml.vcxproj">
+      <Project>{0B40A9C9-771F-2865-8037-B33BEC958EC6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\bullet\bullet.vcxproj">
+      <Project>{2DD7FAF4-1979-25CB-0234-391FEE74AC1B}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\glfw\glfw.vcxproj">
+      <Project>{9563977C-819A-980D-2A87-7E10169D140F}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

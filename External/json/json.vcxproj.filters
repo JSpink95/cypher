@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="detail">
+      <UniqueIdentifier>{18D587F8-0477-B2CE-ED31-C622D972391F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\conversions">
+      <UniqueIdentifier>{E09DC833-CC81-8989-35E2-83DC21E5730B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\input">
+      <UniqueIdentifier>{370716E3-236A-A587-CCEF-DD3DB831710A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\iterators">
+      <UniqueIdentifier>{84635933-705C-7885-998E-5D0A85E65791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\meta">
+      <UniqueIdentifier>{0EC6407B-7A7B-B970-0370-B3476F24B074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\output">
+      <UniqueIdentifier>{38AA5654-A46A-D28A-6DA5-1B08D9241767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty">
+      <UniqueIdentifier>{50A5DA7C-3C5D-1CCA-A564-F525913BB7BA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\hedley">
+      <UniqueIdentifier>{DA8D47A2-46A4-4538-8F1B-D159FB7016C0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\nlohmann\adl_serializer.hpp" />
+    <ClInclude Include="inc\nlohmann\detail\conversions\from_json.hpp">
+      <Filter>detail\conversions</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\conversions\to_chars.hpp">
+      <Filter>detail\conversions</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\conversions\to_json.hpp">
+      <Filter>detail\conversions</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\exceptions.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\input\binary_reader.hpp">
+      <Filter>detail\input</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\input\input_adapters.hpp">
+      <Filter>detail\input</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\input\json_sax.hpp">
+      <Filter>detail\input</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\input\lexer.hpp">
+      <Filter>detail\input</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\input\parser.hpp">
+      <Filter>detail\input</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\input\position_t.hpp">
+      <Filter>detail\input</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\iterators\internal_iterator.hpp">
+      <Filter>detail\iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\iterators\iter_impl.hpp">
+      <Filter>detail\iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\iterators\iteration_proxy.hpp">
+      <Filter>detail\iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\iterators\iterator_traits.hpp">
+      <Filter>detail\iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\iterators\json_reverse_iterator.hpp">
+      <Filter>detail\iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\iterators\primitive_iterator.hpp">
+      <Filter>detail\iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\json_pointer.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\json_ref.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\macro_scope.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\macro_unscope.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\meta\cpp_future.hpp">
+      <Filter>detail\meta</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\meta\detected.hpp">
+      <Filter>detail\meta</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\meta\is_sax.hpp">
+      <Filter>detail\meta</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\meta\type_traits.hpp">
+      <Filter>detail\meta</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\meta\void_t.hpp">
+      <Filter>detail\meta</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\output\binary_writer.hpp">
+      <Filter>detail\output</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\output\output_adapters.hpp">
+      <Filter>detail\output</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\output\serializer.hpp">
+      <Filter>detail\output</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\detail\value_t.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\json.hpp" />
+    <ClInclude Include="inc\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="inc\nlohmann\thirdparty\hedley\hedley.hpp">
+      <Filter>thirdparty\hedley</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\nlohmann\thirdparty\hedley\hedley_undef.hpp">
+      <Filter>thirdparty\hedley</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

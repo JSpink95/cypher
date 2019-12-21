@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="assets">
+      <UniqueIdentifier>{583885F2-44DA-AFC8-2D95-C31C19D63619}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\materials">
+      <UniqueIdentifier>{49A96E6D-35A2-8DBF-5ED4-72444A2C6DCB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders">
+      <UniqueIdentifier>{51CD2FD9-3D9B-23DF-262F-9405129CFF43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders\geometry">
+      <UniqueIdentifier>{EC218836-5859-D0CD-6163-34F1CD19F7C6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders\pixel">
+      <UniqueIdentifier>{C2930BF4-AE22-95BD-5741-A9B843AFA563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders\vertex">
+      <UniqueIdentifier>{DE923183-4AFF-EC7D-13F3-84DB7F1E0FE6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{1F80880B-8B89-887C-1405-9F7C800D947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\Dungeon">
+      <UniqueIdentifier>{1EB89452-8A6D-0D48-1362-071F7F16044C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="level">
+      <UniqueIdentifier>{3DBCDA0F-A9D0-02C1-7252-A620DE25FFF1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="level\00">
+      <UniqueIdentifier>{6C7DD3A0-584A-2EAC-8163-1C546D8F633A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Dungeon">
+      <UniqueIdentifier>{2C115E98-98C6-D68D-21BB-D0648D6FCD91}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\Dungeon\DungeonCell.h">
+      <Filter>inc\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Dungeon\DungeonRoom.h">
+      <Filter>inc\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Dungeon\FpsCameraController.h">
+      <Filter>inc\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Dungeon\Weapon.h">
+      <Filter>inc\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Player.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SandboxApplication.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ShaderInput.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Dungeon\DungeonCell.cpp">
+      <Filter>src\Dungeon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dungeon\DungeonRoom.cpp">
+      <Filter>src\Dungeon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dungeon\FpsCameraController.cpp">
+      <Filter>src\Dungeon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dungeon\Weapon.cpp">
+      <Filter>src\Dungeon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SandboxApplication.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderInput.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\assets.xml">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="assets\materials\mesh-lit-tex-error.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\mesh-lit-tex.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\mesh-lit.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\mesh-pbr.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\particle-pos-size.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\pp-blur.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\pp-image-render.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\pp-overlay.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\pp-ssao.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\pp-ssl.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\materials\shadow-pass.xml">
+      <Filter>assets\materials</Filter>
+    </None>
+    <None Include="assets\shaders\geometry\particle-pos-size.gs">
+      <Filter>assets\shaders\geometry</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\mesh-lit-tex.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\mesh-lit.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\mesh-pbr.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\particle-pos-size.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\pp-blur.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\pp-image-render.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\pp-overlay.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\pp-ssao.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\pp-ssl.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\pixel\shadow-pass.ps">
+      <Filter>assets\shaders\pixel</Filter>
+    </None>
+    <None Include="assets\shaders\vertex\mesh-lit-tex.vs">
+      <Filter>assets\shaders\vertex</Filter>
+    </None>
+    <None Include="assets\shaders\vertex\mesh-lit.vs">
+      <Filter>assets\shaders\vertex</Filter>
+    </None>
+    <None Include="assets\shaders\vertex\mesh-pbr.vs">
+      <Filter>assets\shaders\vertex</Filter>
+    </None>
+    <None Include="assets\shaders\vertex\particle-pos-size.vs">
+      <Filter>assets\shaders\vertex</Filter>
+    </None>
+    <None Include="assets\shaders\vertex\pp-image-render.vs">
+      <Filter>assets\shaders\vertex</Filter>
+    </None>
+    <None Include="assets\shaders\vertex\pp-passthrough.vs">
+      <Filter>assets\shaders\vertex</Filter>
+    </None>
+    <None Include="assets\shaders\vertex\ppv-passthrough.vs">
+      <Filter>assets\shaders\vertex</Filter>
+    </None>
+    <None Include="assets\shaders\vertex\shadow-pass.vs">
+      <Filter>assets\shaders\vertex</Filter>
+    </None>
+    <None Include="level\00\layout_00.json">
+      <Filter>level\00</Filter>
+    </None>
+  </ItemGroup>
+</Project>
