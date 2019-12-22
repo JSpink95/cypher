@@ -188,7 +188,7 @@ void Application::RenderTask_OnCreate()
 {
     // create the window
     //window = GetApiManager()->CreateContext("Application", DefaultWindowSize);
-    window = GetApiManager()->CreateContext("Application", uint2(1280, 720));
+    window = GetApiManager()->CreateContext("Application", uint2(1920, 1080));
     window->SetEventCallback(BIND_FUNCTION_OneParam(Application::OnEvent));
     window->SetVisibility(true);
 

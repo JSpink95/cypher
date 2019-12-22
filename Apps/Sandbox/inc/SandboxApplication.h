@@ -53,8 +53,6 @@ private:
 
     Ref<Player> player;
     Ref<Weapon> weapon;
-
-    Ref<GameObject> light;
 };
 
 //////////////////////////////////////////////////////////////////////////

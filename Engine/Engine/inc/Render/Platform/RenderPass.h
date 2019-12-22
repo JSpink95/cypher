@@ -98,6 +98,10 @@ private:
 
 private:
     bool hasBeenInitialised = false;
+
+	float2 windowSize;
+	float2 framebufferSize;
+
     Ref<Framebuffer> mainFramebuffer;
     Ref<Framebuffer> lightFramebuffer;
     Ref<Framebuffer> sslFramebuffer;

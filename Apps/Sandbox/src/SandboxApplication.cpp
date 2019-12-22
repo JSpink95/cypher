@@ -36,6 +36,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Utility/MeshLibrary.h"
 #include "Render/Utility/MaterialLibrary.h"
 #include "Render/Utility/ObjMeshLoader.h"
 #include "Render/Utility/TextureLibrary.h"
@@ -59,6 +60,7 @@
 
 #include "GameFramework/Camera/Camera.h"
 #include "GameFramework/Camera/PerspectiveCamera.h"
+#include "GameFramework/Component/LightComponent.h"
 #include "GameFramework/Component/TransformComponent.h"
 #include "GameFramework/Component/StaticMeshComponent.h"
 
@@ -66,6 +68,7 @@
 
 #include "Physics/Geometry/BoxCollisionShape.h"
 #include "Physics/Geometry/PlaneCollisionShape.h"
+#include "Physics/Geometry/SphereCollisionShape.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -78,9 +81,8 @@
 #include <random>
 #include <fstream>
 
-#include "Physics/Geometry/SphereCollisionShape.h"
-#include "Render/Utility/MeshLibrary.h"
-#include "GameFramework/Component/LightComponent.h"
+//////////////////////////////////////////////////////////////////////////
+
 #include "Player.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -313,14 +315,11 @@ void SandboxApp::OnCreate()
 
     //cameraController = CreateObject<FpsCameraController>();
     player = CreateObject<Player>();
+	Ref<LightComponent> light = player->NewComponent<LightComponent>();
+	light->GetLightInstance()->SetColor(Color::WarmWhite);
 
     weapon = CreateObject<Weapon>();
     weapon->SetOwner(player.get());
-
-    light = CreateObject<GameObject>();
-    light->transform->position = float3(4.0f, 8.0f, 4.0f);
-    Ref<LightComponent> lightComponent = light->NewComponent<LightComponent>();
-    lightComponent->GetLightInstance()->SetColor(Color::WarmWhite);
 
     GetGameThread()->PushThreadTask(this, &SandboxApp::LoadRenderResources);
 
@@ -343,7 +342,6 @@ void SandboxApp::OnDestroy()
 
     physicsObjects.clear();
 
-    DestroyObject(light->GetInstanceId());
     DestroyObject(player->GetInstanceId());
     DestroyObject(weapon->GetInstanceId());
     DestroyObject(physics->GetInstanceId());

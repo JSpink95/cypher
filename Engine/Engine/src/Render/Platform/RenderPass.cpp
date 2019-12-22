@@ -14,10 +14,12 @@
 
 #include "Core/Core.h"
 #include "Core/Object.h"
+#include "Core/Application.h"
 #include "Core/Thread/GameThread.h"
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Platform/Window.h"
 #include "Render/Platform/ApiManager.h"
 #include "Render/Platform/Framebuffer.h"
 #include "Render/Platform/Renderer.h"
@@ -40,8 +42,6 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-static float2 const windowSize = float2(1280.0f, 720.0f);
-static float2 const lowerResWindowSize = windowSize / 4.0f;
 static float2 const shadowFramebufferSize = float2(1024.0f);
 
 //////////////////////////////////////////////////////////////////////////
@@ -140,6 +140,10 @@ RenderPassManager::RenderPassManager()
 
 void RenderPassManager::InitialiseImpl()
 {
+	// setup window constants
+	windowSize = (float2)GetApplication()->GetWindowContext()->GetWindowSize();
+	framebufferSize = windowSize / 4.0f;
+
     // load materials
     sslMaterial = MaterialLibrary::GetMaterial("game:pp-ssl");
     ssaoMaterial = MaterialLibrary::GetMaterial("game:pp-ssao");
@@ -150,7 +154,7 @@ void RenderPassManager::InitialiseImpl()
     // load framebuffers
 
     FramebufferData mainFbInit;                             // Enabled, FloatingPointPrecision
-    mainFbInit.resolution = uint2(lowerResWindowSize);
+    mainFbInit.resolution = uint2(framebufferSize);
     mainFbInit.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
     mainFbInit.colorBuffers.at(GBuffer::CB_Position) = { true, true };
     mainFbInit.colorBuffers.at(GBuffer::CB_Normal) = { true, true };
@@ -165,32 +169,32 @@ void RenderPassManager::InitialiseImpl()
     lightFramebuffer = GetApiManager()->CreateFramebuffer(lightFbInit);
 
     FramebufferData sslFbInit;
-    sslFbInit.resolution = uint2(lowerResWindowSize);
+    sslFbInit.resolution = uint2(framebufferSize);
     sslFbInit.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
 
     sslFramebuffer = GetApiManager()->CreateFramebuffer(sslFbInit);
 
     FramebufferData ssaoFbInit;
-    ssaoFbInit.resolution = uint2(lowerResWindowSize);
+    ssaoFbInit.resolution = uint2(framebufferSize);
     ssaoFbInit.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
 
     ssaoFramebuffer = GetApiManager()->CreateFramebuffer(ssaoFbInit);
 
     FramebufferData particleFbInit;
-    particleFbInit.resolution = uint2(lowerResWindowSize);
+    particleFbInit.resolution = uint2(framebufferSize);
     particleFbInit.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
     particleFbInit.colorBuffers.at(GBuffer::CB_DepthStencil) = { true, true };
 
     particleFramebuffer = GetApiManager()->CreateFramebuffer(particleFbInit);
 
     FramebufferData blurFbInit;
-    blurFbInit.resolution = uint2(lowerResWindowSize);
+    blurFbInit.resolution = uint2(framebufferSize);
     blurFbInit.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
 
     blurFramebuffer = GetApiManager()->CreateFramebuffer(blurFbInit);
 
     FramebufferData imageBlendFbInit;
-    imageBlendFbInit.resolution = uint2(lowerResWindowSize);
+    imageBlendFbInit.resolution = uint2(framebufferSize);
     imageBlendFbInit.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
 
     blendFramebuffer = GetApiManager()->CreateFramebuffer(imageBlendFbInit);
@@ -217,7 +221,7 @@ void RenderPassManager::InitialiseImpl()
         Ref<Texture2D> normalTexture = mainFramebuffer->GetColorBuffer(GBuffer::CB_Normal)->ToTexture();
 
         SsaoInput ssaoInput;
-        ssaoInput.noiseScale = (float2)lowerResWindowSize / float2(4.0f, 4.0f);
+        ssaoInput.noiseScale = (float2)framebufferSize / float2(4.0f, 4.0f);
 
         for (u32 index = 0; index < 32; ++index)
         {
@@ -250,7 +254,7 @@ void RenderPassManager::InitialiseImpl()
     // setup blend parameters
     {
         BlendInput blendInput;
-        blendInput.screenSize = lowerResWindowSize;
+        blendInput.screenSize = framebufferSize;
         blendInput.blendMode = vec2(1.0f, 0.0f);
 
         imageBlendMaterial->SetParameterBlock<BlendInput>("ScreenInfo", blendInput);
@@ -414,12 +418,12 @@ void RenderPassManager::RenderImpl()
         GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         BlendInput blendInput;
-        blendInput.screenSize = lowerResWindowSize;
+        blendInput.screenSize = framebufferSize;
         blendInput.blendMode = vec2(1.0f, 0.0f);
 
         imageBlendMaterial->SetParameterBlock<BlendInput>("ScreenInfo", blendInput);
 
-        imageBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture0", sslFramebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
+		imageBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture0", sslFramebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
         imageBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture1", blurFramebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
 
         Renderer::Submit(imageBlendMaterial, screenQuad);
@@ -432,7 +436,7 @@ void RenderPassManager::RenderImpl()
         GlCall(glClear(GL_DEPTH_BUFFER_BIT));
 
         BlendInput blendInput;
-        blendInput.screenSize = lowerResWindowSize;
+        blendInput.screenSize = framebufferSize;
         blendInput.blendMode = vec2(0.0f, 0.0f);
 
         imageBlendMaterial->SetParameterBlock<BlendInput>("ScreenInfo", blendInput);
