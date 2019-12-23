@@ -100,6 +100,16 @@ public:
 class Physics
 {
 public:
+    static inline btRigidBody* CreateRigidBody(f32 mass, const float3& position, const float3& rotation, btCollisionShape* shape)
+    {
+        if (Ref<PhysicsWorld> world = PhysicsWorld::GetActiveInstance())
+        {
+            return world->CreateRigidBody(mass, position, rotation, shape);
+        }
+
+        return nullptr;
+    }
+
     static inline void ApplyImpulseInRadius(const float3& centre, const f32 radius, const f32 strength, const IgnoreList& ignorelist = {})
     {
         if (Ref<PhysicsWorld> world = PhysicsWorld::GetActiveInstance())
