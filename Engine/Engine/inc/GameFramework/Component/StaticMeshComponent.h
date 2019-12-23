@@ -45,6 +45,9 @@ public:
 
 public:
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;
+
+public:
+    static Ref<Component> Create(Ref<Object> object, pugi::xml_node node);
 };
 
 //////////////////////////////////////////////////////////////////////////

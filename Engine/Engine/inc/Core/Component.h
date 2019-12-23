@@ -11,6 +11,7 @@
 #include "Core/Types.h"
 #include "Core/ObjectMacros.h"
 #include "Render/Platform/RenderPass.h"
+#include "pugixml.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 

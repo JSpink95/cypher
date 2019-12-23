@@ -10,6 +10,7 @@
 
 #include "Core/Object.h"
 #include "Core/ObjectManager.h"
+#include "Core/Utility/ParseUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -36,34 +37,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-template<typename TFloat>
-TFloat ParseFloatVector(const std::string& value)
-{
-    u32 component = 0;
-    TFloat result = TFloat(0.0f);
-
-    std::string number = "";
-    for (u32 idx = 0; idx < value.length(); ++idx)
-    {
-        const char c = value.at(idx);
-        if (isdigit(c) || c == '.' || c == '-')
-            number += c;
-
-        if (c == ',' || idx == (value.length() - 1))
-        {
-            result[component++] = std::stof(number);
-            number = "";
-        }
-    }
-
-    return result;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-auto ParseFloat2 = ParseFloatVector<float2>;
-auto ParseFloat3 = ParseFloatVector<float3>;
-auto ParseFloat4 = ParseFloatVector<float4>;
+#include <functional>
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -174,6 +148,46 @@ void ReadPhysicsObject(pugi::xml_node data, Ref<PhysicsObject> po)
 
 //////////////////////////////////////////////////////////////////////////
 
+bool ReadEntity(pugi::xml_node node, Ref<Object> object)
+{
+    using ComponentCreator = std::function<Ref<Component>(Ref<Object>, pugi::xml_node)>;
+    static std::unordered_map<std::string, ComponentCreator> componentCreatorFactory =
+    {
+        std::make_pair("transform", TransformComponent::Create),
+        std::make_pair("staticmesh", StaticMeshComponent::Create),
+    };
+
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(node.attribute("blueprint").as_string());
+    if (!result)
+        return false;
+
+    pugi::xml_node root = doc.root().child("blueprint");
+    for (pugi::xml_node node : root)
+    {
+        const std::string name = node.name();
+        if (name == "update")
+        {
+
+        }
+        else if (name == "render")
+        {
+
+        }
+        else
+        {
+            auto it = componentCreatorFactory.find(name);
+            if (it != componentCreatorFactory.end())
+            {
+                // don't actually need to do much here...
+                Ref<Component> component = it->second(object, node);
+            }
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void LevelLoader::LoadFromFile(const std::string& filepath, Level& level)
 {
     pugi::xml_document doc;
@@ -201,6 +215,15 @@ void LevelLoader::LoadFromFile(const std::string& filepath, Level& level)
                 ReadPhysicsObject(node, newObject);
 
                 level.objects.push_back(newObject);
+            }
+            else if (nodeName == "entity")
+            {
+                Ref<Object> object = CreateObject<Object>();
+                if (ReadEntity(node, object))
+                {
+                    level.objects.push_back(object);
+                }
+
             }
             else
             {

@@ -63,3 +63,12 @@ void StaticMeshComponent::OnRender(RenderPassType::Enum pass, Ref<Material> mate
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+Ref<Component> StaticMeshComponent::Create(Ref<Object> object, pugi::xml_node node)
+{
+    Ref<StaticMeshComponent> staticMesh = object->NewComponent<StaticMeshComponent>();
+
+    return staticMesh;
+}
+
+//////////////////////////////////////////////////////////////////////////

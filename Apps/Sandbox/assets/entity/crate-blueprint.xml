@@ -1,0 +1,7 @@
+<blueprint id="crate">
+  <update tick="game|physics"/>
+  <render pass="opaque|shadow"/>
+  <transform position="0,0,0" rotation="0,0,0"/>
+  <staticmesh material="crate-material" mesh="game:mesh-box" scale="1,1,1"/>
+  <rigidbody mass="80" collision="box,1,1,1"/>
+</blueprint>

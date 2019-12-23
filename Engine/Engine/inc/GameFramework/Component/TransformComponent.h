@@ -26,6 +26,9 @@ public:
 
 public:
     virtual fmat4 CalculateTransformMatrix() const;
+
+public:
+    static Ref<Component> Create(Ref<Object> owner, pugi::xml_node node);
 };
 
 //////////////////////////////////////////////////////////////////////////

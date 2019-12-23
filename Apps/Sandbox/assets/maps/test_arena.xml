@@ -16,4 +16,7 @@
     <collision type="box" size="1,1,1" mass="80"/>
     <staticmesh mesh="game:mesh-box" material="crate-material" scale="1,1,1"/>
   </physicsobject>
+  <entity id="crate" blueprint="assets/entity/crate-blueprint.xml">
+    <transform position="3,1,4"/>
+  </entity>
 </map>
