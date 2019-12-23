@@ -459,7 +459,7 @@ void RenderPassManager::RenderImpl()
 
     Renderer::Submit(imageRenderMaterial, screenQuad);
 
-#if 1
+#if 0
     GlCall(glClear(GL_DEPTH_BUFFER_BIT));
     imageDataBuffer.position = vec2(-1.0f + 0.25f);
     //imageDataBuffer.position = vec2(0.0f);
