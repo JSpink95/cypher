@@ -21,7 +21,7 @@ void Character::OnConstruct()
     Super::OnConstruct();
 
     Ref<CapsuleCollision> capsule = std::make_shared<CapsuleCollision>(0.75f, 1.5f);
-    Initialise(100.0f, float3(0.0f, 2.0f, 0.0f), capsule);
+    Initialise(100.0f, float3(0.0f, 2.0f, 0.0f), float3(0.0f), capsule);
 
     if (body != nullptr)
     {

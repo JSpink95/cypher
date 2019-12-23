@@ -70,7 +70,7 @@ void PhysicsObject::OnPhysicsUpdate(const f32 dt)
 
 //////////////////////////////////////////////////////////////////////////
 
-void PhysicsObject::Initialise(f32 mass, const float3& position, Ref<BaseCollisionShape> col)
+void PhysicsObject::Initialise(f32 mass, const float3& position, const float3& rotation, Ref<BaseCollisionShape> col)
 {
     Ref<PhysicsWorld> physics = PhysicsWorld::GetActiveInstance();
 
@@ -82,7 +82,7 @@ void PhysicsObject::Initialise(f32 mass, const float3& position, Ref<BaseCollisi
     }
 
     collision = col;
-    body = PhysicsWorld::GetActiveInstance()->CreateRigidBody(mass, position, collision->btShape());
+    body = PhysicsWorld::GetActiveInstance()->CreateRigidBody(mass, position, rotation, collision->btShape());
     body->setUserPointer(this);
 
     if (mass == 0.0f)

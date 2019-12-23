@@ -30,7 +30,7 @@ public:
     virtual void OnUpdate(const f32 dt) override;
     virtual void OnPhysicsUpdate(const f32 dt) override;
 
-    void Initialise(f32 mass, const float3& position, Ref<BaseCollisionShape> col);
+    void Initialise(f32 mass, const float3& position, const float3& rotation, Ref<BaseCollisionShape> col);
     void SetGravityEnabled(bool gravity);
     void SetPositionAndRotation(const float3& position, const float3& euler);
 

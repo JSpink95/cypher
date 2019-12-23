@@ -68,7 +68,7 @@ void PhysicsWorld::OnPhysicsUpdate(const f32 dt)
 
 //////////////////////////////////////////////////////////////////////////
 
-btRigidBody* PhysicsWorld::CreateRigidBody(f32 mass, const float3& position, btCollisionShape* shape)
+btRigidBody* PhysicsWorld::CreateRigidBody(f32 mass, const float3& position, const float3& rotation, btCollisionShape* shape)
 {
     const bool isStatic = (glm::abs(mass) <= glm::epsilon<f32>());
 
@@ -76,7 +76,8 @@ btRigidBody* PhysicsWorld::CreateRigidBody(f32 mass, const float3& position, btC
     if (!isStatic)
         shape->calculateLocalInertia(mass, localInertia);
     
-    btTransform transform(btQuaternion::getIdentity(), btVector3(position.x, position.y, position.z));
+    fquat rot = fquat(glm::radians(rotation));
+    btTransform transform(btQuaternion(rot.x, rot.y, rot.z, rot.w), btVector3(position.x, position.y, position.z));
     btDefaultMotionState* motionState = new btDefaultMotionState(transform);
     btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, localInertia);
 

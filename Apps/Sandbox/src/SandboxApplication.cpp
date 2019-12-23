@@ -112,7 +112,7 @@ Ref<PhysicsObject> CreatePhysicsBoxFromPosSize(const f32 mass, const float3& pos
     Ref<PhysicsObject> object = CreateObject<PhysicsObject>();
 
     Ref<BoxCollision> boxCollision = std::make_shared<BoxCollision>(hs);
-    object->Initialise(mass, position, boxCollision);
+    object->Initialise(mass, position, float3(0.0f), boxCollision);
     
     Ref<StaticMeshComponent> boxMesh = object->NewComponent<StaticMeshComponent>();
     boxMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
@@ -139,7 +139,7 @@ Ref<PhysicsObject> CreatePhysicsSphereFromPosRad(const f32 mass, const float3& p
     Ref<PhysicsObject> object = CreateObject<PhysicsObject>();
 
     Ref<SphereCollision> sphereCollision = std::make_shared<SphereCollision>(radius);
-    object->Initialise(mass, position, sphereCollision);
+    object->Initialise(mass, position, float3(0.0f), sphereCollision);
 
     Ref<StaticMeshComponent> sphereMesh = object->NewComponent<StaticMeshComponent>();
     sphereMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
@@ -313,17 +313,11 @@ void SandboxApp::OnCreate()
 
     physics = CreateObject<PhysicsWorld>("DiscretePhysicsWorld");
 
-    //cameraController = CreateObject<FpsCameraController>();
     player = CreateObject<Player>();
 	Ref<LightComponent> light = player->NewComponent<LightComponent>();
 	light->GetLightInstance()->SetColor(Color::WarmWhite);
 
-    weapon = CreateObject<Weapon>();
-    weapon->SetOwner(player.get());
-
     GetGameThread()->PushThreadTask(this, &SandboxApp::LoadRenderResources);
-
-    physics->SetSimulatePhysics(true);
 
     InputManager::RegisterInput(ImpulseBurstAction, { KeyboardKey::R });
 }
@@ -335,15 +329,7 @@ void SandboxApp::OnDestroy()
     // destroy anything that is relevent
     // this is called on the main thread
 
-    for (Ref<PhysicsObject> po : physicsObjects)
-    {
-        DestroyObject(po->GetInstanceId());
-    }
-
-    physicsObjects.clear();
-
     DestroyObject(player->GetInstanceId());
-    DestroyObject(weapon->GetInstanceId());
     DestroyObject(physics->GetInstanceId());
 }
 
@@ -353,12 +339,9 @@ void SandboxApp::LoadRenderResources()
 {
     //GetWindowContext()->SetWindowPosition(int2(-1920 + 200, 200));
 
-    LoadMapFromFile("assets/maps/test_map.map", physicsObjects);
-    for (Ref<PhysicsObject> po : physicsObjects)
-    {
-        RenderPassManager::AddObjectToPass(RenderPassType::Opaque, po);
-        RenderPassManager::AddObjectToPass(RenderPassType::Shadow, po);
-    }
+    LevelLoader::LoadFromFile("assets/maps/test_arena.xml", level);
+    player->SetPositionAndRotation(level.spawnpoint, float3(0.0f));
+    physics->SetSimulatePhysics(true);
 
     hasLoadedRenderResources = true;
 }

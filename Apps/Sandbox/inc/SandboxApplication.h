@@ -9,6 +9,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/Application.h"
+#include "GameFramework/LevelLoader.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -49,10 +50,9 @@ private:
     bool hasLoadedRenderResources = false;
 
     Ref<PhysicsWorld> physics;
-    std::vector<Ref<PhysicsObject>> physicsObjects;
 
+    Level level;
     Ref<Player> player;
-    Ref<Weapon> weapon;
 };
 
 //////////////////////////////////////////////////////////////////////////

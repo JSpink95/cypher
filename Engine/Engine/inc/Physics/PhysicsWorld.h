@@ -48,7 +48,7 @@ public:
     virtual void OnConstruct() override;
     virtual void OnPhysicsUpdate(const f32 dt) override;     // called from the physics thread
 
-    btRigidBody* CreateRigidBody(f32 mass, const float3& position, btCollisionShape* shape);
+    btRigidBody* CreateRigidBody(f32 mass, const float3& position, const float3& rotation, btCollisionShape* shape);
     btCollisionShape* CreatePlane(const float3& normal, const f32 d);
     btCollisionShape* CreateBox(const float3& hs);
     btCollisionShape* CreateSphere(const f32 r);
