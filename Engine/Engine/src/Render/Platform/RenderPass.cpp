@@ -145,11 +145,11 @@ void RenderPassManager::InitialiseImpl()
 	framebufferSize = windowSize / 4.0f;
 
     // load materials
-    sslMaterial = MaterialLibrary::GetMaterial("game:pp-ssl");
-    ssaoMaterial = MaterialLibrary::GetMaterial("game:pp-ssao");
-    imageBlurMaterial = MaterialLibrary::GetMaterial("game:pp-blur");
-    imageBlendMaterial = MaterialLibrary::GetMaterial("game:pp-overlay");
-    imageRenderMaterial = MaterialLibrary::GetMaterial("game:pp-image-render");
+    sslMaterial = MaterialLibrary::GetMaterial("pp-ssl");
+    ssaoMaterial = MaterialLibrary::GetMaterial("pp-ssao");
+    imageBlurMaterial = MaterialLibrary::GetMaterial("pp-blur");
+    imageBlendMaterial = MaterialLibrary::GetMaterial("pp-overlay");
+    imageRenderMaterial = MaterialLibrary::GetMaterial("pp-image-render");
 
     // load framebuffers
 
@@ -459,7 +459,7 @@ void RenderPassManager::RenderImpl()
 
     Renderer::Submit(imageRenderMaterial, screenQuad);
 
-#if 0
+#if 1
     GlCall(glClear(GL_DEPTH_BUFFER_BIT));
     imageDataBuffer.position = vec2(-1.0f + 0.25f);
     //imageDataBuffer.position = vec2(0.0f);

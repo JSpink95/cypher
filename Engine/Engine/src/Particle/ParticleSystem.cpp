@@ -81,7 +81,7 @@ void ParticleSystemComponent::OnConstruct()
         ownerTransform = owner->FindFirstComponentOfType<TransformComponent>();
     }
 
-    particleMaterial = MaterialLibrary::GetMaterial("game:particle-default");
+    particleMaterial = MaterialLibrary::GetMaterial("particle-default");
 }
 
 //////////////////////////////////////////////////////////////////////////

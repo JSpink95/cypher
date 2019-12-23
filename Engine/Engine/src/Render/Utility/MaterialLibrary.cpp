@@ -9,6 +9,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "pugixml.hpp"
+
+//////////////////////////////////////////////////////////////////////////
+
 void MaterialLibrary::Initialise()
 {
     Ref<MaterialLibrary> library = GetMaterialLibrary();
@@ -75,18 +79,23 @@ void MaterialLibrary::InitialiseImpl()
     // hmm
     // Load MaterialAssets.xml
 
-    RegisterMaterialImpl("game:mesh-lit", "assets/materials/mesh-lit.xml");
-    RegisterMaterialImpl("game:mesh-lit-tex", "assets/materials/mesh-lit-tex.xml");
-    RegisterMaterialImpl("game:pp-image-render", "assets/materials/pp-image-render.xml");
-    RegisterMaterialImpl("game:pp-overlay", "assets/materials/pp-overlay.xml");
-    RegisterMaterialImpl("game:pp-ssao", "assets/materials/pp-ssao.xml");
-    RegisterMaterialImpl("game:pp-blur", "assets/materials/pp-blur.xml");
-    RegisterMaterialImpl("game:pp-ssl", "assets/materials/pp-ssl.xml");
-    RegisterMaterialImpl("game:shadow-pass", "assets/materials/shadow-pass.xml");
-    RegisterMaterialImpl("game:particle-default", "assets/materials/particle-pos-size.xml");
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file("assets/MaterialAssets.xml");
+    if (result)
+    {
+        pugi::xml_node root = doc.root().child("materials");
+        for (pugi::xml_node materialNode : root)
+        {
+            const char* id = materialNode.attribute("id").as_string();
+            const char* filepath = materialNode.attribute("filepath").as_string();
 
-    // load "instances"
-    RegisterMaterialImpl("game:mesh-lit-tex:error", "assets/materials/mesh-lit-tex-error.xml");
+#ifdef DEBUG
+            printf("Loading material('%s', '%s')\n", id, filepath);
+#endif
+
+            RegisterMaterialImpl(id, filepath);
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

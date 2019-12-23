@@ -115,7 +115,7 @@ Ref<PhysicsObject> CreatePhysicsBoxFromPosSize(const f32 mass, const float3& pos
     object->Initialise(mass, position, boxCollision);
     
     Ref<StaticMeshComponent> boxMesh = object->NewComponent<StaticMeshComponent>();
-    boxMesh->SetMaterial(MaterialLibrary::GetMaterial("game:mesh-lit-tex:error"));
+    boxMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
     boxMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-box"));
     boxMesh->SetScale(hs);
 
@@ -142,7 +142,7 @@ Ref<PhysicsObject> CreatePhysicsSphereFromPosRad(const f32 mass, const float3& p
     object->Initialise(mass, position, sphereCollision);
 
     Ref<StaticMeshComponent> sphereMesh = object->NewComponent<StaticMeshComponent>();
-    sphereMesh->SetMaterial(MaterialLibrary::GetMaterial("game:mesh-lit-tex:error"));
+    sphereMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
     sphereMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-sphere-ss"));
     sphereMesh->SetScale(float3(radius));
 

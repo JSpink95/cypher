@@ -1,4 +1,4 @@
-<material id="mesh-lit-tex:error" based_on="game:mesh-lit-tex">
+<material id="mesh-lit-tex-checkerboard" based_on="mesh-lit-tex">
   <parameters>
     <parameter id="uTexture" type="texture2D" binding="0" value="engine:error"/>
   </parameters>

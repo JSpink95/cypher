@@ -208,7 +208,7 @@ void DungeonRoom::OnRender(RenderPassType::Enum pass, Ref<Material> overrideMate
 
 void DungeonRoom::RenderThread_LoadRenderResources()
 {
-    material = MaterialLibrary::GetMaterial("game:mesh-lit-tex");
+    material = MaterialLibrary::GetMaterial("mesh-lit-tex");
 
     floorTexture = TextureLibrary::GetTexture(EngineTextureId::White);
     wallTexture = TextureLibrary::GetTexture(EngineTextureId::White);
