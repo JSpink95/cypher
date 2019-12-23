@@ -12,4 +12,5 @@
 
   <!-- load material instances -->
   <material id="mesh-lit-tex-checkerboard" filepath="assets/materials/mesh-lit-tex-error.xml"/>
+  <material id="crate-material" filepath="assets/materials/crate-material.xml"/>
 </materials>

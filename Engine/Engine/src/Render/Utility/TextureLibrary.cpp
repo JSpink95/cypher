@@ -98,6 +98,9 @@ void TextureLibrary::InitialiseImpl()
     loadedTextures.insert(std::make_pair(EngineTextureId::White, GetApiManager()->CreateTexture2D(uint2(2), whitePixels)));
     loadedTextures.insert(std::make_pair(EngineTextureId::Error, GetApiManager()->CreateTexture2D(uint2(8), errorPixels)));
     loadedTextures.insert(std::make_pair(EngineTextureId::SphereWithAlpha, GetApiManager()->CreateTexture2D(uint2(16), &spherePixels.at(0))));
+
+    // #todo - load from TextureAssets.xml
+    loadedTextures.insert(std::make_pair("tx_crate", GetApiManager()->CreateTexture2D("assets/textures/crate.png")));
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,5 @@
+<material id="create-material" based_on="mesh-lit-tex">
+  <parameters>
+    <parameter id="uTexture" type="texture2D" binding="0" value="tx_crate"/>
+  </parameters>
+</material>
