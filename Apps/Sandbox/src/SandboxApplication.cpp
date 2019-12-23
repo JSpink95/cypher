@@ -179,8 +179,6 @@ void SandboxApp::OnCreate()
     physics = CreateObject<PhysicsWorld>("DiscretePhysicsWorld");
 
     player = CreateObject<Player>();
-	Ref<LightComponent> light = player->NewComponent<LightComponent>();
-	light->GetLightInstance()->SetColor(Color::WarmWhite);
 
     GetGameThread()->PushThreadTask(this, &SandboxApp::LoadRenderResources);
 

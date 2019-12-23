@@ -1,5 +1,9 @@
 <map>
   <spawnpoint value="0,2,0"/>
+  <gameobject id="pointlight">
+    <transform position="0,6,0" rotation="0,0,0"/>
+    <light color="1,0.99,0.8" radius="12"/>
+  </gameobject>
   <physicsobject id="floor">
     <renderpass value="opaque"/>
     <transform position="0,-0.1,0" rotation="0,0,0"/>
