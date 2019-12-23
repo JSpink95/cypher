@@ -95,12 +95,28 @@ void TextureLibrary::InitialiseImpl()
         }
     }
 
+    // load engine textures
     loadedTextures.insert(std::make_pair(EngineTextureId::White, GetApiManager()->CreateTexture2D(uint2(2), whitePixels)));
     loadedTextures.insert(std::make_pair(EngineTextureId::Error, GetApiManager()->CreateTexture2D(uint2(8), errorPixels)));
     loadedTextures.insert(std::make_pair(EngineTextureId::SphereWithAlpha, GetApiManager()->CreateTexture2D(uint2(16), &spherePixels.at(0))));
 
-    // #todo - load from TextureAssets.xml
-    loadedTextures.insert(std::make_pair("tx_crate", GetApiManager()->CreateTexture2D("assets/textures/crate.png")));
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file("assets/TextureAssets.xml");
+    if (result)
+    {
+        pugi::xml_node root = doc.root().child("textures");
+        for (pugi::xml_node textureNode : root)
+        {
+            const char* id = textureNode.attribute("id").as_string();
+            const char* filepath = textureNode.attribute("filepath").as_string();
+
+#ifdef DEBUG
+            printf("Loading texture('%s', '%s')\n", id, filepath);
+#endif
+
+            RegisterTextureImpl(id, filepath);
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
