@@ -89,7 +89,30 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
-class ParticleSetPositionSphereRandom : public ParticleEmissionProcess
+class ParticlePointEmitter : public ParticleEmissionProcess
+{
+public:
+    virtual void Initialise(Particle& particle) override;
+
+public:
+
+    inline float3& GetPoint()
+    {
+        return point;
+    }
+
+    inline void SetPoint(const float3& newPoint)
+    {
+        point = newPoint;
+    }
+
+private:
+    float3 point = float3(0.0f);
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleSphereEmitter : public ParticleEmissionProcess
 {
 public:
     virtual void Initialise(Particle& particle) override;

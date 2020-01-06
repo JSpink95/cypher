@@ -35,7 +35,14 @@ void ParticleUpdateStage::Update(const f32 dt, Particle& particle)
 
 //////////////////////////////////////////////////////////////////////////
 
-void ParticleSetPositionSphereRandom::Initialise(Particle& particle)
+void ParticlePointEmitter::Initialise(Particle& particle)
+{
+    particle.data.position = point;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void ParticleSphereEmitter::Initialise(Particle& particle)
 {
     f32 r = clampToEdge ? radius.max() : radius(engine);
     float3 d = glm::normalize(float3(direction(engine), direction(engine), direction(engine)));
