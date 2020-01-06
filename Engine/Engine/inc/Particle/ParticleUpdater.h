@@ -21,6 +21,11 @@ struct Particle;
 
 //////////////////////////////////////////////////////////////////////////
 
+using RandomEngine = std::default_random_engine;
+using FloatDistribution = std::uniform_real_distribution<f32>;
+
+//////////////////////////////////////////////////////////////////////////
+
 class ParticleEvent
 {
 public:
@@ -84,6 +89,32 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+class ParticleSetPositionSphereRandom : public ParticleEmissionProcess
+{
+public:
+    virtual void Initialise(Particle& particle) override;
+
+public:
+
+    inline void SetRadiusRange(const float2& newRadiusRange)
+    {
+        radius = FloatDistribution(newRadiusRange.x, newRadiusRange.y);
+    }
+
+    inline void SetClampToEdge(const bool newClampToEdge)
+    {
+        clampToEdge = newClampToEdge;
+    }
+
+private:
+    RandomEngine engine;
+    FloatDistribution radius = FloatDistribution(0.0f, 1.0f);
+    FloatDistribution direction = FloatDistribution(-1.0f, 1.0f);
+    bool clampToEdge = false;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class ParticleSetSize : public ParticleEmissionProcess
 {
 public:
@@ -134,21 +165,21 @@ public:
     ParticleSetVelocityRandom()
         : strengthDistribution(0.0f, 1.0f)
     {
-        xyzDirectionDistribution[0] = std::uniform_real_distribution<f32>(-1.0f, 1.0f);
-        xyzDirectionDistribution[1] = std::uniform_real_distribution<f32>(-1.0f, 1.0f);
-        xyzDirectionDistribution[2] = std::uniform_real_distribution<f32>(-1.0f, 1.0f);
+        xyzDirectionDistribution[0] = FloatDistribution(-1.0f, 1.0f);
+        xyzDirectionDistribution[1] = FloatDistribution(-1.0f, 1.0f);
+        xyzDirectionDistribution[2] = FloatDistribution(-1.0f, 1.0f);
     }
 
     virtual void Apply(Particle& particle);
     inline void SetStrength(const float2& newStrength)
     {
-        strengthDistribution = std::uniform_real_distribution<f32>(newStrength.x, newStrength.y);
+        strengthDistribution = FloatDistribution(newStrength.x, newStrength.y);
     }
 
 private:
-    std::default_random_engine engine;
-    std::uniform_real_distribution<f32> strengthDistribution;
-    std::uniform_real_distribution<f32> xyzDirectionDistribution[3];
+    RandomEngine engine;
+    FloatDistribution strengthDistribution;
+    FloatDistribution xyzDirectionDistribution[3];
 };
 
 //////////////////////////////////////////////////////////////////////////

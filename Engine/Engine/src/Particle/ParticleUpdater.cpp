@@ -35,6 +35,16 @@ void ParticleUpdateStage::Update(const f32 dt, Particle& particle)
 
 //////////////////////////////////////////////////////////////////////////
 
+void ParticleSetPositionSphereRandom::Initialise(Particle& particle)
+{
+    f32 r = clampToEdge ? radius.max() : radius(engine);
+    float3 d = glm::normalize(float3(direction(engine), direction(engine), direction(engine)));
+
+    particle.data.position = d * r;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void ParticleSetSize::Initialise(Particle& particle)
 {
     particle.data.size = size;
