@@ -47,28 +47,6 @@ struct UniformBufferParticleExtra
 
 //////////////////////////////////////////////////////////////////////////
 
-void ParticleManager::Update(f32 dt)
-{
-    auto isParticleDead = [](Particle const& particle) -> bool { return particle.age <= 0.0f; };
-    particles.erase(std::remove_if(particles.begin(), particles.end(), isParticleDead), particles.end());
-
-    for (Particle& particle : particles)
-    {
-        particle.data.position += particle.velocity * dt;
-        particle.age -= glm::min(dt, particle.age);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void ParticleManager::BuildParticleBatch(std::vector<ParticleVertex>& vertices)
-{
-    for (Particle& particle : particles)
-        vertices.push_back(particle.data);
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 void ParticleSystemComponent::OnConstruct()
 {
     Super::OnConstruct();
@@ -103,16 +81,24 @@ void ParticleSystemComponent::OnUpdate(const f32 dt)
         Particle particle;
         emissionStage->Initialise(particle);
 
-        manager.particles.push_back(particle);
+        particles.push_back(particle);
     }
 
     particleCountRequest = 0;
-    for (Particle& particle : manager)
+    for (Particle& particle : particles)
     {
         updateStage->Update(dt, particle);
+        particle.data.position += particle.velocity * dt;
+        particle.age -= dt;
+
+        if (onParticleDeath && particle.age <= 0.0f)
+        {
+            onParticleDeath->OnEvent(particle);
+        }
     }
 
-    manager.Update(dt);
+    auto isParticleDead = [](const Particle& particle) -> bool { return particle.age <= 0.0f; };
+    particles.erase(std::remove_if(particles.begin(), particles.end(), isParticleDead), particles.end());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -130,10 +116,10 @@ void ParticleSystemComponent::OnRender(RenderPassType::Enum pass, Ref<Material> 
     mat4 const worldTransform = localSpaceParticles ? CalculateTransformMatrix() : fmat4(1.0f);
     if (particleMaterial != nullptr && particleBuffer != nullptr)
     {
-        std::vector<ParticleVertex> particles;
-        manager.BuildParticleBatch(particles);
+        std::vector<ParticleVertex> vertices;
+        std::transform(particles.begin(), particles.end(), std::back_inserter(vertices), [](Particle& particle) -> ParticleVertex { return particle.data; });
 
-        particleBuffer->UpdateBuffer(particles.size(), sizeof(ParticleVertex), (particles.size() == 0) ? nullptr : &particles.at(0));
+        particleBuffer->UpdateBuffer(vertices.size(), sizeof(ParticleVertex), (vertices.size() == 0) ? nullptr : &vertices.at(0));
 
         UniformBufferParticleExtra particleExtra;
         particleExtra.cameraPosition = vec4(Camera::GetActiveCamera()->GetEyePosition(), 1.0f);

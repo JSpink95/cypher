@@ -9,13 +9,6 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-void ParticleUpdaterGravity::Update(const f32 dt, Particle& particle)
-{
-    particle.velocity += (data.gravity * dt);
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 void ParticleEmissionStage::Initialise(Particle& particle)
 {
     for (ProcessType process : processes)
@@ -67,6 +60,20 @@ void ParticleSetVelocityRandom::Apply(Particle& particle)
     );
 
     particle.velocity = s * glm::normalize(direction);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void ParticleLinearDrag::Update(const f32 dt, Particle& particle)
+{
+    particle.velocity = glm::mix(particle.velocity, float3(0.0f), dt * drag);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void ParticleGravity::Update(const f32 dt, Particle& particle)
+{
+    particle.velocity += gravity * dt;
 }
 
 //////////////////////////////////////////////////////////////////////////

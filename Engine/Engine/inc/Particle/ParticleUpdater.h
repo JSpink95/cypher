@@ -21,33 +21,6 @@ struct Particle;
 
 //////////////////////////////////////////////////////////////////////////
 
-class ParticleUpdater
-{
-public:
-    virtual void Update(const f32 dt, Particle& particle) = 0;
-};
-
-//////////////////////////////////////////////////////////////////////////
-
-class ParticleUpdaterGravity: public ParticleUpdater
-{
-public:
-    struct Data
-    {
-        float3 gravity = float3(0.0f, -9.81f, 0.0f);
-    };
-public:
-    virtual void Update(const f32 dt, Particle& particle) override;
-
-    inline Data& GetData() { return data; }
-    inline const Data& GetData() const { return data; }
-
-private:
-    Data data;
-};
-
-//////////////////////////////////////////////////////////////////////////
-
 class ParticleEvent
 {
 public:
@@ -128,6 +101,27 @@ public:
     virtual void Initialise(Particle& particle) override;
 
 public:
+    inline float2& GetScale()
+    {
+        return scale;
+    }
+
+    inline float2& GetOffset()
+    {
+        return offset;
+    }
+
+    inline void SetScale(const float2& newScale)
+    {
+        scale = newScale;
+    }
+
+    inline void SetOffset(const float2& newOffset)
+    {
+        offset = newOffset;
+    }
+
+private:
     float2 scale = float2(1.0f);
     float2 offset = float2(0.0f);
 };
@@ -155,6 +149,50 @@ private:
     std::default_random_engine engine;
     std::uniform_real_distribution<f32> strengthDistribution;
     std::uniform_real_distribution<f32> xyzDirectionDistribution[3];
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleLinearDrag : public ParticleUpdateProcess
+{
+public:
+    virtual void Update(const f32 dt, Particle& particle) override;
+
+public:
+    inline float3& GetDrag()
+    {
+        return drag;
+    }
+
+    inline void SetDrag(const float3& newDrag)
+    {
+        drag = newDrag;
+    }
+
+private:
+    float3 drag = float3(0.0f);
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleGravity : public ParticleUpdateProcess
+{
+public:
+    virtual void Update(const f32 dt, Particle& particle) override;
+
+public:
+    inline float3& GetGravity()
+    {
+        return gravity;
+    }
+
+    inline void SetGravity(const float3& newGravity)
+    {
+        gravity = newGravity;
+    }
+
+private:
+    float3 gravity = float3(0.0f, -9.81f, 0.0f);
 };
 
 //////////////////////////////////////////////////////////////////////////

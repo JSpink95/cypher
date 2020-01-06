@@ -47,25 +47,6 @@ struct Particle
 
 //////////////////////////////////////////////////////////////////////////
 
-struct ParticleManager
-{
-    using iterator = std::vector<Particle>::iterator;
-    using const_iterator = std::vector<Particle>::const_iterator;
-
-    std::vector<Particle> particles;
-
-    void Update(f32 dt);
-    void BuildParticleBatch(std::vector<ParticleVertex>& vertices);
-
-    inline iterator begin() { return particles.begin(); }
-    inline const_iterator begin() const { return particles.begin(); }
-
-    inline iterator end() { return particles.end(); }
-    inline const_iterator end() const { return particles.end(); }
-};
-
-//////////////////////////////////////////////////////////////////////////
-
 class ParticleSystemComponent: public TransformComponent
 {
     DECLARE_DERIVED_COMPONENT(ParticleSystemComponent, TransformComponent)
@@ -108,7 +89,7 @@ public:
     Ref<Material> particleMaterial;
 
 private:
-    ParticleManager manager;
+    std::vector<Particle> particles;
 
     // particle emission
     s32 particleCountRequest = 0;
