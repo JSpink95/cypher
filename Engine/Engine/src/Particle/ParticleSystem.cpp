@@ -11,7 +11,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Particle/ParticleSystem.h"
-#include "Particle/ParticleEmitter.h"
 #include "Particle/ParticleUpdater.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -81,6 +80,8 @@ void ParticleSystemComponent::OnConstruct()
         ownerTransform = owner->FindFirstComponentOfType<TransformComponent>();
     }
 
+    updateStage = std::make_shared<ParticleUpdateStage>();
+    emissionStage = std::make_shared<ParticleEmissionStage>();
     particleMaterial = MaterialLibrary::GetMaterial("particle-default");
 }
 
@@ -90,14 +91,25 @@ void ParticleSystemComponent::OnUpdate(const f32 dt)
 {
     Super::OnUpdate(dt);
 
-    if (emitter != nullptr)
+    timeSinceLastEmission += dt;
+    if (timeSinceLastEmission >= emissionRate)
     {
-        emitter->Tick(dt, this);
+        ++particleCountRequest;
+        timeSinceLastEmission = 0.0f;
     }
 
-    if (updater != nullptr)
+    for (s32 i = 0; i < particleCountRequest; ++i)
     {
-        for (Particle& particle : manager) updater->Update(dt, particle);
+        Particle particle;
+        emissionStage->Initialise(particle);
+
+        manager.particles.push_back(particle);
+    }
+
+    particleCountRequest = 0;
+    for (Particle& particle : manager)
+    {
+        updateStage->Update(dt, particle);
     }
 
     manager.Update(dt);
@@ -111,7 +123,7 @@ void ParticleSystemComponent::OnRender(RenderPassType::Enum pass, Ref<Material> 
 
     if (pass != RenderPassType::Particle)
     {
-        // we only render particles in the... particle pass.
+        // we only render particles in the particle pass.
         return;
     }
 
@@ -156,6 +168,13 @@ fmat4 ParticleSystemComponent::CalculateTransformMatrix() const
 
 //////////////////////////////////////////////////////////////////////////
 
+void ParticleSystemComponent::RequestNewParticles(s32 count/* = 1*/)
+{
+    particleCountRequest += count;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void ParticleSystemComponent::RenderTask_InitialiseParticleMesh()
 {
     static VertexBufferLayout particleLayout = {
@@ -168,13 +187,6 @@ void ParticleSystemComponent::RenderTask_InitialiseParticleMesh()
 
     particleMesh = GetApiManager()->CreateVertexArray();
     particleMesh->AddBuffer(particleBuffer);
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void ParticleSystemComponent::PushParticle(const float3& position, const float2& size, const float3& velocity, const f32 age)
-{
-    manager.particles.push_back({ { position, size }, velocity, age });
 }
 
 //////////////////////////////////////////////////////////////////////////

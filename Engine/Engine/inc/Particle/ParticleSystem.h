@@ -21,15 +21,19 @@ class Material;
 class VertexArray;
 class VertexBuffer;
 class ParticleEmitter;
-class ParticleUpdater;
+class ParticleEmissionStage;
+class ParticleUpdateStage;
+class ParticleEvent;
 class TransformComponent;
 
 //////////////////////////////////////////////////////////////////////////
 
 struct ParticleVertex
 {
-    float3 position;
-    float2 size;
+    float3 position = float3(0.0f);
+    float2 size = float2(0.0f);
+    float2 uv_scale = float2(1.0f);
+    float2 uv_offset = float2(0.0f);
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -85,21 +89,16 @@ public:
 
     virtual fmat4 CalculateTransformMatrix() const override;
 
-    void PushParticle(const float3& position, const float2& size, const float3& velocity, const f32 age);
+    // request a new particle to be added in the next update iteration
+    void RequestNewParticles(s32 count = 1);
 
-    Ref<ParticleEmitter> GetEmitter() const { return emitter; }
-    Ref<ParticleUpdater> GetUpdater() const { return updater; }
-
-    void SetEmitter(Ref<ParticleEmitter> newEmitter) { emitter = newEmitter; }
-    void SetUpdater(Ref<ParticleUpdater> newUpdater) { updater = newUpdater; }
+    Ref<ParticleEmissionStage> GetEmissionStage() { return emissionStage; }
+    Ref<ParticleUpdateStage> GetUpdateStage() { return updateStage; }
 
 public:
 
     template<typename TEmitter>
     Ref<TEmitter> GetEmitterAsType() const { return std::dynamic_pointer_cast<TEmitter>(emitter); }
-
-    template<typename TUpdater>
-    Ref<TUpdater> GetUpdatersAsType() const { return std::dynamic_pointer_cast<TUpdater>(updater); }
 
 private:
     void RenderTask_InitialiseParticleMesh();
@@ -110,12 +109,24 @@ public:
 
 private:
     ParticleManager manager;
-    Ref<ParticleEmitter> emitter;
-    Ref<ParticleUpdater> updater;
 
+    // particle emission
+    s32 particleCountRequest = 0;
+    f32 timeSinceLastEmission = 0.0f;
+    f32 emissionRate = 0.005f;
+
+    // particle modifiers
+    Ref<ParticleEmissionStage> emissionStage;
+    Ref<ParticleUpdateStage> updateStage;
+
+    // particle events
+    Ref<ParticleEvent> onParticleDeath;
+
+    // particle meshes
     Ref<VertexBuffer> particleBuffer;
     Ref<VertexArray> particleMesh;
 
+    // helper data
     WeakRef<TransformComponent> ownerTransform;
 };
 

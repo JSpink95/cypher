@@ -5,6 +5,8 @@ layout(max_vertices=4, triangle_strip) out;
 
 in vec3 gsPosition[];
 in vec2 gsSize[];
+in vec2 gsUvScale[];
+in vec2 gsUvOffset[];
 
 layout(std140, binding=0) uniform PerFrame
 {
@@ -29,6 +31,8 @@ void main()
 {
 	vec3 particleCentreLocalSpace = gsPosition[0];
 	vec2 particleSize = gsSize[0];
+	vec2 uvScale = gsUvScale[0];
+	vec2 uvOffset = gsUvOffset[0];
 
 	mat4 viewTransform = view * transform;
 
@@ -49,18 +53,18 @@ void main()
 	fColor = vec4(1.0);
 
 	gl_Position = viewProjection * b;
-	fTexcoord = vec2(0.0, 0.0);
+	fTexcoord = (vec2(0.0, 0.0) + uvOffset) * uvScale;
 	EmitVertex();
 
 	gl_Position = viewProjection * d;
-	fTexcoord = vec2(1.0, 0.0);
+	fTexcoord = (vec2(1.0, 0.0) + uvOffset) * uvScale;
 	EmitVertex();
 
 	gl_Position = viewProjection * a;
-	fTexcoord = vec2(0.0, 1.0);
+	fTexcoord = (vec2(0.0, 1.0) + uvOffset) * uvScale;
 	EmitVertex();
 
 	gl_Position = viewProjection * c;
-	fTexcoord = vec2(1.0, 1.0);
+	fTexcoord = (vec2(1.0, 1.0) + uvOffset) * uvScale;
 	EmitVertex();
 }

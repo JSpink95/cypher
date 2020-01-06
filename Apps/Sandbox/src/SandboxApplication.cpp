@@ -54,7 +54,6 @@
 
 #include "Particle/ParticleUpdater.h"
 #include "Particle/ParticleSystem.h"
-#include "Particle/ParticleEmitter.h"
 
 //////////////////////////////////////////////////////////////////////////
 

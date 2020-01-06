@@ -12,6 +12,11 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include <random>
+#include <vector>
+
+//////////////////////////////////////////////////////////////////////////
+
 struct Particle;
 
 //////////////////////////////////////////////////////////////////////////
@@ -39,6 +44,121 @@ public:
 
 private:
     Data data;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleEvent
+{
+public:
+    virtual void OnEvent(Particle& particle) = 0;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleEmissionProcess
+{
+public:
+    virtual void Initialise(Particle& particle) = 0;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleUpdateProcess
+{
+public:
+    virtual void Update(const f32 dt, Particle& particle) = 0;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+class TParticleStage
+{
+public:
+    using ProcessType = Ref<T>;
+
+public:
+    inline void AddOutput(ProcessType process)
+    {
+        processes.push_back(process);
+    }
+
+    inline void RemoveOutput(ProcessType process)
+    {
+        processes.erase(std::remove(processes.begin(), processes.end(), process), processes.end());
+    }
+
+protected:
+    std::vector<ProcessType> processes;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleEmissionStage : public TParticleStage<ParticleEmissionProcess>
+{
+public:
+    void Initialise(Particle& particle);
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleUpdateStage: public TParticleStage<ParticleUpdateProcess>
+{
+public:
+    void Update(const f32 dt, Particle& particle);
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleSetSize : public ParticleEmissionProcess
+{
+public:
+    virtual void Initialise(Particle& particle) override;
+
+public:
+    float2 size = float2(1.0f);
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleSetUV : public ParticleEmissionProcess
+{
+public:
+    inline virtual void Initialise(Particle& particle) override
+    {
+        // particle.data.uv_scale = scale;
+        // particle.data.uv_offset = offset;
+    }
+
+public:
+    float2 scale = float2(1.0f);
+    float2 offset = float2(0.0f);
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleSetVelocityRandom : public ParticleEmissionProcess
+{
+public:
+    ParticleSetVelocityRandom()
+        : strengthDistribution(0.0f, 1.0f)
+    {
+        xyzDirectionDistribution[0] = std::uniform_real_distribution<f32>(-1.0f, 1.0f);
+        xyzDirectionDistribution[1] = std::uniform_real_distribution<f32>(-1.0f, 1.0f);
+        xyzDirectionDistribution[2] = std::uniform_real_distribution<f32>(-1.0f, 1.0f);
+    }
+
+    virtual void Apply(Particle& particle);
+    inline void SetStrength(const float2& newStrength)
+    {
+        strengthDistribution = std::uniform_real_distribution<f32>(newStrength.x, newStrength.y);
+    }
+
+private:
+    std::default_random_engine engine;
+    std::uniform_real_distribution<f32> strengthDistribution;
+    std::uniform_real_distribution<f32> xyzDirectionDistribution[3];
 };
 
 //////////////////////////////////////////////////////////////////////////

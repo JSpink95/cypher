@@ -23,7 +23,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Particle/ParticleSystem.h"
-#include "Particle/ParticleEmitter.h"
+
+//////////////////////////////////////////////////////////////////////////
 
 void BulletProjectile::OnConstruct()
 {
@@ -32,21 +33,8 @@ void BulletProjectile::OnConstruct()
     movement = NewComponent<ProjectileMovementComponent>();
     trail = NewComponent<ParticleSystemComponent>();
 
-    // setup trail data
-
-    Ref<ParticleEmitterCone> coneEmitter = std::make_shared<ParticleEmitterCone>();
-    coneEmitter->GetData().emitTimeSeconds = 0.1f;
-    coneEmitter->GetData().ageRange = { 0.2f, 1.0f };
-    coneEmitter->GetData().coneHeight = 5.0f;
-    coneEmitter->GetData().coneRadiusRange = { 0.0f, 0.25f };
-    coneEmitter->GetData().coneSectionRangeDegrees = { 0.0f, 360.0f };
-    coneEmitter->GetData().initialVelocityRange = { -0.2f, 0.2f };
-
-    trail->SetEmitter(coneEmitter);
-
     GetGameThread()->AddObject(self);
     GetGameThread()->PushThreadTask(this, &BulletProjectile::RenderTask_Initialise);
-
 }
 
 //////////////////////////////////////////////////////////////////////////
