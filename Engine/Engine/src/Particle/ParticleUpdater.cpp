@@ -49,6 +49,14 @@ void ParticleSetSize::Initialise(Particle& particle)
 
 //////////////////////////////////////////////////////////////////////////
 
+void ParticleSetUV::Initialise(Particle& particle)
+{
+    particle.data.uv_scale = scale;
+    particle.data.uv_offset = offset;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void ParticleSetVelocityRandom::Apply(Particle& particle)
 {
     f32 s = strengthDistribution(engine);

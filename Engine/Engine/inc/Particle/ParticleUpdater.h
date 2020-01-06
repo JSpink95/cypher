@@ -125,11 +125,7 @@ public:
 class ParticleSetUV : public ParticleEmissionProcess
 {
 public:
-    inline virtual void Initialise(Particle& particle) override
-    {
-        // particle.data.uv_scale = scale;
-        // particle.data.uv_offset = offset;
-    }
+    virtual void Initialise(Particle& particle) override;
 
 public:
     float2 scale = float2(1.0f);
