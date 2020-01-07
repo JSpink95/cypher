@@ -9,7 +9,11 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "GameFramework/Component/TransformComponent.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/RenderPass.h"
+#include "Render/Platform/Buffer.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -30,6 +34,13 @@ class TransformComponent;
 
 struct ParticleVertex
 {
+    static inline VertexBufferLayout layout = {
+        { "aPosition", ShaderData::Float3 },
+        { "aSize", ShaderData::Float2 },
+        { "aUvScale", ShaderData::Float2 },
+        { "aUvOffset", ShaderData::Float2 },
+    };
+
     float3 position = float3(0.0f);
     float2 size = float2(0.0f);
     float2 uv_scale = float2(1.0f);
@@ -77,6 +88,23 @@ public:
     template<typename TEmitter>
     Ref<TEmitter> GetEmitterAsType() const { return std::dynamic_pointer_cast<TEmitter>(emitter); }
 
+public:
+
+    inline void SetEmissionRate(const f32 rate)
+    {
+        emissionRate = glm::max(rate, 0.0f);
+    }
+
+    inline void SetMaxParticlesAlive(const s32 alive)
+    {
+        maxAliveParticles = alive;
+    }
+
+    inline void SetParticleDeathEvent(Ref<ParticleEvent> newEvent)
+    {
+        onParticleDeath = newEvent;
+    }
+
 private:
     void RenderTask_InitialiseParticleMesh();
 
@@ -89,8 +117,10 @@ private:
 
     // particle emission
     s32 particleCountRequest = 0;
+    u64 numParticlesSpawned = 0u;
     f32 timeSinceLastEmission = 0.0f;
     f32 emissionRate = 0.005f;
+    s32 maxAliveParticles = 0;   // 0 means no cap
 
     // particle modifiers
     Ref<ParticleEmissionStage> emissionStage;

@@ -24,7 +24,6 @@
 #include "Render/Platform/RenderPass.h"
 #include "Render/Platform/ApiManager.h"
 #include "Render/Platform/VertexArray.h"
-#include "Render/Platform/Buffer.h"
 #include "Render/Platform/Renderer.h"
 #include "Render/Utility/TextureLibrary.h"
 #include "Render/Utility/MaterialLibrary.h"
@@ -76,15 +75,18 @@ void ParticleSystemComponent::OnUpdate(const f32 dt)
         timeSinceLastEmission = 0.0f;
     }
 
+    s32 maxAllowedSpawns = glm::min(maxAliveParticles - (s32)particles.size(), particleCountRequest);
+
     for (s32 i = 0; i < particleCountRequest; ++i)
     {
         Particle particle;
         emissionStage->Initialise(particle);
 
         particles.push_back(particle);
+        numParticlesSpawned += 1;
     }
 
-    particleCountRequest = 0;
+    particleCountRequest = glm::max(0, particleCountRequest - maxAllowedSpawns);
     for (Particle& particle : particles)
     {
         updateStage->Update(dt, particle);
@@ -163,13 +165,8 @@ void ParticleSystemComponent::RequestNewParticles(s32 count/* = 1*/)
 
 void ParticleSystemComponent::RenderTask_InitialiseParticleMesh()
 {
-    static VertexBufferLayout particleLayout = {
-        { "aPosition", ShaderData::Float3 },
-        { "aSize", ShaderData::Float2 },
-    };
-
     particleBuffer = GetApiManager()->CreateVertexBuffer(0, sizeof(ParticleVertex), nullptr);
-    particleBuffer->SetLayout(particleLayout);
+    particleBuffer->SetLayout(ParticleVertex::layout);
 
     particleMesh = GetApiManager()->CreateVertexArray();
     particleMesh->AddBuffer(particleBuffer);

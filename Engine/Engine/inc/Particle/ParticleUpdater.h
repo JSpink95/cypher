@@ -153,6 +153,44 @@ private:
     f32 lifetime = 1.0f;
 };
 
+class ParticleSetLifetimeRandom : public ParticleEmissionProcess
+{
+public:
+    virtual void Initialise(Particle& particle) override;
+
+public:
+
+    inline f32& GetLifetimeMin()
+    {
+        return lifetime.x;
+    }
+
+    inline f32& GetLifetimeMax()
+    {
+        return lifetime.y;
+    }
+
+    inline void SetLifetimeMin(f32 min)
+    {
+        lifetime.x = min;
+    }
+
+    inline void SetLifetimeMax(f32 max)
+    {
+        lifetime.y = max;
+    }
+
+
+    inline void SetRange(const f32 min, const f32 max)
+    {
+        lifetime.x = min;
+        lifetime.y = max;
+    }
+
+private:
+    float2 lifetime;
+};
+
 //////////////////////////////////////////////////////////////////////////
 
 class ParticleSetSize : public ParticleEmissionProcess
@@ -229,18 +267,52 @@ private:
 
 //////////////////////////////////////////////////////////////////////////
 
+class ParticleSetVelocity : public ParticleEmissionProcess
+{
+public:
+    virtual void Initialise(Particle& particle) override;
+
+    inline void SetStrength(const f32 newStrength)
+    {
+        strength = newStrength;
+    }
+
+    inline void SetDirection(const float3& newDirection)
+    {
+        direction = glm::normalize(newDirection);
+    }
+
+private:
+    f32 strength = 1.0f;
+    float3 direction = float3(0.0f, 1.0f, 0.0f);
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class ParticleSetVelocityRandom : public ParticleEmissionProcess
 {
 public:
-    virtual void Apply(Particle& particle);
+    virtual void Initialise(Particle& particle) override;
+
     inline void SetStrength(const float2& newStrength)
     {
         strength = newStrength;
     }
 
+    inline void SetMinDirection(const float3& min)
+    {
+        minDirections = min;
+    }
+
+    inline void SetMaxDirection(const float3& max)
+    {
+        maxDirections = max;
+    }
+
 private:
     float2 strength = float2(0.0f, 1.0f);
-    float2 xyzDirection[3] = { float2(-1.0f, 1.0f), float2(-1.0f, 1.0f), float2(-1.0f, 1.0f) };
+    float3 minDirections = float3(-1.0f);
+    float3 maxDirections = float3(1.0f);
 };
 
 //////////////////////////////////////////////////////////////////////////

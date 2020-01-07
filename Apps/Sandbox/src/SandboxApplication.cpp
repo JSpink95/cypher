@@ -106,6 +106,18 @@ struct Color
 
 //////////////////////////////////////////////////////////////////////////
 
+class ParticleEventOnDeath : public ParticleEvent
+{
+public:
+    virtual void OnEvent(Particle& particle) override
+    {
+        // spawn shit, another emitter?
+
+    };
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 Ref<PhysicsObject> CreatePhysicsBoxFromPosSize(const f32 mass, const float3& position, const float3& hs)
 {
     Ref<PhysicsObject> object = CreateObject<PhysicsObject>();
@@ -170,16 +182,44 @@ void SandboxApp::OnPreRender()
 
 //////////////////////////////////////////////////////////////////////////
 
-void SandboxApp::OnCreate()
+void SandboxApp::OnPostCreate()
 {
     // do our game initialisation here
     // this is called from the main thread
 
     physics = CreateObject<PhysicsWorld>("DiscretePhysicsWorld");
 
-    player = CreateObject<Player>();
+    LevelLoader::LoadFromFile("assets/maps/test_arena.xml", level);
 
-    GetGameThread()->PushThreadTask(this, &SandboxApp::LoadRenderResources);
+    player = CreateObject<Player>();
+    player->SetPositionAndRotation(level.spawnpoint, float3(0.0f));
+
+    particleObject = CreateObject<GameObject>();
+    Ref<ParticleSystemComponent> particleEmitter = particleObject->NewComponent<ParticleSystemComponent>();
+    particleEmitter->SetEmissionRate(1.5f);
+    particleEmitter->SetMaxParticlesAlive(1);
+
+    Ref<ParticlePointEmitter> pointEmitter = std::make_shared<ParticlePointEmitter>();
+    pointEmitter->SetPoint(float3(0.0f));
+
+    Ref<ParticleSetLifetimeRandom> randomLifetime = std::make_shared<ParticleSetLifetimeRandom>();
+    randomLifetime->SetRange(0.5f, 1.0f);
+
+    Ref<ParticleSetVelocityRandom> randomVelocity = std::make_shared<ParticleSetVelocityRandom>();
+    randomVelocity->SetStrength(float2(3.5f, 5.0f));
+    randomVelocity->SetMinDirection(float3(0.0f, 1.0f, 0.0f));
+    randomVelocity->SetMaxDirection(float3(0.0f, 1.0f, 0.0f));
+
+    Ref<ParticleEventOnDeath> onParticleDeath = std::make_shared<ParticleEventOnDeath>();
+
+    particleEmitter->GetEmissionStage()->AddOutput(pointEmitter);
+    particleEmitter->GetEmissionStage()->AddOutput(randomLifetime);
+    particleEmitter->GetEmissionStage()->AddOutput(randomVelocity);
+    particleEmitter->SetParticleDeathEvent(onParticleDeath);
+
+    physics->SetSimulatePhysics(true);
+
+    //GetGameThread()->PushThreadTask(this, &SandboxApp::LoadRenderResources);
 
     InputManager::RegisterInput(ImpulseBurstAction, { KeyboardKey::R });
 }
@@ -200,10 +240,6 @@ void SandboxApp::OnDestroy()
 void SandboxApp::LoadRenderResources()
 {
     //GetWindowContext()->SetWindowPosition(int2(-1920 + 200, 200));
-
-    LevelLoader::LoadFromFile("assets/maps/test_arena.xml", level);
-    player->SetPositionAndRotation(level.spawnpoint, float3(0.0f));
-    physics->SetSimulatePhysics(true);
 
     hasLoadedRenderResources = true;
 }

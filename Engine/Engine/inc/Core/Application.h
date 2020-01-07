@@ -32,7 +32,10 @@ public:
     virtual ~Application();
 
     void Create();
+    void RenderCreate();
     void Destroy();
+
+    void PostCreate();
 
     // called from the GameThread
     virtual void OnPreUpdate(const f32 dt);
@@ -52,17 +55,19 @@ public:
     virtual bool RequestedShutdown() const { return windowClosed; }
     virtual inline Ref<Window> GetWindowContext() const { return window; }
 
+    bool IsInitialised() const { return mainThreadInitialised && renderThreadInitialised; }
+
 protected:
 
-    virtual void OnCreate() = 0;
-    virtual void OnDestroy() = 0;
+    virtual void OnCreate() {}
+    virtual void OnRenderCreate() {}
+    virtual void OnPostCreate() {}
+
+    virtual void OnDestroy() {}
 
     virtual void OnEvent(Event& evt);
     virtual void OnWindowClosed(WindowCloseEvent& closeEvent);
     virtual void OnMouseMoved(MouseMovedEvent& mouseMovedEvent);
-
-private:
-    virtual void RenderTask_OnCreate();
 
 protected:
     Ref<Window> window;
@@ -70,6 +75,9 @@ protected:
 private:
     f32 time, deltaTime;
     bool windowClosed;
+
+    bool mainThreadInitialised = false;
+    bool renderThreadInitialised = false;
 
 public:
     static inline Application* GetInstance() { return instance; }
@@ -94,9 +102,15 @@ void Application::Main()
     TApplication application;
     application.Create();
 
+    // wait until the render thread is initialised
+    while (!application.IsInitialised());
+
+    application.PostCreate();
+
     while (!application.RequestedShutdown())
     {
         application.OnAppTick();
+
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 

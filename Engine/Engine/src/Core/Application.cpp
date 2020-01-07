@@ -89,10 +89,39 @@ void Application::Create()
     GameThread::Create();
     PhysicsThread::Create();
 
-    // allow the application to initialise all render data
-    GetGameThread()->PushThreadTask(this, &Application::RenderTask_OnCreate);
-
     OnCreate();
+
+    mainThreadInitialised = true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void Application::RenderCreate()
+{
+    // create the window
+    //window = GetApiManager()->CreateContext("Application", DefaultWindowSize);
+    window = GetApiManager()->CreateContext("Application", uint2(1280, 720));
+    window->SetEventCallback(BIND_FUNCTION_OneParam(Application::OnEvent));
+    window->SetVisibility(true);
+
+    TextureLibrary::Initialise();
+    MaterialLibrary::Initialise();
+    MeshLibrary::Initialise();
+    RenderPassManager::Initialise();
+
+    GlCall(glEnable(GL_DEPTH_TEST));
+    GlCall(glEnable(GL_CULL_FACE));
+
+    OnRenderCreate();
+
+    renderThreadInitialised = true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void Application::PostCreate()
+{
+    OnPostCreate();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -181,25 +210,6 @@ void Application::OnWindowClosed(WindowCloseEvent& closeEvent)
 
 void Application::OnMouseMoved(MouseMovedEvent& mouseMovedEvent)
 {
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void Application::RenderTask_OnCreate()
-{
-    // create the window
-    //window = GetApiManager()->CreateContext("Application", DefaultWindowSize);
-    window = GetApiManager()->CreateContext("Application", uint2(1920, 1080));
-    window->SetEventCallback(BIND_FUNCTION_OneParam(Application::OnEvent));
-    window->SetVisibility(true);
-
-    TextureLibrary::Initialise();
-    MaterialLibrary::Initialise();
-    MeshLibrary::Initialise();
-    RenderPassManager::Initialise();
-
-    GlCall(glEnable(GL_DEPTH_TEST));
-    GlCall(glEnable(GL_CULL_FACE));
 }
 
 //////////////////////////////////////////////////////////////////////////

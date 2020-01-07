@@ -67,6 +67,13 @@ void ParticleSetLifetime::Initialise(Particle& particle)
 
 //////////////////////////////////////////////////////////////////////////
 
+void ParticleSetLifetimeRandom::Initialise(Particle& particle)
+{
+    particle.age = global_random::as_float(lifetime.x, lifetime.y);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void ParticleSetSize::Initialise(Particle& particle)
 {
     particle.data.size = size;
@@ -90,13 +97,20 @@ void ParticleSetUV::Initialise(Particle& particle)
 
 //////////////////////////////////////////////////////////////////////////
 
-void ParticleSetVelocityRandom::Apply(Particle& particle)
+void ParticleSetVelocity::Initialise(Particle& particle)
+{
+    particle.velocity = strength * direction;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void ParticleSetVelocityRandom::Initialise(Particle& particle)
 {
     f32 s = global_random::as_float(strength.x, strength.y);
     float3 direction = float3(
-        global_random::as_float(xyzDirection[0].x, xyzDirection[0].y),
-        global_random::as_float(xyzDirection[1].x, xyzDirection[1].y),
-        global_random::as_float(xyzDirection[2].x, xyzDirection[2].y)
+        global_random::as_float(minDirections.x, maxDirections.x),
+        global_random::as_float(minDirections.y, maxDirections.y),
+        global_random::as_float(minDirections.z, maxDirections.z)
     );
 
     particle.velocity = s * glm::normalize(direction);

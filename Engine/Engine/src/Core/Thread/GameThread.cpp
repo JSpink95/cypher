@@ -72,6 +72,8 @@ void GameThread::ThreadLoop()
 
     static constexpr f32 timeDilation = 0.1f;
 
+    GetApplication()->RenderCreate();
+
     time_point frameStart = clock::now();
     while (running)
     {

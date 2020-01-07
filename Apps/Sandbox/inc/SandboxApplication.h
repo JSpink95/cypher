@@ -40,7 +40,7 @@ public:
 
 protected:
 
-    virtual void OnCreate() override;
+    virtual void OnPostCreate() override;
     virtual void OnDestroy() override;
 
 private:
@@ -53,6 +53,7 @@ private:
 
     Level level;
     Ref<Player> player;
+    Ref<GameObject> particleObject;
 };
 
 //////////////////////////////////////////////////////////////////////////
