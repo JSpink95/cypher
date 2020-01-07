@@ -83,8 +83,7 @@ void ParticleSetSize::Initialise(Particle& particle)
 
 void ParticleSetSizeRandom::Initialise(Particle& particle)
 {
-    particle.data.size.x = global_random::as_float(minSize.x, maxSize.x);
-    particle.data.size.y = global_random::as_float(minSize.y, maxSize.y);
+    particle.data.size = float2(global_random::as_float(minSize, maxSize));
 }
 
 //////////////////////////////////////////////////////////////////////////

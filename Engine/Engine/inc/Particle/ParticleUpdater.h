@@ -207,29 +207,29 @@ class ParticleSetSizeRandom : public ParticleEmissionProcess
 public:
     virtual void Initialise(Particle& particle) override;
 
-    inline float2& GetMinSize()
+    inline f32& GetMinSize()
     {
         return minSize;
     }
 
-    inline float2& GetMaxSize()
+    inline f32& GetMaxSize()
     {
-        return minSize;
+        return maxSize;
     }
 
-    inline void SetMinSize(const float2& newMinSize)
+    inline void SetMinSize(const f32 newMinSize)
     {
         minSize = newMinSize;
     }
 
-    inline void SetMaxSize(const float2& newMaxSize)
+    inline void SetMaxSize(const f32 newMaxSize)
     {
         maxSize = newMaxSize;
     }
 
 private:
-    float2 minSize = float2(0.5f);
-    float2 maxSize = float2(1.0f);
+    f32 minSize = 0.0f;
+    f32 maxSize = 1.0f;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -323,18 +323,18 @@ public:
     virtual void Update(const f32 dt, Particle& particle) override;
 
 public:
-    inline float3& GetDrag()
+    inline f32& GetDrag()
     {
         return drag;
     }
 
-    inline void SetDrag(const float3& newDrag)
+    inline void SetDrag(const f32 newDrag)
     {
         drag = newDrag;
     }
 
 private:
-    float3 drag = float3(0.0f);
+    f32 drag = f32(0.0f);
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -196,28 +196,50 @@ void SandboxApp::OnPostCreate()
 
     particleObject = CreateObject<GameObject>();
     Ref<ParticleSystemComponent> particleEmitter = particleObject->NewComponent<ParticleSystemComponent>();
-    particleEmitter->SetEmissionRate(1.5f);
-    particleEmitter->SetMaxParticlesAlive(1);
+    particleEmitter->SetEmissionRate(0.1f);
+    particleEmitter->SetMaxParticlesAlive(1024);
 
     Ref<ParticlePointEmitter> pointEmitter = std::make_shared<ParticlePointEmitter>();
     pointEmitter->SetPoint(float3(0.0f));
 
     Ref<ParticleSetLifetimeRandom> randomLifetime = std::make_shared<ParticleSetLifetimeRandom>();
-    randomLifetime->SetRange(0.5f, 1.0f);
+    randomLifetime->SetRange(2.0f, 4.0f);
 
     Ref<ParticleSetVelocityRandom> randomVelocity = std::make_shared<ParticleSetVelocityRandom>();
-    randomVelocity->SetStrength(float2(3.5f, 5.0f));
-    randomVelocity->SetMinDirection(float3(0.0f, 1.0f, 0.0f));
-    randomVelocity->SetMaxDirection(float3(0.0f, 1.0f, 0.0f));
+    randomVelocity->SetStrength(float2(6.0f, 20.0f));
+    randomVelocity->SetMinDirection(float3(-0.3f, 1.0f, -0.3f));
+    randomVelocity->SetMaxDirection(float3( 0.3f, 1.0f,  0.3f));
+
+    Ref<ParticleSetSizeRandom> randomSize = std::make_shared<ParticleSetSizeRandom>();
+    randomSize->SetMinSize(0.6f);
+    randomSize->SetMaxSize(0.8f);
+
+    Ref<ParticleGravity> gravity = std::make_shared<ParticleGravity>();
+    gravity->SetGravity(float3(0.0f, -1.0f, 0.0f));
+
+    Ref<ParticleLinearDrag> linearDrag = std::make_shared<ParticleLinearDrag>();
+    linearDrag->SetDrag(4.0f);
 
     Ref<ParticleEventOnDeath> onParticleDeath = std::make_shared<ParticleEventOnDeath>();
 
     particleEmitter->GetEmissionStage()->AddOutput(pointEmitter);
     particleEmitter->GetEmissionStage()->AddOutput(randomLifetime);
     particleEmitter->GetEmissionStage()->AddOutput(randomVelocity);
+    particleEmitter->GetEmissionStage()->AddOutput(randomSize);
+
+    particleEmitter->GetUpdateStage()->AddOutput(gravity);
+    particleEmitter->GetUpdateStage()->AddOutput(linearDrag);
+
     particleEmitter->SetParticleDeathEvent(onParticleDeath);
 
+    {
+        GetGameThread()->AddObject(particleObject);
+        RenderPassManager::AddObjectToPass(RenderPassType::Particle, particleObject);
+    }
+
     physics->SetSimulatePhysics(true);
+
+    GetWindowContext()->SetWindowPosition(int2(-1920 + 200, 200));
 
     //GetGameThread()->PushThreadTask(this, &SandboxApp::LoadRenderResources);
 
@@ -239,8 +261,6 @@ void SandboxApp::OnDestroy()
 
 void SandboxApp::LoadRenderResources()
 {
-    //GetWindowContext()->SetWindowPosition(int2(-1920 + 200, 200));
-
     hasLoadedRenderResources = true;
 }
 

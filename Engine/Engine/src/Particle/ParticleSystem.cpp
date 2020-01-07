@@ -77,7 +77,7 @@ void ParticleSystemComponent::OnUpdate(const f32 dt)
 
     s32 maxAllowedSpawns = glm::min(maxAliveParticles - (s32)particles.size(), particleCountRequest);
 
-    for (s32 i = 0; i < particleCountRequest; ++i)
+    for (s32 i = 0; i < maxAllowedSpawns; ++i)
     {
         Particle particle;
         emissionStage->Initialise(particle);
