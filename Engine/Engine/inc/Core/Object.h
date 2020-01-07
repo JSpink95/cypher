@@ -8,6 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Core.h"
 #include "Core/Types.h"
 #include "Core/TypeId.h"
 #include "Core/Property.h"
@@ -72,8 +73,6 @@ public:
     inline ObjectGuid GetInstanceId() const { return instanceId; }
 
 private:
-    //template<typename T> friend Ref<T> CreateObject(const std::string& id);
-
     ObjectGuid instanceId;
 };
 
@@ -98,7 +97,7 @@ inline Ref<TComponent> Object::FindFirstComponentOfType()
     for (auto& kv : components)
     {
         Ref<Component> component = kv.second;
-        if (component != nullptr && component->GetClassId() == TComponent::ClassId)
+        if (component != nullptr && component->GetClassUID() == TComponent::ClassUID())
         {
             result = std::dynamic_pointer_cast<TComponent>(component);
             break;
@@ -117,7 +116,7 @@ inline void Object::FindAllComponentsOfType(std::vector<Ref<TComponent>>& outCom
     for (auto& kv : components)
     {
         Ref<Component> component = kv.second;
-        if (component != nullptr && component->GetClassId() == TComponent::ClassId)
+        if (component != nullptr && component->GetClassUID() == TComponent::ClassUID())
         {
             outComponents.push_back(std::dynamic_pointer_cast<TComponent>(component));
         }

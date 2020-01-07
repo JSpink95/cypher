@@ -46,6 +46,7 @@ Application::Application()
     , deltaTime(0.0f)
 {
     instance = this;
+    global_random::initialise();
 
     ConsoleLogger::Init();
     Random::Create();

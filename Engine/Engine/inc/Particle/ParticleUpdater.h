@@ -21,11 +21,6 @@ struct Particle;
 
 //////////////////////////////////////////////////////////////////////////
 
-using RandomEngine = std::default_random_engine;
-using FloatDistribution = std::uniform_real_distribution<f32>;
-
-//////////////////////////////////////////////////////////////////////////
-
 class ParticleEvent
 {
 public:
@@ -121,7 +116,7 @@ public:
 
     inline void SetRadiusRange(const float2& newRadiusRange)
     {
-        radius = FloatDistribution(newRadiusRange.x, newRadiusRange.y);
+        radius = newRadiusRange;
     }
 
     inline void SetClampToEdge(const bool newClampToEdge)
@@ -130,10 +125,32 @@ public:
     }
 
 private:
-    RandomEngine engine;
-    FloatDistribution radius = FloatDistribution(0.0f, 1.0f);
-    FloatDistribution direction = FloatDistribution(-1.0f, 1.0f);
+    float2 radius = float2(0.0f, 1.0f);
+    float2 direction = float2(-1.0f, 1.0f);
     bool clampToEdge = false;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleSetLifetime : public ParticleEmissionProcess
+{
+public:
+    virtual void Initialise(Particle& particle) override;
+
+public:
+
+    inline f32& GetLifetime()
+    {
+        return lifetime;
+    }
+
+    inline void SetLifetime(const f32 newLifetime)
+    {
+        lifetime = newLifetime;
+    }
+
+private:
+    f32 lifetime = 1.0f;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -145,6 +162,36 @@ public:
 
 public:
     float2 size = float2(1.0f);
+};
+
+class ParticleSetSizeRandom : public ParticleEmissionProcess
+{
+public:
+    virtual void Initialise(Particle& particle) override;
+
+    inline float2& GetMinSize()
+    {
+        return minSize;
+    }
+
+    inline float2& GetMaxSize()
+    {
+        return minSize;
+    }
+
+    inline void SetMinSize(const float2& newMinSize)
+    {
+        minSize = newMinSize;
+    }
+
+    inline void SetMaxSize(const float2& newMaxSize)
+    {
+        maxSize = newMaxSize;
+    }
+
+private:
+    float2 minSize = float2(0.5f);
+    float2 maxSize = float2(1.0f);
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -185,24 +232,15 @@ private:
 class ParticleSetVelocityRandom : public ParticleEmissionProcess
 {
 public:
-    ParticleSetVelocityRandom()
-        : strengthDistribution(0.0f, 1.0f)
-    {
-        xyzDirectionDistribution[0] = FloatDistribution(-1.0f, 1.0f);
-        xyzDirectionDistribution[1] = FloatDistribution(-1.0f, 1.0f);
-        xyzDirectionDistribution[2] = FloatDistribution(-1.0f, 1.0f);
-    }
-
     virtual void Apply(Particle& particle);
     inline void SetStrength(const float2& newStrength)
     {
-        strengthDistribution = FloatDistribution(newStrength.x, newStrength.y);
+        strength = newStrength;
     }
 
 private:
-    RandomEngine engine;
-    FloatDistribution strengthDistribution;
-    FloatDistribution xyzDirectionDistribution[3];
+    float2 strength = float2(0.0f, 1.0f);
+    float2 xyzDirection[3] = { float2(-1.0f, 1.0f), float2(-1.0f, 1.0f), float2(-1.0f, 1.0f) };
 };
 
 //////////////////////////////////////////////////////////////////////////

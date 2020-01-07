@@ -51,10 +51,6 @@ class ParticleSystemComponent: public TransformComponent
 {
     DECLARE_DERIVED_COMPONENT(ParticleSystemComponent, TransformComponent)
 public:
-    // {7C02AA16-7C81-4CF6-81DA-B8E8B1B40B92}
-    static inline const GUID ClassId = { 0x7c02aa16, 0x7c81, 0x4cf6, { 0x81, 0xda, 0xb8, 0xe8, 0xb1, 0xb4, 0xb, 0x92 } };
-
-public:
 
     // 
     // overridden - Component

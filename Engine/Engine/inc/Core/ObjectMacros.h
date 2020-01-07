@@ -8,28 +8,45 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Types.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+
+#define DEFINE_CLASS_UID                                                        \
+public: static inline ClassId ClassUID()                                        \
+{                                                                               \
+    return (ClassId)&ClassUID;                                                  \
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 #define DECLARE_BASE_COMPONENT(Base)                                            \
-public: virtual GUID GetClassId() const { return Base::ClassId; }
+DEFINE_CLASS_UID                                                                \
+public: virtual inline ClassId GetClassUID() { return ClassUID(); }
 
 //////////////////////////////////////////////////////////////////////////
 
 #define DECLARE_DERIVED_COMPONENT(Derived, Base)                                \
+DEFINE_CLASS_UID                                                                \
 private: using Super = Base;                                                    \
-public: virtual GUID GetClassId() const override { return Derived::ClassId; }
+public: virtual inline ClassId GetClassUID() override { return ClassUID(); }
 
 //////////////////////////////////////////////////////////////////////////
 
 #define DECLARE_BASE_OBJECT(Base)                                               \
+DEFINE_CLASS_UID                                                                \
 private: template<typename T> friend Ref<T> CreateObject(const std::string& id);\
 private: using SelfType = Base;                                                 \
 protected: WeakRef<SelfType> self;                                              \
 public: inline void SetSelf(Ref<Base> newSelf) { self = newSelf; }              \
-public: inline Ref<Object> GetStrongRef() { return self.lock(); }             \
+public: inline Ref<Object> GetStrongRef() { return self.lock(); }               \
 public: inline WeakRef<Object> GetWeakRef() { return self; }
 
 //////////////////////////////////////////////////////////////////////////
 
 #define DECLARE_DERIVED_OBJECT(Derived, Base)                                   \
+DEFINE_CLASS_UID                                                                \
 private: template<typename T> friend Ref<T> CreateObject(const std::string& id);\
 private: using Super = Base;                                                    \
 private: using SelfType = Derived;                                              \

@@ -27,10 +27,6 @@ class Component
 {
     DECLARE_BASE_COMPONENT(Component)
 public:
-    // {0D2B9F85-E5F5-40C7-AF8F-FEACFFB730DD}
-    static inline const GUID ClassId = { 0xd2b9f85, 0xe5f5, 0x40c7, { 0xaf, 0x8f, 0xfe, 0xac, 0xff, 0xb7, 0x30, 0xdd } };
-
-public:
     Component();
     virtual ~Component();
 

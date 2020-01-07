@@ -30,3 +30,22 @@ private:
 static inline Ref<Random> GetRandomEngine() { return Random::Get(); }
 
 //////////////////////////////////////////////////////////////////////////
+
+using IntegerDistribution = std::uniform_int_distribution<s32>;
+using FloatDistribution = std::uniform_real_distribution<f32>;
+
+//////////////////////////////////////////////////////////////////////////
+
+struct global_random
+{
+public:
+    static void initialise();
+
+public:
+    static f32 as_float(f32 min, f32 max);
+
+private:
+    static inline std::default_random_engine engine;
+};
+
+//////////////////////////////////////////////////////////////////////////

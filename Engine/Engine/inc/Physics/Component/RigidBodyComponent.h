@@ -26,9 +26,6 @@ class RigidBodyComponent : public Component
 {
     DECLARE_DERIVED_COMPONENT(RigidBodyComponent, Component)
 public:
-    // {9F70F90A-AC21-4239-899B-35E539BCE3C7}
-    static inline const GUID ClassId = { 0x9f70f90a, 0xac21, 0x4239, { 0x89, 0x9b, 0x35, 0xe5, 0x39, 0xbc, 0xe3, 0xc7 } };
-
     virtual void OnConstruct() override;
     virtual void OnUpdate(const f32 dt) override;
 

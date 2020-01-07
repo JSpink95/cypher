@@ -23,10 +23,6 @@ class StaticMeshComponent : public Component
 {
     DECLARE_DERIVED_COMPONENT(StaticMeshComponent, Component)
 public:
-    // {BD3AA522-30E0-429D-91CA-A8E1EA9790B7}
-    static inline GUID ClassId = { 0xbd3aa522, 0x30e0, 0x429d, { 0x91, 0xca, 0xa8, 0xe1, 0xea, 0x97, 0x90, 0xb7 } };
-
-public:
     StaticMeshComponent() = default;
     virtual ~StaticMeshComponent() = default;
 
