@@ -33,6 +33,7 @@ workspace(workspace_name)
 
     defines {
         "NOMINMAX",
+        "RESOURCES_ROOT="..project_root.."Resources"
     }
 
     filter "platforms:Dx11"
@@ -61,5 +62,6 @@ workspace(workspace_name)
 
     group "Apps"
         include("Apps\\Sandbox")
+        include("Apps\\ParticleEditor")
 
     group ""
