@@ -1,17 +1,17 @@
 <materials>
   <!-- load base materials -->
-  <material id="mesh-lit" filepath="assets:\\material\\mesh-lit.xml"/>
-  <material id="mesh-lit-tex" filepath="assets:\\materials\\mesh-lit-tex.xml"/>
-  <material id="pp-image-render" filepath="assets:\\materials\\pp-image-render.xml"/>
-  <material id="pp-overlay" filepath="assets:\\materials\\pp-overlay.xml"/>
-  <material id="pp-ssao" filepath="assets:\\materials\\pp-ssao.xml"/>
-  <material id="pp-blur" filepath="assets:\\materials\\pp-blur.xml"/>
-  <material id="pp-ssl" filepath="assets:\\materials\\pp-ssl.xml"/>
-  <material id="shadow-pass" filepath="assets:\\materials\\shadow-pass.xml"/>
-  <material id="particle-pos-size" filepath="assets:\\materials\\particle-pos-size.xml"/>
+  <material id="mesh-lit" filepath="assets:\materials\mesh-lit.xml"/>
+  <material id="mesh-lit-tex" filepath="assets:\materials\mesh-lit-tex.xml"/>
+  <material id="pp-image-render" filepath="assets:\materials\pp-image-render.xml"/>
+  <material id="pp-overlay" filepath="assets:\materials\pp-overlay.xml"/>
+  <material id="pp-ssao" filepath="assets:\materials\pp-ssao.xml"/>
+  <material id="pp-blur" filepath="assets:\materials\pp-blur.xml"/>
+  <material id="pp-ssl" filepath="assets:\materials\pp-ssl.xml"/>
+  <material id="shadow-pass" filepath="assets:\materials\shadow-pass.xml"/>
+  <material id="particle-pos-size" filepath="assets:\materials\particle-pos-size.xml"/>
 
   <!-- load material instances -->
-  <material id="particle-default" filepath="assets:\\materials\\particle-default.xml"/>
-  <material id="mesh-lit-tex-checkerboard" filepath="assets:\\materials\\mesh-lit-tex-error.xml"/>
-  <material id="crate-material" filepath="assets:\\materials\\crate-material.xml"/>
+  <material id="particle-default" filepath="assets:\materials\particle-default.xml"/>
+  <material id="mesh-lit-tex-checkerboard" filepath="assets:\materials\mesh-lit-tex-error.xml"/>
+  <material id="crate-material" filepath="assets:\materials\crate-material.xml"/>
 </materials>

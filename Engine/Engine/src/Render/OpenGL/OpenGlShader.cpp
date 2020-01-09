@@ -14,6 +14,10 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/Utility/FileUtils.h"
+#include "Core/Utility/FileVolumeManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/Thread/GameThread.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -111,10 +115,11 @@ private:
 
 s32 LoadAndCompileShaderFromFile(const s32 shadertype, const std::string& filepath)
 {
-    std::optional<std::string> loadedsrc = File::LoadAsString(filepath);
+    const std::string convertedFilePath = FileVolumeManager::GetRealPathFromVirtualPath(filepath).fullpath;
+    std::optional<std::string> loadedsrc = File::LoadAsString(convertedFilePath);
     if (!loadedsrc)
     {
-        printf("Couldn't load shader <%s>.\n", filepath.c_str());
+        printf("Couldn't load shader <%s>.\n", convertedFilePath.c_str());
         return -1;
     }
 

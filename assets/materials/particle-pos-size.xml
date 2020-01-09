@@ -1,8 +1,8 @@
 <material id="particle-pos-size">
   <program>
-    <shader type="vertex" path="assets/shaders/vertex/particle-pos-size.vs"/>
-    <shader type="geometry" path="assets/shaders/geometry/particle-pos-size.gs"/>
-    <shader type="pixel" path="assets/shaders/pixel/particle-pos-size.ps"/>
+    <shader type="vertex" path="assets:\shaders\vertex\particle-pos-size.vs"/>
+    <shader type="geometry" path="assets:\shaders\geometry\particle-pos-size.gs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\particle-pos-size.ps"/>
   </program>
   <parameters>
     <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>

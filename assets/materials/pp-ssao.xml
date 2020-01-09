@@ -1,7 +1,7 @@
 <material id="pp-ssao">
   <program>
-    <shader type="vertex" path="assets/shaders/vertex/pp-passthrough.vs"/>
-    <shader type="pixel" path="assets/shaders/pixel/pp-ssao.ps"/>
+    <shader type="vertex" path="assets:\shaders\vertex\pp-passthrough.vs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\pp-ssao.ps"/>
   </program>
   <parameters>
     <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>

@@ -1,7 +1,7 @@
 <material id="pp-overlay">
   <program>
-    <shader type="vertex" path="assets/shaders/vertex/pp-passthrough.vs"/>
-    <shader type="pixel" path="assets/shaders/pixel/pp-overlay.ps"/>
+    <shader type="vertex" path="assets:\shaders\vertex\pp-passthrough.vs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\pp-overlay.ps"/>
   </program>
   <parameters>
     <parameter id="ScreenInfo" type="materialblock-custom" binding="0" memory_size="16"/>

@@ -1,7 +1,7 @@
 <material id="pp-image-render">
   <program>
-    <shader type="vertex" path="assets/shaders/vertex/pp-image-render.vs"/>
-    <shader type="pixel" path="assets/shaders/pixel/pp-image-render.ps"/>
+    <shader type="vertex" path="assets:\shaders\vertex\pp-image-render.vs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\pp-image-render.ps"/>
   </program>
   <parameters>
     <parameter id="ImageDataBuffer" type="materialblock-custom" binding="0" memory_size="16"/>

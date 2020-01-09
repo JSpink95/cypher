@@ -1,7 +1,7 @@
 <material id="mesh-lit">
   <program>
-    <shader type="vertex" path="assets/shaders/vertex/mesh-pbr.vs"/>
-    <shader type="fragment" path="assets/shaders/vertex/mesh-pbr.ps"/>
+    <shader type="vertex" path="assets;\shaders\vertex\mesh-pbr.vs"/>
+    <shader type="fragment" path="assets:\shaders\pixel\mesh-pbr.ps"/>
   </program>
   <parameters>
     <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
