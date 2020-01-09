@@ -5,6 +5,13 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Render/Utility/MaterialLibrary.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Core/Utility/FileVolumeManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Material.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,24 +83,28 @@ Ref<Material> MaterialLibrary::GetMaterial(const std::string& id)
 
 void MaterialLibrary::InitialiseImpl()
 {
-    // hmm
     // Load MaterialAssets.xml
 
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("assets/MaterialAssets.xml");
-    if (result)
+    PathResult materialAssetPath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\MaterialAssets.xml");
+    if (materialAssetPath.valid)
     {
-        pugi::xml_node root = doc.root().child("materials");
-        for (pugi::xml_node materialNode : root)
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file(materialAssetPath.fullpath.c_str());
+
+        if (result)
         {
-            const char* id = materialNode.attribute("id").as_string();
-            const char* filepath = materialNode.attribute("filepath").as_string();
+            pugi::xml_node root = doc.root().child("materials");
+            for (pugi::xml_node materialNode : root)
+            {
+                const char* id = materialNode.attribute("id").as_string();
+                const char* filepath = materialNode.attribute("filepath").as_string();
 
 #ifdef DEBUG
-            printf("Loading material('%s', '%s')\n", id, filepath);
+                printf("Loading material('%s', '%s')\n", id, filepath);
 #endif
 
-            RegisterMaterialImpl(id, filepath);
+                RegisterMaterialImpl(id, filepath);
+            }
         }
     }
 }

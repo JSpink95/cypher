@@ -5,19 +5,26 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Render/Platform/Material.h"
-#include "Render/Platform/MaterialParameter.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Core/Utility/FileVolumeManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/CoreMaterialParameterBlocks.h"
+#include "Render/Platform/MaterialParameter.h"
 
 //////////////////////////////////////////////////////////////////////////
 
 #include "Render/Platform/ApiManager.h"
 #include "Render/Platform/Shader.h"
 #include "Render/Utility/TextureLibrary.h"
+#include "Render/Utility/MaterialLibrary.h"
 
 //////////////////////////////////////////////////////////////////////////
 
 #include "pugixml.hpp"
-#include "Render/Utility/MaterialLibrary.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -190,9 +197,10 @@ void Material::Reload()
         shader = nullptr;
     }
 
-    pugi::xml_document doc;
+    const std::string convertedFilePath = FileVolumeManager::GetRealPathFromVirtualPath(path).fullpath;
 
-    pugi::xml_parse_result result = doc.load_file(path.c_str());
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(convertedFilePath.c_str());
     if (!result)
         return;
 
@@ -217,9 +225,11 @@ void Material::Reload()
 
 Ref<Material> Material::LoadFromFile(const std::string& filepath)
 {
+    const std::string convertedFilePath = FileVolumeManager::GetRealPathFromVirtualPath(filepath).fullpath;
+
     pugi::xml_document doc;
     
-    pugi::xml_parse_result result = doc.load_file(filepath.c_str());
+    pugi::xml_parse_result result = doc.load_file(convertedFilePath.c_str());
     if (!result)
         return nullptr;
 
@@ -259,6 +269,7 @@ Ref<Material> Material::LoadFromFile(const std::string& filepath)
         ParseNodeFunctions[paramType](material.get(), parameter, parameter_id, parameter_type);
     }
 
+    // keep a reference to the VIRTUAL filepath
     material->path = filepath;
     return material;
 }

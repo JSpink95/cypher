@@ -11,6 +11,7 @@
 #include "Core/Events/Event.h"
 #include "Core/Events/WindowEvent.h"
 #include "Core/Utility/RandomUtils.h"
+#include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -48,6 +49,7 @@ Application::Application()
     instance = this;
     global_random::initialise();
 
+    FileVolumeManager::Create();
     ConsoleLogger::Init();
     Random::Create();
     Input::Create();
@@ -76,6 +78,7 @@ Application::~Application()
     InputManager::Delete();
     Input::Delete();
     Random::Delete();
+    FileVolumeManager::Delete();
 }
 
 //////////////////////////////////////////////////////////////////////////

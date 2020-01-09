@@ -5,13 +5,20 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Render/Utility/ObjMeshLoader.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Core/Utility/FileVolumeManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Buffer.h"
 #include "Render/Platform/VertexArray.h"
+#include "Render/Platform/ApiManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
-#include "Render/Platform/ApiManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -195,7 +202,8 @@ Ref<VertexBuffer> CreateBufferFromFaceData(
 
 Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, LoadMeshParams const& params/* = { true, true, 1.0f }*/)
 {
-    std::ifstream file(filepath.c_str());
+    const std::string convertedFilePath = FileVolumeManager::GetRealPathFromVirtualPath(filepath).fullpath;
+    std::ifstream file(convertedFilePath.c_str());
     if (file.fail())
     {
         return nullptr;
@@ -329,13 +337,13 @@ MtlFileResult MtlFileLoader::LoadMtlFromFile(const std::string& filepath)
 {
     MtlFileResult result;
 
-    std::ifstream file(filepath.c_str());
-    if (file.fail())
-    {
-        return result;
-    }
+    //std::ifstream file(filepath.c_str());
+    //if (file.fail())
+    //{
+    //    return result;
+    //}
 
-    file.close();
+    //file.close();
 
     return result;
 }

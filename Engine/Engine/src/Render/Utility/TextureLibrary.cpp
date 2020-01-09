@@ -8,6 +8,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/FileVolumeManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/ApiManager.h"
 #include "Render/Platform/Texture2D.h"
 
@@ -100,21 +104,25 @@ void TextureLibrary::InitialiseImpl()
     loadedTextures.insert(std::make_pair(EngineTextureId::Error, GetApiManager()->CreateTexture2D(uint2(8), errorPixels)));
     loadedTextures.insert(std::make_pair(EngineTextureId::SphereWithAlpha, GetApiManager()->CreateTexture2D(uint2(16), &spherePixels.at(0))));
 
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("assets/TextureAssets.xml");
-    if (result)
+    PathResult textureAssetPath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\TextureAssets.xml");
+    if (textureAssetPath.valid)
     {
-        pugi::xml_node root = doc.root().child("textures");
-        for (pugi::xml_node textureNode : root)
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file(textureAssetPath.fullpath.c_str());
+        if (result)
         {
-            const char* id = textureNode.attribute("id").as_string();
-            const char* filepath = textureNode.attribute("filepath").as_string();
+            pugi::xml_node root = doc.root().child("textures");
+            for (pugi::xml_node textureNode : root)
+            {
+                const char* id = textureNode.attribute("id").as_string();
+                const char* filepath = textureNode.attribute("filepath").as_string();
 
 #ifdef DEBUG
-            printf("Loading texture('%s', '%s')\n", id, filepath);
+                printf("Loading texture('%s', '%s')\n", id, filepath);
 #endif
 
-            RegisterTextureImpl(id, filepath);
+                RegisterTextureImpl(id, filepath);
+            }
         }
     }
 }

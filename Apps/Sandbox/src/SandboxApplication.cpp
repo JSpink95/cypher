@@ -68,6 +68,7 @@
 #include "Physics/Geometry/BoxCollisionShape.h"
 #include "Physics/Geometry/PlaneCollisionShape.h"
 #include "Physics/Geometry/SphereCollisionShape.h"
+#include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -244,6 +245,19 @@ void SandboxApp::OnPostCreate()
     //GetGameThread()->PushThreadTask(this, &SandboxApp::LoadRenderResources);
 
     InputManager::RegisterInput(ImpulseBurstAction, { KeyboardKey::R });
+
+    PathResult boxAssetpath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\models\\box.obj");
+    PathResult cylinderAssetpath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\models\\cylinder.obj");
+
+    if (boxAssetpath.valid)
+    {
+        printf("found %s.\n", boxAssetpath.fullpath.c_str());
+    }
+
+    if (cylinderAssetpath.valid)
+    {
+        printf("found %s.\n", cylinderAssetpath.fullpath.c_str());
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

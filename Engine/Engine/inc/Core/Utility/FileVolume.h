@@ -1,0 +1,39 @@
+//////////////////////////////////////////////////////////////////////////
+//    File        	: FileVolume.h
+//    Created By    : Jack Spink
+//    Created On 	: [8/1/2020]
+//////////////////////////////////////////////////////////////////////////
+
+#pragma once
+
+//////////////////////////////////////////////////////////////////////////
+
+#include <string>
+
+//////////////////////////////////////////////////////////////////////////
+
+struct PathResult
+{
+    bool valid = false;
+    std::string fullpath = "";
+    std::string filename = "";
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class FileVolume
+{
+public:
+    FileVolume(const std::string& vr, const std::string& r);
+
+    inline const std::string& GetVirtualRoot() const { return virtualroot; }
+    inline const std::string& GetRealRoot() const { return root; }
+
+    PathResult GetRealPathFromVirtualPath(const std::string& virtualpath) const;
+
+private:
+    std::string virtualroot;
+    std::string root;
+};
+
+//////////////////////////////////////////////////////////////////////////

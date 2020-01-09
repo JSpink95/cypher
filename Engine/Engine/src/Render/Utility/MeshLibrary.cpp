@@ -44,11 +44,11 @@ Ref<VertexArray> MeshLibrary::GetMesh(const std::string& id)
 void MeshLibrary::InitialiseImpl()
 {
     // load default objects here...
-    RegisterMeshImpl("game:mesh-capsule", ObjMeshLoader::LoadObjFromFile("assets/models/capsule.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("game:mesh-box", ObjMeshLoader::LoadObjFromFile("assets/models/box.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("game:mesh-plane", ObjMeshLoader::LoadObjFromFile("assets/models/plane.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("game:mesh-sphere-fs", ObjMeshLoader::LoadObjFromFile("assets/models/sphere_fs.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("game:mesh-sphere-ss", ObjMeshLoader::LoadObjFromFile("assets/models/sphere_ss.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("game:mesh-capsule", ObjMeshLoader::LoadObjFromFile("assets:\\models\\capsule.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("game:mesh-box", ObjMeshLoader::LoadObjFromFile("assets:\\models\\box.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("game:mesh-plane", ObjMeshLoader::LoadObjFromFile("assets:\\models\\plane.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("game:mesh-sphere-fs", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_fs.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("game:mesh-sphere-ss", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_ss.obj", { true, true, 1.0f }));
 }
 
 //////////////////////////////////////////////////////////////////////////

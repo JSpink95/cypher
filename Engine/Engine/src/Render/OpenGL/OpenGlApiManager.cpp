@@ -13,6 +13,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/Core.h"
+#include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -50,7 +51,8 @@ Ref<Window> OpenGlApiManager::CreateContext(const std::string& title, const uint
 
 Ref<Shader> OpenGlApiManager::CreateShader(const std::string& shaderpath)
 {
-    return std::make_shared<OpenGlShader>(shaderpath);
+    const std::string convertedFilePath = FileVolumeManager::GetRealPathFromVirtualPath(shaderpath).fullpath;
+    return std::make_shared<OpenGlShader>(convertedFilePath);
 }
 
 Ref<Shader> OpenGlApiManager::CreateShader(const pugi::xml_node& shaderNode)
@@ -67,7 +69,8 @@ Ref<ComputeShader> OpenGlApiManager::CreateComputeShader(const std::string& sour
 
 Ref<Texture2D> OpenGlApiManager::CreateTexture2D(const std::string& texturepath)
 {
-    return std::make_shared<OpenGlTexture2D>(texturepath);
+    const std::string convertedFilePath = FileVolumeManager::GetRealPathFromVirtualPath(texturepath).fullpath;
+    return std::make_shared<OpenGlTexture2D>(convertedFilePath);
 }
 
 Ref<Texture2D> OpenGlApiManager::CreateTexture2D(const uint2& resolution, const float3* rgb)

@@ -23,6 +23,8 @@ workspace(workspace_name)
         "OpenGL", "Dx11"
     }
 
+    defines {  "NOMINMAX",  "DEBUG_ASSETS_ROOT=\""..project_root:gsub("%/", "\\\\").."\\assets\"" }
+
     filter "configurations:Debug"
         defines { "DEBUG" }
 
@@ -30,11 +32,6 @@ workspace(workspace_name)
         defines { "RELEASE" }
 
     filter ""
-
-    defines {
-        "NOMINMAX",
-        "RESOURCES_ROOT="..project_root.."Resources"
-    }
 
     filter "platforms:Dx11"
         defines {
