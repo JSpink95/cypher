@@ -21,7 +21,7 @@ void StaticMeshObject::OnConstruct()
 {
     Super::OnConstruct();
 
-    staticMeshComponent = NewComponent<StaticMeshComponent>();
+    staticMeshComponent = CreateComponent<StaticMeshComponent>("StaticMesh");
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -32,7 +32,7 @@ fmat4 TransformComponent::CalculateTransformMatrix() const
 
 Ref<Component> TransformComponent::Create(Ref<Object> owner, pugi::xml_node node)
 {
-    Ref<TransformComponent> transform = owner->NewComponent<TransformComponent>();
+    Ref<TransformComponent> transform = owner->CreateComponent<TransformComponent>("Transform");
 
     for (pugi::xml_attribute attribute : node.attributes())
     {

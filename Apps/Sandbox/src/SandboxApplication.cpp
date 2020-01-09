@@ -119,66 +119,15 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<PhysicsObject> CreatePhysicsBoxFromPosSize(const f32 mass, const float3& position, const float3& hs)
+void SandboxApp::OnPreUpdate(const f32 dt)
 {
-    Ref<PhysicsObject> object = CreateObject<PhysicsObject>();
+    Application::OnPreUpdate(dt);
 
-    Ref<BoxCollision> boxCollision = std::make_shared<BoxCollision>(hs);
-    object->Initialise(mass, position, float3(0.0f), boxCollision);
-    
-    Ref<StaticMeshComponent> boxMesh = object->NewComponent<StaticMeshComponent>();
-    boxMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
-    boxMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-box"));
-    boxMesh->SetScale(hs);
-
-    return object;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-Ref<PhysicsObject> CreatePhysicsBoxFromMinMax(const f32 mass, const float3& min, const float3& max)
-{
-    const float3 pos = (min + max) / 2.0f;
-    const float3 hs = (max - min) / 2.0f;
-
-    return CreatePhysicsBoxFromPosSize(mass, pos, hs);
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-Ref<PhysicsObject> CreatePhysicsSphereFromPosRad(const f32 mass, const float3& position, const f32 radius)
-{
-    Ref<PhysicsObject> object = CreateObject<PhysicsObject>();
-
-    Ref<SphereCollision> sphereCollision = std::make_shared<SphereCollision>(radius);
-    object->Initialise(mass, position, float3(0.0f), sphereCollision);
-
-    Ref<StaticMeshComponent> sphereMesh = object->NewComponent<StaticMeshComponent>();
-    sphereMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
-    sphereMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-sphere-ss"));
-    sphereMesh->SetScale(float3(radius));
-
-    return object;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void SandboxApp::OnPreRender()
-{
-    Application::OnPreRender();
-
-    static bool inputEnabled = true;
-    if (InputManager::GetInputState(ToggleMouseAction) == KeyboardState::Pressed)
-    {
-        inputEnabled = !inputEnabled;
-    }
-
+    // jsut for fun. I should put this into like a component or some shit.
     if (InputManager::GetInputState(ImpulseBurstAction) == KeyboardState::Pressed)
     {
         Physics::ApplyImpulseInRadius(player->transform->position, 4.0f, 500.0f, { player.get() });
     }
-
-    RenderPassManager::Render();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -188,15 +137,15 @@ void SandboxApp::OnPostCreate()
     // do our game initialisation here
     // this is called from the main thread
 
-    physics = CreateObject<PhysicsWorld>("DiscretePhysicsWorld");
+    physics = CreateObject<PhysicsWorld>(ObjectId::Create("DiscretePhysicsWorld"));
 
     LevelLoader::LoadFromFile("assets/maps/test_arena.xml", level);
 
-    player = CreateObject<Player>();
+    player = CreateObject<Player>(ObjectId::Create("Player"));
     player->SetPositionAndRotation(level.spawnpoint, float3(0.0f));
 
-    particleObject = CreateObject<GameObject>();
-    Ref<ParticleSystemComponent> particleEmitter = particleObject->NewComponent<ParticleSystemComponent>();
+    particleObject = CreateObject<GameObject>(ObjectId::Create("Test Particle Effect"));
+    Ref<ParticleSystemComponent> particleEmitter = particleObject->CreateComponent<ParticleSystemComponent>("ParticleSystem");
     particleEmitter->SetEmissionRate(0.1f);
     particleEmitter->SetMaxParticlesAlive(1024);
 
@@ -267,8 +216,8 @@ void SandboxApp::OnDestroy()
     // destroy anything that is relevent
     // this is called on the main thread
 
-    DestroyObject(player->GetInstanceId());
-    DestroyObject(physics->GetInstanceId());
+    DestroyObject(player->GetId());
+    DestroyObject(physics->GetId());
 }
 
 //////////////////////////////////////////////////////////////////////////

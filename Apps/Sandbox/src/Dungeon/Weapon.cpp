@@ -30,8 +30,8 @@ void BulletProjectile::OnConstruct()
 {
     Super::OnConstruct();
 
-    movement = NewComponent<ProjectileMovementComponent>();
-    trail = NewComponent<ParticleSystemComponent>();
+    movement = CreateComponent<ProjectileMovementComponent>("Movement");
+    trail = CreateComponent<ParticleSystemComponent>("ParticleTrail");
 
     GetGameThread()->AddObject(self);
     GetGameThread()->PushThreadTask(this, &BulletProjectile::RenderTask_Initialise);
@@ -90,7 +90,7 @@ void Weapon::OnUpdate(const f32 dt)
     {
         float3 const facingDirection = fquat(glm::radians(owner->transform->rotation)) * float3(0.0f, 0.0f, 1.0f);
 
-        Ref<BulletProjectile> newBullet = CreateObject<BulletProjectile>();
+        Ref<BulletProjectile> newBullet = CreateObject<BulletProjectile>(ObjectId::Create("Bullet"));
         newBullet->transform->position = owner->transform->position + float3(0.0f, 1.25f, 0.0f);
         newBullet->Initialise(5.0f, glm::normalize(facingDirection), 10.0f);
     }

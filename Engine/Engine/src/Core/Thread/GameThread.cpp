@@ -24,11 +24,11 @@ void GameThread::AddObject(WeakRef<Object> object)
     if (!object.expired())
     {
         Ref<Object> obj = object.lock();
-        ObjectGuid guid = obj->GetInstanceId();
+        ObjectId id = obj->GetId();
 
-        if (registeredObjects.find(guid) == registeredObjects.end())
+        if (registeredObjects.find(id) == registeredObjects.end())
         {
-            registeredObjects.emplace(guid, object);
+            registeredObjects.emplace(id, object);
         }
     }
 }
@@ -40,24 +40,15 @@ void GameThread::RemoveObject(WeakRef<Object> object)
     if (!object.expired())
     {
         Ref<Object> obj = object.lock();
-        ObjectGuid guid = obj->GetInstanceId();
-
-        registeredObjects.erase(guid);
+        registeredObjects.erase(obj->GetId());
     }
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void GameThread::RemoveObject(ObjectGuid id)
-{
-    registeredObjects.erase(id);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 bool GameThread::IsObjectRegistered(Object* object)
 {
-    return registeredObjects.find(object->GetInstanceId()) != registeredObjects.end();
+    return registeredObjects.find(object->GetId()) != registeredObjects.end();
 }
 
 //////////////////////////////////////////////////////////////////////////

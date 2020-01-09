@@ -36,7 +36,7 @@ public: virtual inline ClassId GetClassUID() override { return ClassUID(); }
 
 #define DECLARE_BASE_OBJECT(Base)                                               \
 DEFINE_CLASS_UID                                                                \
-private: template<typename T> friend Ref<T> CreateObject(const std::string& id);\
+private: template<typename T> friend Ref<T> CreateObject(const ObjectId& id);\
 private: using SelfType = Base;                                                 \
 protected: WeakRef<SelfType> self;                                              \
 public: inline void SetSelf(Ref<Base> newSelf) { self = newSelf; }              \
@@ -47,7 +47,7 @@ public: inline WeakRef<Object> GetWeakRef() { return self; }
 
 #define DECLARE_DERIVED_OBJECT(Derived, Base)                                   \
 DEFINE_CLASS_UID                                                                \
-private: template<typename T> friend Ref<T> CreateObject(const std::string& id);\
+private: template<typename T> friend Ref<T> CreateObject(const ObjectId& id);\
 private: using Super = Base;                                                    \
 private: using SelfType = Derived;                                              \
 

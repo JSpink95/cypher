@@ -8,7 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-ObjectId::ObjectId(const std::string& id)
+HashedString::HashedString(const std::string& id)
     : stringId(id)
     , hashedId(std::hash<std::string>()(id))
 {

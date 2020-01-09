@@ -24,11 +24,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <vector>
-
-//////////////////////////////////////////////////////////////////////////
-
-using ComponentHashMap = ObjectIdHashMap<Ref<Component>>;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -58,69 +55,73 @@ public:
 public:
 
     template<typename TComponent>
-    Ref<TComponent> NewComponent();
-
-    template<typename TComponent>
-    Ref<TComponent> FindFirstComponentOfType();
-
-    template<typename TComponent>
-    void FindAllComponentsOfType(std::vector<Ref<TComponent>>& outComponents);
-
-private:
-    ComponentHashMap components;
+    Ref<TComponent> CreateComponent(const std::string& id);
 
 public:
-    inline ObjectGuid GetInstanceId() const { return instanceId; }
+
+    inline Ref<Component> FindComponent(const std::string& name)
+    {
+        ComponentId componentId = ComponentId::Create(id, name);
+        auto it = components.find(componentId);
+        if (it != components.end())
+        {
+            return it->second;
+        }
+
+        return nullptr;
+    }
+
+public:
+
+    template<typename TComponent>
+    Ref<TComponent> FindFirstComponentOfType()
+    {
+        auto it = std::find_if(components.begin(), components.end(), [](const std::pair<ComponentId, Ref<Component>>& it) -> bool
+        { 
+            return it.second != nullptr && it.second->GetClassUID() == TComponent::ClassUID();
+        });
+
+        if (it != components.end())
+        {
+            return std::dynamic_pointer_cast<TComponent>(it->second);
+        }
+
+        return nullptr;
+    }
+
+    template<typename TComponent>
+    Ref<TComponent> FindComponentAsType(const std::string& name)
+    {
+        return std::dynamic_pointer_cast<TComponent>(FindComponent(name));
+    }
 
 private:
-    ObjectGuid instanceId;
+    GenericComponentHashMap components;
+
+public:
+    inline const ObjectId& GetId() const
+    {
+        return id;
+    }
+
+    inline void SetId(const ObjectId& newId)
+    {
+        id = newId;
+    }
+
+private:
+    ObjectId id;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
 template<typename TComponent>
-inline Ref<TComponent> Object::NewComponent()
+inline Ref<TComponent> Object::CreateComponent(const std::string& id)
 {
-    Ref<TComponent> newComponent = CreateComponent<TComponent>(this);
-    components.emplace(std::make_pair(newComponent->GetInstanceId(), newComponent));
+    Ref<TComponent> newComponent = ::CreateComponent<TComponent>(this, id);
+    components.emplace(newComponent->GetId(), newComponent);
     
     return newComponent;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-template<typename TComponent>
-inline Ref<TComponent> Object::FindFirstComponentOfType()
-{
-    Ref<TComponent> result = nullptr;
-
-    for (auto& kv : components)
-    {
-        Ref<Component> component = kv.second;
-        if (component != nullptr && component->GetClassUID() == TComponent::ClassUID())
-        {
-            result = std::dynamic_pointer_cast<TComponent>(component);
-            break;
-        }
-    }
-
-    return result;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-template<typename TComponent>
-inline void Object::FindAllComponentsOfType(std::vector<Ref<TComponent>>& outComponents)
-{
-    outComponents.clear();
-    for (auto& kv : components)
-    {
-        Ref<Component> component = kv.second;
-        if (component != nullptr && component->GetClassUID() == TComponent::ClassUID())
-        {
-            outComponents.push_back(std::dynamic_pointer_cast<TComponent>(component));
-        }
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////

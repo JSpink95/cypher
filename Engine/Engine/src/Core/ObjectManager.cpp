@@ -10,21 +10,21 @@
 
 void ObjectManager::RegisterObject(Ref<Object> newObject)
 {
-    objects.emplace(newObject->GetInstanceId(), newObject);
+    objects.emplace(newObject->GetId(), newObject);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-void ObjectManager::DeregisterObject(const ObjectGuid& guid)
+void ObjectManager::DeregisterObject(Ref<Object> object)
 {
-    objects.erase(guid);
+    objects.erase(object->GetId());
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<Object> ObjectManager::GetStrongRef(const ObjectGuid& guid)
+Ref<Object> ObjectManager::GetStrongRef(const ObjectId& id)
 {
-    auto it = objects.find(guid);
+    auto it = objects.find(id);
     if (it != objects.end())
     {
         return it->second;
@@ -35,9 +35,9 @@ Ref<Object> ObjectManager::GetStrongRef(const ObjectGuid& guid)
 
 //////////////////////////////////////////////////////////////////////////
 
-WeakRef<Object> ObjectManager::GetWeakRef(const ObjectGuid& guid)
+WeakRef<Object> ObjectManager::GetWeakRef(const ObjectId& id)
 {
-    auto it = objects.find(guid);
+    auto it = objects.find(id);
     if (it != objects.end())
     {
         return it->second;

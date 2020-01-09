@@ -58,7 +58,7 @@ public:
 
 private:
     RenderPassType::Enum type;
-    std::unordered_map<ObjectGuid, WeakRef<Object>> objects;
+    std::unordered_map<ObjectId, WeakRef<Object>> objects;
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -37,7 +37,7 @@ void PhysicsMemAlloc::deallocate(void* data)
 
 bool PhysicsThread::IsObjectRegisteredForTick(Object* object) const
 {
-    auto it = objects.find(object->GetInstanceId());
+    auto it = objects.find(object->GetId());
     return it != objects.end();
 }
 
@@ -47,7 +47,7 @@ void PhysicsThread::AddObject(WeakRef<Object> object)
 {
     if (Ref<Object> o = object.lock())
     {
-        objects.emplace(o->GetInstanceId(), o);
+        objects.emplace(o->GetId(), o);
     }
 }
 
@@ -57,15 +57,8 @@ void PhysicsThread::RemoveObject(WeakRef<Object> object)
 {
     if (Ref<Object> o = object.lock())
     {
-        objects.erase(o->GetInstanceId());
+        objects.erase(o->GetId());
     }
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void PhysicsThread::RemoveObject(ObjectGuid id)
-{
-    objects.erase(id);
 }
 
 //////////////////////////////////////////////////////////////////////////

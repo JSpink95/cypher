@@ -55,7 +55,6 @@ public:
 
     void AddObject(WeakRef<Object> object);
     void RemoveObject(WeakRef<Object> object);
-    void RemoveObject(ObjectGuid id);
 
     bool IsObjectRegisteredForTick(Object* object) const;
 
@@ -63,9 +62,9 @@ protected:
     virtual void ThreadLoop() override;
 
 private:
-    using ObjectGuidMap = std::unordered_map<ObjectGuid, WeakRef<Object>>;
+    using ObjectIdHashMap = std::unordered_map<ObjectId, WeakRef<Object>>;
 
-    ObjectGuidMap objects;
+    ObjectIdHashMap objects;
 };
 
 //////////////////////////////////////////////////////////////////////////

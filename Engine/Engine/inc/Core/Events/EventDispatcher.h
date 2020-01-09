@@ -56,7 +56,7 @@ private:
 template<typename TObject, typename TPredicate, u32 ParameterCount>
 inline bool EventDispatcher<TObject, TPredicate, ParameterCount>::IsRegisteredForEvent(TObject* object) const
 {
-    return object != nullptr && (listeners.find(object->GetInstanceId()) != listeners.end());
+    return object != nullptr && (listeners.find(object->GetId()) != listeners.end());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -70,25 +70,25 @@ inline void EventDispatcher<TObject, TPredicate, ParameterCount>::AddListener(TO
         if constexpr (ParameterCount == 0u)
         {
             TPredicate func = std::bind(predicate, object);
-            listeners.emplace(std::make_pair(object->GetInstanceId(), func));
+            listeners.emplace(std::make_pair(object->GetId(), func));
         }
 
         if constexpr (ParameterCount == 1u)
         {
             TPredicate func = std::bind(predicate, object, std::placeholders::_1);
-            listeners.emplace(std::make_pair(object->GetInstanceId(), func));
+            listeners.emplace(std::make_pair(object->GetId(), func));
         }
 
         if constexpr (ParameterCount == 2u)
         {
             TPredicate func = std::bind(predicate, object, std::placeholders::_1, std::placeholders::_2);
-            listeners.emplace(std::make_pair(object->GetInstanceId(), func));
+            listeners.emplace(std::make_pair(object->GetId(), func));
         }
 
         if constexpr (ParameterCount == 3u)
         {
             TPredicate func = std::bind(predicate, object, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-            listeners.emplace(std::make_pair(object->GetInstanceId(), func));
+            listeners.emplace(std::make_pair(object->GetId(), func));
         }
     }
 }
@@ -100,7 +100,7 @@ inline void EventDispatcher<TObject, TPredicate, ParameterCount>::RemoveListener
 {
     if (IsRegisteredForEvent(object))
     {
-        listeners.erase(object->GetInstanceId());
+        listeners.erase(object->GetId());
     }
 }
 

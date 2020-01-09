@@ -36,7 +36,7 @@ class Weapon;
 class SandboxApp : public Application
 {
 public:
-    virtual void OnPreRender() override;
+    virtual void OnPreUpdate(const f32 dt) override;
 
 protected:
 

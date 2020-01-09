@@ -94,14 +94,14 @@ void ReadObject(pugi::xml_node data, Ref<GameObject> o)
         }
         else if (nodeName == "staticmesh")
         {
-            Ref<StaticMeshComponent> staticmesh = o->NewComponent<StaticMeshComponent>();
+            Ref<StaticMeshComponent> staticmesh = o->CreateComponent<StaticMeshComponent>("");
             staticmesh->SetMesh(MeshLibrary::GetMesh(node.attribute("mesh").as_string()));
             staticmesh->SetMaterial(MaterialLibrary::GetMaterial(node.attribute("material").as_string()));
             staticmesh->SetScale(ParseFloat3(node.attribute("scale").as_string()));
         }
         else if (nodeName == "light")
         {
-            Ref<LightComponent> light = o->NewComponent<LightComponent>();
+            Ref<LightComponent> light = o->CreateComponent<LightComponent>("");
             light->GetLightInstance()->SetColor(ParseFloat4(node.attribute("color").as_string()));
             light->GetLightInstance()->SetRadius(node.attribute("radius").as_float());
         }
@@ -190,6 +190,9 @@ bool ReadEntity(pugi::xml_node node, Ref<Object> object)
 
 void LevelLoader::LoadFromFile(const std::string& filepath, Level& level)
 {
+
+    int id = 0;
+
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filepath.c_str());
     if (result)
@@ -204,21 +207,21 @@ void LevelLoader::LoadFromFile(const std::string& filepath, Level& level)
             }
             else if (nodeName == "gameobject")
             {
-                Ref<GameObject> newObject = CreateObject<GameObject>();
+                Ref<GameObject> newObject = CreateObject<GameObject>(ObjectId::Create(std::to_string(id++)));
                 ReadObject(node, newObject);
 
                 level.objects.push_back(newObject);
             }
             else if (nodeName == "physicsobject")
             {
-                Ref<PhysicsObject> newObject = CreateObject<PhysicsObject>();
+                Ref<PhysicsObject> newObject = CreateObject<PhysicsObject>(ObjectId::Create(std::to_string(id++)));
                 ReadPhysicsObject(node, newObject);
 
                 level.objects.push_back(newObject);
             }
             else if (nodeName == "entity")
             {
-                Ref<Object> object = CreateObject<Object>();
+                Ref<Object> object = CreateObject<Object>(ObjectId::Create(std::to_string(id++)));
                 if (ReadEntity(node, object))
                 {
                     level.objects.push_back(object);

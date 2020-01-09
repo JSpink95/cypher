@@ -35,14 +35,13 @@ public:
 
     void AddObject(WeakRef<Object> object);
     void RemoveObject(WeakRef<Object> object);
-    void RemoveObject(ObjectGuid id);
 
     bool IsObjectRegistered(Object* object);
 
 private:
-    using ObjectGuidMap = std::unordered_map<ObjectGuid, WeakRef<Object>>;
+    using ObjectIdHashMap = std::unordered_map<ObjectId, WeakRef<Object>>;
 
-    ObjectGuidMap registeredObjects;
+    ObjectIdHashMap registeredObjects;
 
 private:
     virtual void ThreadLoop() override;

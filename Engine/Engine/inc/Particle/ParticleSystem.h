@@ -85,11 +85,6 @@ public:
 
 public:
 
-    template<typename TEmitter>
-    Ref<TEmitter> GetEmitterAsType() const { return std::dynamic_pointer_cast<TEmitter>(emitter); }
-
-public:
-
     inline void SetEmissionRate(const f32 rate)
     {
         emissionRate = glm::max(rate, 0.0f);

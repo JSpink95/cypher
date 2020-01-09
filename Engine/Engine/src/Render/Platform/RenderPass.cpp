@@ -48,7 +48,7 @@ static float2 const shadowFramebufferSize = float2(1024.0f);
 
 void RenderPass::RegisterObject(Ref<Object> object)
 {
-    ObjectGuid id = object->GetInstanceId();
+    ObjectId id = object->GetId();
     if (objects.find(id) == objects.end())
     {
         objects.emplace(id, object);
@@ -59,7 +59,7 @@ void RenderPass::RegisterObject(Ref<Object> object)
 
 void RenderPass::DeregisterObject(Ref<Object> object)
 {
-    ObjectGuid id = object->GetInstanceId();
+    ObjectId id = object->GetId();
     objects.erase(id);
 }
 
@@ -69,7 +69,7 @@ void RenderPass::Perform()
 {
     for (auto keyval : objects)
     {
-        ObjectGuid id = keyval.first;
+        ObjectId id = keyval.first;
         WeakRef<Object> object = keyval.second;
 
         if (object.expired())

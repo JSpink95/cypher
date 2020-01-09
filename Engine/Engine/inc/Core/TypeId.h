@@ -12,26 +12,66 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include <guiddef.h>
-#include <type_traits>
-#include <cstdint>
 #include <unordered_map>
 
 //////////////////////////////////////////////////////////////////////////
 
-using ObjectGuid = GUID;
+class Object;
+class Component;
 
 //////////////////////////////////////////////////////////////////////////
 
-struct ObjectId
+struct HashedString
 {
-    const std::string stringId;
-    const u64 hashedId;
+public:
+    static inline HashedString Create(const std::string& id)
+    {
+        return HashedString(id);
+    }
 
-    ObjectId(const std::string& id);
-    inline bool operator==(const ObjectId& other) const { return hashedId == other.hashedId; };
-    inline bool operator<=(const ObjectId& other) const { return hashedId <= other.hashedId; };
-    inline bool operator<(const ObjectId& other) const { return hashedId < other.hashedId; };
+public:
+    HashedString() {}
+
+protected:
+    HashedString(const std::string& id);
+
+public:
+    inline bool operator==(const HashedString& other) const { return hashedId == other.hashedId; };
+    inline bool operator<=(const HashedString& other) const { return hashedId <= other.hashedId; };
+    inline bool operator<(const HashedString& other) const { return hashedId < other.hashedId; };
+
+public:
+    const std::string& GetStringId() const { return stringId; }
+    const u64 GetHashedId() const { return hashedId; }
+
+private:
+    std::string stringId;
+    u64 hashedId;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+using ObjectId = HashedString;
+
+//////////////////////////////////////////////////////////////////////////
+
+struct ComponentId: public HashedString
+{
+public:
+    static inline ComponentId Create(const ObjectId& ownerId, const std::string& id)
+    {
+        return ComponentId(ownerId, id);
+    }
+
+public:
+    ComponentId() {}
+
+private:
+    ComponentId(const ObjectId& ownerId, const std::string& id)
+        : HashedString(ownerId.GetStringId() + ":" + id)
+    {
+
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -39,28 +79,19 @@ struct ObjectId
 // Specialize std::hash
 namespace std
 {
-    template<> struct hash<GUID>
+    template<> struct hash<HashedString>
     {
-        size_t operator()(const GUID& guid) const noexcept
+        size_t operator()(const HashedString& oid) const noexcept
         {
-#ifdef _WIN64
-            using guid_alignment = std::uint64_t;
-#elif defined(_WIN32)
-            using guid_alignment = std::uint32_t;
-#endif
-            static_assert(std::alignment_of<GUID>::value >= std::alignment_of<guid_alignment>::value, "GUID Not aligned to correct size");
-
-            const guid_alignment* p = reinterpret_cast<const guid_alignment*>(&guid);
-            std::hash<guid_alignment> hash;
-            return hash(p[0]) ^ hash(p[1]);
+            return (size_t)oid.GetHashedId();
         }
     };
 
-    template<> struct hash<ObjectId>
+    template<> struct hash<ComponentId>
     {
-        size_t operator()(const ObjectId& oid) const noexcept
+        size_t operator()(const ComponentId& oid) const noexcept
         {
-            return (u32)oid.hashedId;
+            return (size_t)oid.GetHashedId();
         }
     };
 }
@@ -73,6 +104,15 @@ using ClassIdHashMap = std::unordered_map<ClassId, Value, std::hash<ClassId>>;
 //////////////////////////////////////////////////////////////////////////
 
 template<typename Value>
-using ObjectIdHashMap = std::unordered_map<ObjectGuid, Value, std::hash<ObjectGuid>>;
+using ObjectIdHashMap = std::unordered_map<ObjectId, Value, std::hash<ObjectId>>;
+
+using GenericObjectHashMap = ObjectIdHashMap<Ref<Object>>;
+
+//////////////////////////////////////////////////////////////////////////
+
+template<typename Value>
+using ComponentHashMap = std::unordered_map<ComponentId, Value, std::hash<ComponentId>>;
+
+using GenericComponentHashMap = ComponentHashMap<Ref<Component>>;
 
 //////////////////////////////////////////////////////////////////////////

@@ -10,16 +10,14 @@
 
 #include "Core/Types.h"
 #include "Core/ObjectMacros.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/RenderPass.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "pugixml.hpp"
-
-//////////////////////////////////////////////////////////////////////////
-
-#include <guiddef.h>
-
-//////////////////////////////////////////////////////////////////////////
-
-class Object;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -47,19 +45,25 @@ protected:
     Object* owner = nullptr;
 
 public:
-    inline GUID GetInstanceId() const { return instanceId; }
+    inline const ComponentId& GetId() const
+    {
+        return id;
+    }
+
+    void SetId(const std::string& newStringId);
 
 private:
-    GUID instanceId;
+    ComponentId id;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
 template<typename TComponent>
-Ref<TComponent> CreateComponent(Object* owner)
+Ref<TComponent> CreateComponent(Object* owner, const std::string& id)
 {
     Ref<TComponent> result = std::make_shared<TComponent>();
     result->SetOwner(owner);
+    result->SetId(id);
     result->OnConstruct();
 
     return result;

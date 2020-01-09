@@ -26,16 +26,16 @@ class ObjectManager : public Singleton<ObjectManager>
 {
 public:
     void RegisterObject(Ref<Object> newObject);
-    void DeregisterObject(const ObjectGuid& guid);
+    void DeregisterObject(Ref<Object> guid);
 
-    Ref<Object> GetStrongRef(const ObjectGuid& guid);
-    WeakRef<Object> GetWeakRef(const ObjectGuid& guid);
+    Ref<Object> GetStrongRef(const ObjectId& id);
+    WeakRef<Object> GetWeakRef(const ObjectId& id);
 
 public:
     virtual void OnDelete() override;
 
 private:
-    std::unordered_map<ObjectGuid, Ref<Object>> objects;
+    std::unordered_map<ObjectId, Ref<Object>> objects;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -45,12 +45,13 @@ static inline Ref<ObjectManager> GetObjectManager() { return ObjectManager::Get(
 //////////////////////////////////////////////////////////////////////////
 
 template<typename TObject>
-static inline Ref<TObject> CreateObject(const std::string& id = "")
+static inline Ref<TObject> CreateObject(const ObjectId& id)
 {
     Ref<ObjectManager> manager = GetObjectManager();
     if (manager)
     {
         Ref<TObject> newObject = std::make_shared<TObject>();
+        newObject->SetId(id);
         newObject->SetSelf(newObject);
 
         manager->RegisterObject(newObject);
@@ -65,15 +66,15 @@ static inline Ref<TObject> CreateObject(const std::string& id = "")
 
 //////////////////////////////////////////////////////////////////////////
 
-static inline void DestroyObject(const ObjectGuid& guid, const std::string& id = "")
+static inline void DestroyObject(const ObjectId& id)
 {
     Ref<ObjectManager> manager = GetObjectManager();
     if (manager)
     {
-        Ref<Object> object = manager->GetStrongRef(guid);
+        Ref<Object> object = manager->GetStrongRef(id);
         //object->OnDestroy(); #todo - implement
 
-        manager->DeregisterObject(guid);
+        manager->DeregisterObject(object);
     }
 }
 

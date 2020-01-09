@@ -13,7 +13,7 @@ void GameObject::OnConstruct()
 {
     Super::OnConstruct();
 
-    transform = NewComponent<TransformComponent>();
+    transform = CreateComponent<TransformComponent>("Transform");
 }
 
 //////////////////////////////////////////////////////////////////////////

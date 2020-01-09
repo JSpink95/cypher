@@ -62,6 +62,17 @@ public:
         processes.erase(std::remove(processes.begin(), processes.end(), process), processes.end());
     }
 
+public:
+
+    template<typename O>
+    inline Ref<O> PushOutput()
+    {
+        Ref<O> output = std::make_shared<O>();
+        processes.push_back(output);
+
+        return output;
+    }
+
 protected:
     std::vector<ProcessType> processes;
 };
