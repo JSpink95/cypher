@@ -85,6 +85,16 @@ public:
 
 public:
 
+    inline void SetMaterial(Ref<Material> newMaterial)
+    {
+        material = newMaterial;
+    }
+
+    inline void SetLocalSpaceParticles(const bool isLocalSpace)
+    {
+        localSpaceParticles = isLocalSpace;
+    }
+
     inline void SetEmissionRate(const f32 rate)
     {
         emissionRate = glm::max(rate, 0.0f);
@@ -104,11 +114,13 @@ private:
     void RenderTask_InitialiseParticleMesh();
 
 public:
-    bool localSpaceParticles = false;
-    Ref<Material> particleMaterial;
 
 private:
     std::vector<Particle> particles;
+
+    // render data
+    Ref<Material> material;
+    bool localSpaceParticles = false;
 
     // particle emission
     s32 particleCountRequest = 0;

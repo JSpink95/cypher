@@ -102,7 +102,7 @@ void TextureLibrary::InitialiseImpl()
     // load engine textures
     loadedTextures.insert(std::make_pair(EngineTextureId::White, GetApiManager()->CreateTexture2D(uint2(2), whitePixels)));
     loadedTextures.insert(std::make_pair(EngineTextureId::Error, GetApiManager()->CreateTexture2D(uint2(8), errorPixels)));
-    loadedTextures.insert(std::make_pair(EngineTextureId::SphereWithAlpha, GetApiManager()->CreateTexture2D(uint2(16), &spherePixels.at(0))));
+    loadedTextures.insert(std::make_pair(EngineTextureId::ParticleSphere, GetApiManager()->CreateTexture2D(uint2(16), &spherePixels.at(0))));
 
     PathResult textureAssetPath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\TextureAssets.xml");
     if (textureAssetPath.valid)

@@ -25,7 +25,7 @@ namespace EngineTextureId
 {
     static inline const std::string White = "engine:white";
     static inline const std::string Error = "engine:error";
-    static inline const std::string SphereWithAlpha = "engine:sphere-alpha";
+    static inline const std::string ParticleSphere = "engine-particle-sphere";
 }
 
 //////////////////////////////////////////////////////////////////////////

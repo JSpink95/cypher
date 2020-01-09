@@ -1,0 +1,5 @@
+<material id="particle-default" based_on="particle-pos-size">
+  <parameters>
+    <parameter id="uTexture" type="texture2D" binding="0" value="engine-particle-sphere"/>
+  </parameters>
+</material>

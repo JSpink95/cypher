@@ -59,7 +59,7 @@ void ParticleSystemComponent::OnConstruct()
 
     updateStage = std::make_shared<ParticleUpdateStage>();
     emissionStage = std::make_shared<ParticleEmissionStage>();
-    particleMaterial = MaterialLibrary::GetMaterial("particle-default");
+    material = MaterialLibrary::GetMaterial("particle-default");    // load the default material
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,10 +77,19 @@ void ParticleSystemComponent::OnUpdate(const f32 dt)
 
     s32 maxAllowedSpawns = glm::min(maxAliveParticles - (s32)particles.size(), particleCountRequest);
 
+    mat4 transform = CalculateTransformMatrix();
     for (s32 i = 0; i < maxAllowedSpawns; ++i)
     {
         Particle particle;
         emissionStage->Initialise(particle);
+
+        // if we are not local space particles (our position doesn't follow the particle effect if it moves),
+        // then we emit our particle at the currently located position.
+
+        if (!localSpaceParticles)
+        {
+            particle.data.position = float3(transform * float4(particle.data.position, 1.0f));
+        }
 
         particles.push_back(particle);
         numParticlesSpawned += 1;
@@ -116,7 +125,7 @@ void ParticleSystemComponent::OnRender(RenderPassType::Enum pass, Ref<Material> 
     }
 
     mat4 const worldTransform = localSpaceParticles ? CalculateTransformMatrix() : fmat4(1.0f);
-    if (particleMaterial != nullptr && particleBuffer != nullptr)
+    if (material != nullptr && particleBuffer != nullptr)
     {
         std::vector<ParticleVertex> vertices;
         std::transform(particles.begin(), particles.end(), std::back_inserter(vertices), [](Particle& particle) -> ParticleVertex { return particle.data; });
@@ -126,12 +135,11 @@ void ParticleSystemComponent::OnRender(RenderPassType::Enum pass, Ref<Material> 
         UniformBufferParticleExtra particleExtra;
         particleExtra.cameraPosition = vec4(Camera::GetActiveCamera()->GetEyePosition(), 1.0f);
 
-        particleMaterial->SetParameterBlock<UniformBufferParticleExtra>("ParticleExtra", particleExtra);
-        particleMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture", TextureLibrary::GetTexture(EngineTextureId::SphereWithAlpha));
+        material->SetParameterBlock<UniformBufferParticleExtra>("ParticleExtra", particleExtra);
 
         // #todo - replace hack with proper render mode setting
         GlCall(Renderer::SetRenderMode(GL_POINTS));
-        Renderer::Submit(particleMaterial, particleMesh, worldTransform);
+        Renderer::Submit(material, particleMesh, worldTransform);
         GlCall(Renderer::SetRenderMode(GL_TRIANGLES));
     }
 }
