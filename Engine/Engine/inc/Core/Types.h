@@ -33,6 +33,32 @@ using Ref = std::shared_ptr<Type>;
 template<typename Type>
 using WeakRef = std::weak_ptr<Type>;
 
+template<typename Type>
+class WRef
+{
+private:
+    WeakRef<Type> value;
+
+public:
+    WRef()
+    {}
+
+    WRef(Ref<Type> in)
+        : value(in)
+    {}
+
+public:
+    inline operator bool() const
+    {
+        return !value.expired();
+    }
+
+    inline Type* operator->()
+    {
+        return value.lock().get();
+    }
+};
+
 template<typename Type, class...Types>
 auto CreateRef = std::make_shared<Type, Types...>;
 

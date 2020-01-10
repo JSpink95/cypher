@@ -42,7 +42,7 @@ struct ParticleVertex
     };
 
     float3 position = float3(0.0f);
-    float2 size = float2(0.0f);
+    float2 size = float2(1.0f);
     float2 uv_scale = float2(1.0f);
     float2 uv_offset = float2(0.0f);
 };

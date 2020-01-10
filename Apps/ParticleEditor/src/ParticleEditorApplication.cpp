@@ -9,15 +9,19 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/ObjectManager.h"
+#include "Core/Thread/GameThread.h"
 
 //////////////////////////////////////////////////////////////////////////
 
 #include "Render/Platform/Window.h"
+#include "Render/Utility/MeshLibrary.h"
+#include "Render/Utility/MaterialLibrary.h"
 
 //////////////////////////////////////////////////////////////////////////
 
 #include "GameFramework/Object/GameObject.h"
 #include "GameFramework/Camera/PerspectiveCamera.h"
+#include "GameFramework/Component/StaticMeshComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -87,9 +91,13 @@ Ref<GameObject> CreateDefaultParticleEffect(const std::string& id, u32 number)
     lifetime->SetLifetimeMin(0.5f);
     lifetime->SetLifetimeMax(1.0f);
 
+    Ref<ParticleSetSizeRandom> size = system->GetEmissionStage()->PushOutput<ParticleSetSizeRandom>();
+    size->SetMinSize(0.05f);
+    size->SetMaxSize(0.075f);
+
     Ref<ParticleSetVelocityRandom> velocity = system->GetEmissionStage()->PushOutput<ParticleSetVelocityRandom>();
-    velocity->SetMinDirection(float3(-0.1f, 1.0f, -0.1f));
-    velocity->SetMaxDirection(float3( 0.1f, 1.0f,  0.1f));
+    velocity->SetMinDirection(float3(-0.3f, 1.0f, -0.3f));
+    velocity->SetMaxDirection(float3( 0.3f, 1.0f,  0.3f));
     velocity->SetStrength(float2(5.0f, 10.0f));
 
     Ref<ParticleGravity> gravity = system->GetUpdateStage()->PushOutput<ParticleGravity>();
@@ -102,8 +110,6 @@ Ref<GameObject> CreateDefaultParticleEffect(const std::string& id, u32 number)
 void ParticleEditorApplication::OnRenderCreate()
 {
     Application::OnRenderCreate();
-
-    window->Recentre();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -111,10 +117,22 @@ void ParticleEditorApplication::OnRenderCreate()
 void ParticleEditorApplication::OnPostCreate()
 {
     Application::OnPostCreate();
+    
+    window->Recentre();
+    
+    cameraObject = CreateObject<GameObject>(ObjectId::Create("Camera"));
+    cameraObject->transform->position = float3(8.0f);
+    GetGameThread()->AddObject(cameraObject);
 
-    cameraObject = CreateObject<GameObject>(ObjectId::Create("MainCamera"));
+    gridObject = CreateObject<GameObject>(ObjectId::Create("Grid"));
+    RenderPassManager::AddObjectToPass(RenderPassType::Opaque, gridObject);
 
-    Ref<OrbitalCameraComponent> camera = cameraObject->CreateComponent<OrbitalCameraComponent>("Cam");
+    Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
+    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex"));
+    gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
+    gridMesh->SetScale(float3(5.0f, 1.0f, 5.0f));
+
+    Ref<OrbitalCameraComponent> camera = cameraObject->CreateComponent<OrbitalCameraComponent>("Perspective");
     camera->SetAsMainCamera();
     camera->SetOrbitOrigin(float3(0.0f));
 
@@ -136,6 +154,9 @@ void ParticleEditorApplication::AddNewDefaultEffect(const std::string& id, bool 
     Ref<GameObject> effect = CreateDefaultParticleEffect(id, editableParticleSystems.size());
     effect->transform->position = atLocation;
     editableParticleSystems.push_back(effect);
+
+    GetGameThread()->AddObject(effect);
+    RenderPassManager::AddObjectToPass(RenderPassType::Particle, effect);
 
     if (makeActive)
     {
