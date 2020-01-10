@@ -21,8 +21,16 @@ class ParticleEditorApplication : public Application
 {
 protected:
 
+    virtual void OnRenderCreate() override;
     virtual void OnPostCreate() override;
     virtual void OnPostUpdate() override;
+
+private:
+    void AddNewDefaultEffect(const std::string& id, bool makeActive = false, const float3& atLocation = float3(0.0f));
+
+private:
+    Ref<GameObject> cameraObject;
+    Ref<GameObject> activeParticleSystem;
 
 private:
     std::vector<Ref<GameObject>> editableParticleSystems;

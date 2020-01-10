@@ -8,18 +8,14 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include <functional>
-
-//////////////////////////////////////////////////////////////////////////
-
 #include "Core/Types.h"
 #include "Core/Input/Input.h"
 
 //////////////////////////////////////////////////////////////////////////
 
-// 
-// forward declaration
-// 
+#include <functional>
+
+//////////////////////////////////////////////////////////////////////////
 
 class Event;
 
@@ -40,6 +36,8 @@ public:
     virtual void SetVisibility(const bool visible) = 0;
     virtual void SetWindowPosition(const int2& newPosition) = 0;
     virtual void Resize(const uint2& resolution) = 0;
+
+    virtual void Recentre() = 0;
 
     virtual void PollEvents() = 0;
     virtual void Present() = 0;

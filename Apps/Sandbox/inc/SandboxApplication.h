@@ -40,15 +40,11 @@ public:
 
 protected:
 
+    virtual void OnRenderCreate() override;
     virtual void OnPostCreate() override;
     virtual void OnDestroy() override;
 
 private:
-    void LoadRenderResources();
-
-private:
-    bool hasLoadedRenderResources = false;
-
     Ref<PhysicsWorld> physics;
 
     Level level;

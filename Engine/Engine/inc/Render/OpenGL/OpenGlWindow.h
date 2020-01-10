@@ -45,6 +45,8 @@ public:
     virtual void SetWindowPosition(const int2& newPosition) override;
     virtual void Resize(const uint2& resolution) override;
 
+    virtual void Recentre() override;
+
     virtual void PollEvents() override;
     virtual void Present() override;
 

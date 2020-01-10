@@ -132,6 +132,15 @@ void SandboxApp::OnPreUpdate(const f32 dt)
 
 //////////////////////////////////////////////////////////////////////////
 
+void SandboxApp::OnRenderCreate()
+{
+    Application::OnRenderCreate();
+
+    window->Recentre();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void SandboxApp::OnPostCreate()
 {
     // do our game initialisation here
@@ -188,11 +197,6 @@ void SandboxApp::OnPostCreate()
     }
 
     physics->SetSimulatePhysics(true);
-
-    GetWindowContext()->SetWindowPosition(int2(-1920 + 200, 200));
-
-    //GetGameThread()->PushThreadTask(this, &SandboxApp::LoadRenderResources);
-
     InputManager::RegisterInput(ImpulseBurstAction, { KeyboardKey::R });
 
     PathResult boxAssetpath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\models\\box.obj");
@@ -218,13 +222,6 @@ void SandboxApp::OnDestroy()
 
     DestroyObject(player->GetId());
     DestroyObject(physics->GetId());
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void SandboxApp::LoadRenderResources()
-{
-    hasLoadedRenderResources = true;
 }
 
 //////////////////////////////////////////////////////////////////////////

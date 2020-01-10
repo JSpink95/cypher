@@ -114,6 +114,20 @@ void OpenGlWindow::Resize(const uint2& resolution)
 
 //////////////////////////////////////////////////////////////////////////
 
+void OpenGlWindow::Recentre()
+{
+    float2 windowsize = GetWindowSize();
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    f32 xpos = ((mode->width - windowsize.x) / 2.0f);
+    f32 ypos = ((mode->height - windowsize.y) / 2.0f);
+
+    glfwSetWindowPos(context, (s32)xpos, (s32)ypos);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void OpenGlWindow::PollEvents()
 {
     glfwPollEvents();
