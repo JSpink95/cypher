@@ -22,6 +22,7 @@
 #include "GameFramework/Object/GameObject.h"
 #include "GameFramework/Camera/PerspectiveCamera.h"
 #include "GameFramework/Component/StaticMeshComponent.h"
+#include "GameFramework/Component/LightComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -124,11 +125,16 @@ void ParticleEditorApplication::OnPostCreate()
     cameraObject->transform->position = float3(8.0f);
     GetGameThread()->AddObject(cameraObject);
 
+	lightObject = CreateObject<GameObject>(ObjectId::Create("MainLightSource"));
+	lightObject->transform->position = float3(0.0f, 6.0f, 0.0f);
+
+	Ref<LightComponent> light = lightObject->CreateComponent<LightComponent>("Light");
+
     gridObject = CreateObject<GameObject>(ObjectId::Create("Grid"));
     RenderPassManager::AddObjectToPass(RenderPassType::Opaque, gridObject);
 
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex"));
+    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
     gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
     gridMesh->SetScale(float3(5.0f, 1.0f, 5.0f));
 

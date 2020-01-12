@@ -1,7 +1,7 @@
 <material id="pp-ssl">
   <program>
     <shader type="vertex" path="assets:\shaders\vertex\pp-passthrough.vs"/>
-    <shader type="pixel" path="assets\shaders\pixel\pp-ssl.ps"/>
+    <shader type="pixel" path="assets:\shaders\pixel\pp-ssl.ps"/>
   </program>
   <parameters>
     <!-- Uniform Blocks -->

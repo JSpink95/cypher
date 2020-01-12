@@ -30,6 +30,7 @@ private:
 
 private:
     Ref<GameObject> cameraObject;
+	Ref<GameObject> lightObject;
     Ref<GameObject> gridObject;
     Ref<GameObject> activeParticleSystem;
 
