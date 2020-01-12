@@ -30,13 +30,15 @@ class GameThread
     , public Singleton<GameThread>
 {
 public:
-    GameThread() = default;
-    virtual ~GameThread() = default;
 
-    void AddObject(WeakRef<Object> object);
-    void RemoveObject(WeakRef<Object> object);
+	static bool IsObjectRegistered(WeakRef<Object> object);
+	static void AddObject(WeakRef<Object> object);
+	static void RemoveObject(WeakRef<Object> object);
 
-    bool IsObjectRegistered(Object* object);
+private:
+    bool IsObjectRegisteredImpl(WeakRef<Object> object);
+    void AddObjectImpl(WeakRef<Object> object);
+    void RemoveObjectImpl(WeakRef<Object> object);
 
 private:
     using ObjectIdHashMap = std::unordered_map<ObjectId, WeakRef<Object>>;

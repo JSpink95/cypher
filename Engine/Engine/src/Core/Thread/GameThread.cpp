@@ -19,7 +19,39 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+bool GameThread::IsObjectRegistered(WeakRef<Object> object)
+{
+	if (Ref<GameThread> thread = GetGameThread())
+	{
+		return thread->IsObjectRegisteredImpl(object);
+	}
+
+	return false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void GameThread::AddObject(WeakRef<Object> object)
+{
+	if (Ref<GameThread> thread = GetGameThread())
+	{
+		thread->AddObjectImpl(object);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void GameThread::RemoveObject(WeakRef<Object> object)
+{
+	if (Ref<GameThread> thread = GetGameThread())
+	{
+		thread->RemoveObjectImpl(object);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void GameThread::AddObjectImpl(WeakRef<Object> object)
 {
     if (!object.expired())
     {
@@ -35,7 +67,7 @@ void GameThread::AddObject(WeakRef<Object> object)
 
 //////////////////////////////////////////////////////////////////////////
 
-void GameThread::RemoveObject(WeakRef<Object> object)
+void GameThread::RemoveObjectImpl(WeakRef<Object> object)
 {
     if (!object.expired())
     {
@@ -46,9 +78,14 @@ void GameThread::RemoveObject(WeakRef<Object> object)
 
 //////////////////////////////////////////////////////////////////////////
 
-bool GameThread::IsObjectRegistered(Object* object)
+bool GameThread::IsObjectRegisteredImpl(WeakRef<Object> object)
 {
-    return registeredObjects.find(object->GetId()) != registeredObjects.end();
+	if (Ref<Object> obj = object.lock())
+	{
+		return registeredObjects.find(obj->GetId()) != registeredObjects.end();
+	}
+
+	return false;
 }
 
 //////////////////////////////////////////////////////////////////////////

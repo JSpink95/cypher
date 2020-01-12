@@ -30,8 +30,8 @@
 #include "Particle/ParticleUpdater.h"
 
 //////////////////////////////////////////////////////////////////////////
-
-// #temporary - make this an engine class
+// #temporary - make these engine classes
+//////////////////////////////////////////////////////////////////////////
 
 class OrbitalCameraComponent : public Component
 {
@@ -77,6 +77,84 @@ private:
 
 //////////////////////////////////////////////////////////////////////////
 
+class EditorController : public Object
+{
+	DECLARE_DERIVED_OBJECT(EditorController, Object)
+private:
+	struct InputState
+	{
+		bool bRotateLeftPressed = false;
+		bool bRotateRightPressed = false;
+		bool bRotateUpPressed = false;
+		bool bRotateDownPressed = false;
+		bool bZoomInPressed = false;
+		bool bZoomOutPressed = false;
+	};
+
+public:
+
+	virtual void OnConstruct() override
+	{
+		Super::OnConstruct();
+
+		transform = CreateComponent<TransformComponent>("Transform");
+		camera = CreateComponent<OrbitalCameraComponent>("Camera");
+
+		camera->SetAsMainCamera();
+
+		GameThread::AddObject(self);
+	}
+
+	virtual void OnUpdate(const f32 dt) override
+	{
+		Super::OnUpdate(dt);
+
+		input.bRotateLeftPressed = Input::IsKeyDown(KeyboardKey::LEFT);
+		input.bRotateRightPressed = Input::IsKeyDown(KeyboardKey::RIGHT);
+		input.bRotateUpPressed = Input::IsKeyDown(KeyboardKey::UP);
+		input.bRotateDownPressed = Input::IsKeyDown(KeyboardKey::DOWN);
+		input.bZoomInPressed = Input::IsKeyDown(KeyboardKey::E);
+		input.bZoomOutPressed = Input::IsKeyDown(KeyboardKey::Q);
+
+		if (input.bZoomInPressed)
+			zoom = glm::max(0.5f, zoom - dt * zoomSpeed);
+
+		if (input.bZoomOutPressed)
+			zoom = glm::min(100.0f, zoom + dt * zoomSpeed);
+
+		float2 movement = float2(0.0f);
+		if (input.bRotateLeftPressed)
+			movement.x -= rotSpeed;
+
+		if (input.bRotateRightPressed)
+			movement.x += rotSpeed;
+
+		if (input.bRotateDownPressed)
+			movement.y -= rotSpeed;
+
+		if (input.bRotateUpPressed)
+			movement.y += rotSpeed;
+
+		transform->rotation.y += movement.x * dt;
+		transform->rotation.x = glm::clamp(transform->rotation.x + movement.y * dt, -89.0f, 89.0f);
+
+		const float3 direction = glm::quat(glm::radians(transform->rotation)) * float3(0.0f, 0.0f, 1.0f);
+		transform->position = float3(0.0f) + direction * zoom;
+	}
+
+private:
+	InputState input;
+
+	f32 rotSpeed = 90.0f;
+	f32 zoomSpeed = 5.0f;
+	f32 zoom = 0.5f;
+
+	Ref<TransformComponent> transform;
+	Ref<OrbitalCameraComponent> camera;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 Ref<GameObject> CreateDefaultParticleEffect(const std::string& id, u32 number)
 {
     Ref<GameObject> effect = CreateObject<GameObject>(ObjectId::Create(id + "-" + std::to_string(number)));
@@ -93,8 +171,8 @@ Ref<GameObject> CreateDefaultParticleEffect(const std::string& id, u32 number)
     lifetime->SetLifetimeMax(1.0f);
 
     Ref<ParticleSetSizeRandom> size = system->GetEmissionStage()->PushOutput<ParticleSetSizeRandom>();
-    size->SetMinSize(0.05f);
-    size->SetMaxSize(0.075f);
+    size->SetMinSize(0.1f);
+    size->SetMaxSize(0.2f);
 
     Ref<ParticleSetVelocityRandom> velocity = system->GetEmissionStage()->PushOutput<ParticleSetVelocityRandom>();
     velocity->SetMinDirection(float3(-0.3f, 1.0f, -0.3f));
@@ -121,9 +199,7 @@ void ParticleEditorApplication::OnPostCreate()
     
     window->Recentre();
     
-    cameraObject = CreateObject<GameObject>(ObjectId::Create("Camera"));
-    cameraObject->transform->position = float3(8.0f);
-    GetGameThread()->AddObject(cameraObject);
+	editorController = CreateObject<EditorController>(ObjectId::Create("EditorController"));
 
 	lightObject = CreateObject<GameObject>(ObjectId::Create("MainLightSource"));
 	lightObject->transform->position = float3(0.0f, 6.0f, 0.0f);
@@ -137,10 +213,6 @@ void ParticleEditorApplication::OnPostCreate()
     gridMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
     gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
     gridMesh->SetScale(float3(5.0f, 1.0f, 5.0f));
-
-    Ref<OrbitalCameraComponent> camera = cameraObject->CreateComponent<OrbitalCameraComponent>("Perspective");
-    camera->SetAsMainCamera();
-    camera->SetOrbitOrigin(float3(0.0f));
 
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);
@@ -161,7 +233,7 @@ void ParticleEditorApplication::AddNewDefaultEffect(const std::string& id, bool 
     effect->transform->position = atLocation;
     editableParticleSystems.push_back(effect);
 
-    GetGameThread()->AddObject(effect);
+    GameThread::AddObject(effect);
     RenderPassManager::AddObjectToPass(RenderPassType::Particle, effect);
 
     if (makeActive)
