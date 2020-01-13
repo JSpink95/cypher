@@ -22,7 +22,7 @@ public:
 
     virtual void Bind() override;
     virtual void Unbind() override;
-    virtual void Draw(const s32 mode) override;
+    virtual void Draw(const RenderMode::Enum mode) override;
 
     virtual void OnDestroy() override;
 

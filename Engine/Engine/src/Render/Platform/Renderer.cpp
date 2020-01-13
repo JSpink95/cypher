@@ -103,19 +103,8 @@ void Renderer::Submit(Ref<Material> material, Ref<VertexArray> mesh, const fmat4
     material->BindProperties();
 
     mesh->Bind();
-    GlCall(mesh->Draw(renderMode));
+    mesh->Draw(material->GetRenderMode());
 }
-
-//////////////////////////////////////////////////////////////////////////
-
-void Renderer::SetRenderMode(s32 const mode)
-{
-    renderMode = mode;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-s32 Renderer::renderMode = GL_TRIANGLES;
 
 //////////////////////////////////////////////////////////////////////////
 // - RenderCommand

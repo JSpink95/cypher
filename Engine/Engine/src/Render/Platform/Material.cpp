@@ -12,6 +12,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Platform/Renderer.h"
 #include "Render/Platform/CoreMaterialParameterBlocks.h"
 #include "Render/Platform/MaterialParameter.h"
 
@@ -143,6 +144,7 @@ static ParseNodeFunction ParseNodeFunctions[MaterialParameterType::Max] =
 
 Material::Material(const Ref<Shader>& associatedShader)
     : shader(associatedShader)
+    , renderMode(RenderMode::TriangleList)
 {
 }
 
@@ -157,6 +159,7 @@ Material::~Material()
 Ref<Material> Material::Clone()
 {
     Ref<Material> cloned = std::make_shared<Material>(shader);
+    cloned->renderMode = renderMode;
     for (auto parameter : parameters)
     {
         cloned->parameters.emplace(parameter.first, parameter.second->Clone());
@@ -253,6 +256,12 @@ Ref<Material> Material::LoadFromFile(const std::string& filepath)
         material = std::make_shared<Material>(shader);
     }
 
+    RenderMode::Enum renderMode = material->renderMode;
+    if (pugi::xml_attribute renderModeAttribute = root.attribute("render_mode"))
+    {
+        renderMode = RenderMode::FromString(renderModeAttribute.as_string());
+    }
+
     // extract material nodes
     pugi::xml_node parameters_node = root.child("parameters");
 
@@ -271,6 +280,8 @@ Ref<Material> Material::LoadFromFile(const std::string& filepath)
 
     // keep a reference to the VIRTUAL filepath
     material->path = filepath;
+    material->renderMode = renderMode;
+
     return material;
 }
 

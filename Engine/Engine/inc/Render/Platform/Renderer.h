@@ -21,6 +21,36 @@ class Framebuffer;
 
 //////////////////////////////////////////////////////////////////////////
 
+namespace RenderMode
+{
+    enum Enum : u8
+    {
+        PointList, LineList, TriangleList, TriangleStrip, QuadList, Invalid, Max
+    };
+
+    static inline Enum FromString(const std::string& id)
+    {
+        static std::unordered_map<std::string, Enum> mapping =
+        {
+            { "PointList", PointList },
+            { "LineList", LineList },
+            { "TriangleList", TriangleList },
+            { "TriangleStrip", TriangleStrip },
+            { "QuadList", QuadList },
+        };
+
+        auto it = mapping.find(id);
+        if (it != mapping.end())
+        {
+            return it->second;
+        }
+
+        return Invalid;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 class Renderer
 {
 private:
@@ -34,16 +64,10 @@ private:
     };
 
 public:
-
     static void BeginScene(Ref<Framebuffer> framebuffer);
     static void EndScene();
 
     static void Submit(Ref<Material> material, Ref<VertexArray> mesh, const fmat4& transform = fmat4(1.0f));
-
-#ifdef _OPENGL
-    static void SetRenderMode(s32 const mode);
-    static s32 renderMode;
-#endif
 
     static const fmat4& GetViewMatrix() { return perFrameProperties.view; }
     static const fmat4& GetProjectionMatrix() { return perFrameProperties.projection; }

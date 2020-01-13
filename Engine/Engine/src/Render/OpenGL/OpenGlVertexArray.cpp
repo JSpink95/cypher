@@ -5,10 +5,44 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Render/OpenGL/OpenGlVertexArray.h"
-#include "Render/Platform/Buffer.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/Thread/GameThread.h"
 
+//////////////////////////////////////////////////////////////////////////
+
+#include "Render/Platform/Buffer.h"
+#include "Render/Platform/Renderer.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "glfw.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+namespace RenderMode
+{
+    static inline s32 ToOpenGl(const Enum e)
+    {
+        static std::unordered_map<Enum, s32> mapping =
+        {
+            { PointList, GL_POINTS },
+            { LineList, GL_LINES },
+            { TriangleList, GL_TRIANGLES },
+            { TriangleStrip, GL_TRIANGLE_FAN },
+            { QuadList, GL_QUADS },
+        };
+
+        auto it = mapping.find(e);
+        if (it != mapping.end())
+        {
+            return it->second;
+        }
+
+        return 0;
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -84,9 +118,9 @@ void OpenGlVertexArray::Unbind()
 
 //////////////////////////////////////////////////////////////////////////
 
-void OpenGlVertexArray::Draw(const s32 mode)
+void OpenGlVertexArray::Draw(const RenderMode::Enum mode)
 {
-    glDrawArrays(mode, 0, buffer->GetCount());
+    glDrawArrays(RenderMode::ToOpenGl(mode), 0, buffer->GetCount());
 }
 
 //////////////////////////////////////////////////////////////////////////

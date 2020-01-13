@@ -10,6 +10,9 @@
 
 #include "Core/Types.h"
 #include "Core/Disposable.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/MaterialParameter.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -19,6 +22,13 @@
 //////////////////////////////////////////////////////////////////////////
 
 class Shader;
+
+//////////////////////////////////////////////////////////////////////////
+
+namespace RenderMode
+{
+    enum Enum : u8;
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -36,6 +46,8 @@ public:
 
     virtual void OnDestroy() override;
 
+public:
+
     template<typename TMaterialParameter>
     Ref<TMaterialParameter> FindOrAddParameter(const std::string& id);
 
@@ -45,15 +57,19 @@ public:
     template<typename TMaterialParameter>
     void SetParameterValue(const std::string& id, typename const TMaterialParameter::value_type& data);
 
-    inline const Ref<Shader>& GetShader() const { return shader; }
-    void BindProperties();
+public:
 
+    inline const Ref<Shader>& GetShader() const { return shader; }
+    inline RenderMode::Enum GetRenderMode() const { return renderMode; }
+
+    void BindProperties();
     void Reload();
 
 private:
     std::string path;
     Ref<Shader> shader;
     MaterialParameterMap parameters;
+    RenderMode::Enum renderMode;
 
 public:
     static Ref<Material> LoadFromFile(const std::string& filepath);

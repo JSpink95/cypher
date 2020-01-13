@@ -137,10 +137,7 @@ void ParticleSystemComponent::OnRender(RenderPassType::Enum pass, Ref<Material> 
 
         material->SetParameterBlock<UniformBufferParticleExtra>("ParticleExtra", particleExtra);
 
-        // #todo - replace hack with proper render mode setting
-        GlCall(Renderer::SetRenderMode(GL_POINTS));
         Renderer::Submit(material, particleMesh, worldTransform);
-        GlCall(Renderer::SetRenderMode(GL_TRIANGLES));
     }
 }
 
