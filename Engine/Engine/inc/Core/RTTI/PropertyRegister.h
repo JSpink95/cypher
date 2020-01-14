@@ -21,6 +21,9 @@ public:
     virtual void SetFromString(void* base, const std::string& value) = 0;
 
 public:
+    virtual void ShowEditBox(void* base) = 0;
+
+public:
     size_t offset = 0;
 };
 
@@ -30,6 +33,12 @@ template<typename T>
 class Property: public BaseProperty
 {
 public:
+
+    T& GetValueFromContainer(void* base)
+    {
+        *(T*)(reinterpret_cast<char*>(base) + offset);
+    }
+
     void SetFromStrongType(void* base, const T& value)
     {
         *(T*)(reinterpret_cast<char*>(base) + offset) = value;
@@ -47,6 +56,13 @@ public:
     {
         // implemented elsewhere
     }
+
+public:
+    virtual void ShowEditBox(void* base) override
+    {
+
+    }
+
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,6 +90,13 @@ public:
     {
         // implemented elsewhere
     }
+
+public:
+    virtual void ShowEditBox(void* base) override
+    {
+        // this will need some thought...
+    }
+
 };
 
 //////////////////////////////////////////////////////////////////////////

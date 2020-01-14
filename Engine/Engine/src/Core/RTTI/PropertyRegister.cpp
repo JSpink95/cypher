@@ -25,6 +25,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+// #todo - check if this actually works, if not make a brute force float parse
 inline std::stringstream& operator>>(std::stringstream& ss, std::vector<f32>& output)
 {
     f32 value = 0.0f;
@@ -33,6 +34,8 @@ inline std::stringstream& operator>>(std::stringstream& ss, std::vector<f32>& ou
 
     return ss;
 }
+
+//////////////////////////////////////////////////////////////////////////
 
 namespace RTTI
 {
@@ -86,6 +89,14 @@ template<> void Property<bool>::SetFromString(void* base, const std::string& str
 {
     bool value = RTTI::ToBool(string);
     SetFromStrongType(base, value);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+template<> void Property<bool>::ShowEditBox(void* base)
+{
+    bool& editable = GetValueFromContainer(base);
+    //ImGui::Checkbox("Need an id...", &editable);
 }
 
 //////////////////////////////////////////////////////////////////////////

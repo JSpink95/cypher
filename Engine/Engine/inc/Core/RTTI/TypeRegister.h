@@ -36,8 +36,22 @@ public:
         properties.emplace(id, prop);
     }
 
+public:
+
+    // stl compatibility
+
+    using property_map = std::unordered_map<std::string, BaseProperty*>;
+    using iterator = property_map::iterator;
+    using const_iterator = property_map::const_iterator;
+
+    iterator begin() { return properties.begin(); }
+    const_iterator begin() const { return properties.begin(); }
+
+    iterator end() { return properties.end(); }
+    const_iterator end() const { return properties.end(); }
+
 private:
-    std::unordered_map<std::string, BaseProperty*> properties;
+    property_map properties;
 };
 
 //////////////////////////////////////////////////////////////////////////
