@@ -6,9 +6,22 @@
 
 #include "GameFramework/Component/ProjectileMovementComponent.h"
 
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/Object.h"
-#include "GameFramework/Component/TransformComponent.h"
+#include "Core/RTTI/RTTI.h"
 #include "Core/Thread/GameThread.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "GameFramework/Component/TransformComponent.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ProjectileMovementComponent)
+    RTTI_PROPERTY(ProjectileMovementComponent, f32, speed)
+    //RTTI_PROPERTY(ProjectileMovementComponent, float3, direction) // probably don't need to expose this to the RTTI system
+RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 

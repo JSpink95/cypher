@@ -118,14 +118,19 @@ public:
 private:
     std::vector<Particle> particles;
 
+public:
     // render data
     Ref<Material> material;
     bool localSpaceParticles = false;
 
+private:
     // particle emission
     s32 particleCountRequest = 0;
     u64 numParticlesSpawned = 0u;
     f32 timeSinceLastEmission = 0.0f;
+
+public:
+    // particle emission editables
     f32 emissionRate = 0.005f;
     s32 maxAliveParticles = 0;   // 0 means no cap
 
@@ -135,6 +140,8 @@ private:
 
     // particle events
     Ref<ParticleEvent> onParticleDeath;
+
+private:
 
     // particle meshes
     Ref<VertexBuffer> particleBuffer;

@@ -37,6 +37,8 @@ public:
     Ref<Material> material = nullptr;
     Ref<VertexArray> mesh = nullptr;
     float3 scale = float3(1.0f);
+
+private:
     WeakRef<TransformComponent> ownerTransform;
 
 public:

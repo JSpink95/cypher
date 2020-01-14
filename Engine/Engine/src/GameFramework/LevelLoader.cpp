@@ -153,8 +153,9 @@ bool ReadEntity(pugi::xml_node node, Ref<Object> object)
     using ComponentCreator = std::function<Ref<Component>(Ref<Object>, pugi::xml_node)>;
     static std::unordered_map<std::string, ComponentCreator> componentCreatorFactory =
     {
-        std::make_pair("transform", TransformComponent::Create),
-        std::make_pair("staticmesh", StaticMeshComponent::Create),
+        std::make_pair("TransformComponent", TransformComponent::Create),
+        std::make_pair("StaticMeshComponent", StaticMeshComponent::Create),
+        //std::make_pair("RigidBodyComponent", StaticMeshComponent::Create),
     };
 
     pugi::xml_document doc;
@@ -174,14 +175,22 @@ bool ReadEntity(pugi::xml_node node, Ref<Object> object)
         {
 
         }
-        else
+        else if (name == "component")
         {
-            auto it = componentCreatorFactory.find(name);
+            const std::string id = node.attribute("id").as_string();
+            const std::string componentType = node.attribute("type").as_string();
+
+            auto it = componentCreatorFactory.find(componentType);
             if (it != componentCreatorFactory.end())
             {
-                // don't actually need to do much here...
                 Ref<Component> component = it->second(object, node);
             }
+        }
+        else
+        {
+#if DEBUG
+            printf("Unrecognised blueprint property type %s.\n", name.c_str());
+#endif
         }
     }
 }

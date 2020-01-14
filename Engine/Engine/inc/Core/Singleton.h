@@ -12,6 +12,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+//
+// Typical singleton. Explicitly Created/Deleted.
+//
+
 template<typename T>
 class Singleton
 {
@@ -31,6 +35,23 @@ public:
 
 private:
     static inline Ref<T> instance = nullptr;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+// 
+// Special case singleton. implicitly Created/Deleted.
+// 
+
+template<typename T>
+class AutoConstructSingleton
+{
+public:
+    static inline Ref<T> Get()
+    {
+        static Ref<T> instance = std::make_shared<T>();
+        return instance;
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////

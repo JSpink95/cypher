@@ -28,6 +28,10 @@ public:
 
     inline Ref<LightObject> GetLightInstance() { return light; }
 
+public:
+    f32 radius = 16.0f;
+    float3 color = float3(1.0f);
+
 private:
     Ref<LightObject> light;
     WeakRef<TransformComponent> ownerTransform;

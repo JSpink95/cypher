@@ -17,6 +17,7 @@
 
 #include "Core/Core.h"
 #include "Core/Object.h"
+#include "Core/RTTI/RTTI.h"
 #include "Core/Thread/GameThread.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,6 +37,18 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSystemComponent)
+    RTTI_PROPERTY_REF(ParticleSystemComponent, Material, material)
+    RTTI_PROPERTY(ParticleSystemComponent, bool, localSpaceParticles)
+    RTTI_PROPERTY(ParticleSystemComponent, f32, emissionRate)
+    RTTI_PROPERTY(ParticleSystemComponent, s32, maxAliveParticles)
+    //RTTI_PROPERTY_REF(ParticleSystemComponent, ParticleEmissionStage, emissionStage)
+    //RTTI_PROPERTY_REF(ParticleSystemComponent, ParticleUpdateStage, updateStage)
+    //RTTI_PROPERTY_REF(ParticleSystemComponent, ParticleEvent, onParticleDeath)
+RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 

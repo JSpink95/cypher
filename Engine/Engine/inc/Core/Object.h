@@ -11,7 +11,6 @@
 #include "Core/Core.h"
 #include "Core/Types.h"
 #include "Core/TypeId.h"
-#include "Core/Property.h"
 #include "Core/ObjectMacros.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -33,7 +32,7 @@ class Material;
 
 //////////////////////////////////////////////////////////////////////////
 
-class Object: public PropertyContainer
+class Object
 {
     DECLARE_BASE_OBJECT(Object)
 public:

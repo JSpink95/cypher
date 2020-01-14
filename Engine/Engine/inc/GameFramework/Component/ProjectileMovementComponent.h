@@ -25,9 +25,11 @@ public:
 
     void Initialise(const float3& newDirection, const f32 newSpeed);
 
-private:
+public:
     float3 direction;
     f32 speed;
+
+private:
     Ref<TransformComponent> transform;
 };
 

@@ -29,7 +29,10 @@ public:
     virtual void OnConstruct() override;
     virtual void OnUpdate(const f32 dt) override;
 
-    void Initialise(const f32 mass);
+    void Initialise(const f32 mass_deprecated);
+
+public:
+    f32 mass = 100.0f;
 
 private:
     btRigidBody* body = nullptr;

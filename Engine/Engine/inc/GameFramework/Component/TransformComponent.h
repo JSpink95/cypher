@@ -25,6 +25,7 @@ public:
 
 public:
     static Ref<Component> Create(Ref<Object> owner, pugi::xml_node node);
+    static Ref<Component> CreateComponent(Ref<Object> owner, const std::string& id, pugi::xml_node node);
 };
 
 //////////////////////////////////////////////////////////////////////////
