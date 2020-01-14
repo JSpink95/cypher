@@ -53,6 +53,7 @@ workspace(workspace_name)
         include("External\\spdlog")
         include("External\\json")
         include("External\\pugixml")
+        include("External\\imgui")
 
     group "Engine"
         include("Engine\\Engine")

@@ -16,13 +16,14 @@ project "Engine"
         project_external_root.."spdlog\\inc\\",
         project_external_root.."pugixml\\inc\\",
         project_external_root.."bullet\\src\\",
+        project_external_root.."imgui\\src\\",
 
         current_dir.."inc\\",
         current_dir.."src\\",
     }
 
     links {
-        "glm", "stb", "spdlog", "pugixml", "bullet"
+        "glm", "stb", "spdlog", "pugixml", "bullet", "imgui"
     }
 
     filter "platforms:Dx11"

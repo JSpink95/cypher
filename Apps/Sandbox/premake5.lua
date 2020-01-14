@@ -18,6 +18,7 @@ project "Sandbox"
         project_external_root.."json\\inc\\",
         project_external_root.."pugixml\\inc\\",
         project_external_root.."bullet\\src\\",
+        project_external_root.."imgui\\src\\",
         
         project_engine_root.."Engine\\inc\\",
 
@@ -26,7 +27,7 @@ project "Sandbox"
     }
     
     links {
-        "glm", "stb", "spdlog", "Engine", "pugixml", "bullet"
+        "glm", "stb", "spdlog", "Engine", "pugixml", "bullet", "imgui"
     }
 
     filter "platforms:Dx11"

@@ -65,29 +65,6 @@ Ref<Component> TransformComponent::CreateComponent(Ref<Object> owner, const std:
 {
     Ref<TransformComponent> transform = owner->CreateComponent<TransformComponent>(id);
 
-    static std::unordered_map<std::string, PropertySetterFunction> setters =
-    {
-        { "position", [](Ref<TransformComponent> transform, const std::string& value) { transform->position = ParseFloat3(value); } },
-        { "rotation", [](Ref<TransformComponent> transform, const std::string& value) { transform->rotation = ParseFloat3(value); } },
-        { "scale", [](Ref<TransformComponent> transform, const std::string& value) { transform->scale = ParseFloat3(value); } },
-    };
-
-    for (auto element : node)
-    {
-        const std::string elementName = element.name();
-        if (elementName == "property")
-        {
-            const std::string propertyId = element.attribute("id").as_string();
-            const std::string propertyValue = element.attribute("value").as_string();
-
-            auto it = setters.find(propertyId);
-            if (it != setters.end())
-            {
-                it->second(transform, propertyValue);
-            }
-        }
-    }
-
     return transform;
 }
 

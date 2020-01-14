@@ -37,7 +37,14 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#ifdef _OPENGL
+
 #include "glfw.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "Render/OpenGL/OpenGlWindow.h"
+
+#endif // _OPENGL
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -111,6 +118,11 @@ void Application::RenderCreate()
     MaterialLibrary::Initialise();
     MeshLibrary::Initialise();
     RenderPassManager::Initialise();
+
+#ifdef _OPENGL
+    OpenGlWindow* glWindow = static_cast<OpenGlWindow*>(window.get());
+    ImGui_ImplGlfw_InitForOpenGL(glWindow->GetContext(), true);
+#endif
 
     GlCall(glEnable(GL_DEPTH_TEST));
     GlCall(glEnable(GL_CULL_FACE));
