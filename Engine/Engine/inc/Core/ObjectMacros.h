@@ -27,23 +27,24 @@ public: static inline ClassId ClassUID()                                        
 
 //////////////////////////////////////////////////////////////////////////
 
-#define DEFINE_SERIALISATION_TYPES(Class)                                                   \
-public: using PropertySetterFunction = std::function<void(Ref<Class>,const std::string&)>; 
-
-//////////////////////////////////////////////////////////////////////////
-
 #define DECLARE_BASE_COMPONENT(Base)                                            \
 DEFINE_CLASS_UID(Base)                                                          \
-DEFINE_SERIALISATION_TYPES(Base)                                                \
-public: virtual inline ClassId GetClassUID() { return ClassUID(); }
+public: virtual inline ClassId GetClassUID() { return ClassUID(); }             \
+public: virtual inline bool IsTypeOf(ClassId id)                                \
+{                                                                               \
+    return id == ClassUID();                                                    \
+}
 
 //////////////////////////////////////////////////////////////////////////
 
 #define DECLARE_DERIVED_COMPONENT(Derived, Base)                                \
 DEFINE_CLASS_UID(Derived)                                                       \
 private: using Super = Base;                                                    \
-DEFINE_SERIALISATION_TYPES(Derived)                                             \
-public: virtual inline ClassId GetClassUID() override { return ClassUID(); }
+public: virtual inline ClassId GetClassUID() override { return ClassUID(); }    \
+public: virtual inline bool IsTypeOf(ClassId id) override                       \
+{                                                                               \
+    return (ClassUID() == id) || Super::IsTypeOf(id);                           \
+}
 
 //////////////////////////////////////////////////////////////////////////
 

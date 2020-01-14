@@ -13,6 +13,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Physics/PhysicsWorld.h"
+#include "Physics/Component/ColliderComponent.h"
+#include "Physics/Geometry/BaseCollisionShape.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -34,7 +36,8 @@ void RigidBodyComponent::OnConstruct()
 {
     Super::OnConstruct();
 
-    ownerTransform = owner->FindFirstComponentOfType<TransformComponent>();
+    attachedCollider = owner->FindFirstComponentOfType<ColliderComponent>();
+    attachedTransform = owner->FindFirstComponentOfType<TransformComponent>();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -43,7 +46,7 @@ void RigidBodyComponent::OnUpdate(const f32 dt)
 {
     Super::OnUpdate(dt);
 
-    if (Ref<TransformComponent> transform = ownerTransform.lock())
+    if (Ref<TransformComponent> transform = attachedTransform.lock())
     {
         if (body != nullptr)
         {
@@ -66,7 +69,15 @@ void RigidBodyComponent::OnUpdate(const f32 dt)
 
 void RigidBodyComponent::Initialise(const f32 mass_deprecated)
 {
-    body = Physics::CreateRigidBody(mass, float3(0.0f), float3(0.0f), nullptr);
+    Ref<BaseCollisionShape> collision = attachedCollider.expired() ? nullptr : attachedCollider.lock()->GetCollisionShape();
+    Ref<TransformComponent> transform = attachedTransform.expired() ? nullptr : attachedTransform.lock();
+
+    body = Physics::CreateRigidBody(
+        mass,
+        transform != nullptr ? transform->position : float3(0.0f),
+        transform != nullptr ? transform->rotation : float3(0.0f),
+        collision != nullptr ? collision->btShape() : nullptr
+    );
 }
 
 //////////////////////////////////////////////////////////////////////////

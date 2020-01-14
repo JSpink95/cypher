@@ -18,6 +18,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 class btRigidBody;
+class ColliderComponent;
 class TransformComponent;
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,11 +37,10 @@ public:
 
 private:
     btRigidBody* body = nullptr;
-    WeakRef<TransformComponent> ownerTransform;
 
-public:
-    // #test - "deserialisation"
-    static Ref<RigidBodyComponent> FromXmlNode(pugi::xml_node node);
+private:
+    WeakRef<ColliderComponent> attachedCollider;
+    WeakRef<TransformComponent> attachedTransform;
 };
 
 //////////////////////////////////////////////////////////////////////////

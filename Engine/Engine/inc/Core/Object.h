@@ -77,7 +77,7 @@ public:
     {
         auto it = std::find_if(components.begin(), components.end(), [](const std::pair<ComponentId, Ref<Component>>& it) -> bool
         { 
-            return it.second != nullptr && it.second->GetClassUID() == TComponent::ClassUID();
+            return it.second != nullptr && it.second->IsTypeOf(TComponent::ClassUID());
         });
 
         if (it != components.end())
