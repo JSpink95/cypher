@@ -17,7 +17,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN(BoxColliderComponent)
-    RTTI_PROPERTY(BoxColliderComponent, float3, halfSize)
+    RTTI_PROPERTY_WITH_NOTIFY(BoxColliderComponent, float3, halfSize)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,13 @@ void BoxColliderComponent::OnConstruct()
     Super::OnConstruct();
 
     collisionShape = std::make_shared<BoxCollision>(halfSize);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void BoxColliderComponent::OnPropertyChanged(BaseProperty* prop)
+{
+    Super::OnPropertyChanged(prop);
 }
 
 //////////////////////////////////////////////////////////////////////////

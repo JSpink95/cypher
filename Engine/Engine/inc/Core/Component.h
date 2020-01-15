@@ -13,6 +13,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/RTTI/PropertyRegister.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/RenderPass.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -21,7 +25,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-class Component
+class Component: public IPropertyChangedListener
 {
     DECLARE_BASE_COMPONENT(Component)
 public:
@@ -32,10 +36,6 @@ public:
     virtual void OnDestruct() {}
     virtual void OnUpdate(const f32 dt) {}
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride = nullptr) {}
-
-#ifdef DEBUG
-    virtual void OnImGui() {}
-#endif
 
 public:
     inline Object* GetOwner() const { return owner; }

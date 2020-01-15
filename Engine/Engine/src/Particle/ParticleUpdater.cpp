@@ -9,7 +9,82 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/RTTI/RTTI.h"
 #include "Core/Utility/RandomUtils.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticlePointEmitter)
+    RTTI_PROPERTY(ParticlePointEmitter, float3, point)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSphereEmitter)
+    RTTI_PROPERTY(ParticleSphereEmitter, float2, radius)
+    RTTI_PROPERTY(ParticleSphereEmitter, float2, direction)
+    RTTI_PROPERTY(ParticleSphereEmitter, bool, clampToEdge)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSetLifetime)
+    RTTI_PROPERTY(ParticleSetLifetime, f32, lifetime)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSetLifetimeRandom)
+    RTTI_PROPERTY(ParticleSetLifetimeRandom, float2, minLifetime)
+    RTTI_PROPERTY(ParticleSetLifetimeRandom, float2, maxLifetime)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSetSize)
+    RTTI_PROPERTY(ParticleSetSize, f32, size)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSetSizeRandom)
+    RTTI_PROPERTY(ParticleSetSizeRandom, f32, minSize)
+    RTTI_PROPERTY(ParticleSetSizeRandom, f32, maxSize)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSetUV)
+    RTTI_PROPERTY(ParticleSetUV, float2, scale)
+    RTTI_PROPERTY(ParticleSetUV, float2, offset)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSetVelocity)
+    RTTI_PROPERTY(ParticleSetVelocity, f32, strength)
+    RTTI_PROPERTY(ParticleSetVelocity, float3, direction)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleSetVelocityRandom)
+    RTTI_PROPERTY(ParticleSetVelocityRandom, float2, strength)
+    RTTI_PROPERTY(ParticleSetVelocityRandom, float3, minDirections)
+    RTTI_PROPERTY(ParticleSetVelocityRandom, float3, maxDirections)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleLinearDrag)
+    RTTI_PROPERTY(ParticleLinearDrag, f32, drag)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ParticleGravity)
+    RTTI_PROPERTY(ParticleGravity, float3, gravity)
+RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -69,7 +144,7 @@ void ParticleSetLifetime::Initialise(Particle& particle)
 
 void ParticleSetLifetimeRandom::Initialise(Particle& particle)
 {
-    particle.age = global_random::as_float(lifetime.x, lifetime.y);
+    particle.age = global_random::as_float(minLifetime, maxLifetime);
 }
 
 //////////////////////////////////////////////////////////////////////////

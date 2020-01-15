@@ -168,20 +168,20 @@ Ref<GameObject> CreateDefaultParticleEffect(const std::string& id, u32 number)
     system->SetMaxParticlesAlive(1024);
     
     Ref<ParticlePointEmitter> emitter = system->GetEmissionStage()->PushOutput<ParticlePointEmitter>();
-    emitter->SetPoint(float3(0.0f));
+    emitter->point = float3(0.0f);
 
     Ref<ParticleSetLifetimeRandom> lifetime = system->GetEmissionStage()->PushOutput<ParticleSetLifetimeRandom>();
-    lifetime->SetLifetimeMin(0.5f);
-    lifetime->SetLifetimeMax(1.0f);
+    lifetime->minLifetime = 0.5f;
+    lifetime->maxLifetime = 1.0f;
 
     Ref<ParticleSetSizeRandom> size = system->GetEmissionStage()->PushOutput<ParticleSetSizeRandom>();
-    size->SetMinSize(0.1f);
-    size->SetMaxSize(0.2f);
+    size->minSize = 0.1f;
+    size->maxSize = 0.2f;
 
     Ref<ParticleSetVelocityRandom> velocity = system->GetEmissionStage()->PushOutput<ParticleSetVelocityRandom>();
-    velocity->SetMinDirection(float3(-0.3f, 1.0f, -0.3f));
-    velocity->SetMaxDirection(float3( 0.3f, 1.0f,  0.3f));
-    velocity->SetStrength(float2(5.0f, 10.0f));
+    velocity->minDirections = float3(-0.3f, 1.0f, -0.3f);
+    velocity->maxDirections = float3( 0.3f, 1.0f,  0.3f);
+    velocity->strength = float2(5.0f, 10.0f);
 
     Ref<ParticleGravity> gravity = system->GetUpdateStage()->PushOutput<ParticleGravity>();
 

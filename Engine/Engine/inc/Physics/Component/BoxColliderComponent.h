@@ -18,6 +18,8 @@ class BoxColliderComponent : public ColliderComponent
 public:
     virtual void OnConstruct() override;
 
+    virtual void OnPropertyChanged(BaseProperty* prop) override;
+
 public:
     float3 halfSize = float3(1.0f);
 };

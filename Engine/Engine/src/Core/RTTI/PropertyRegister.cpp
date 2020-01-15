@@ -106,9 +106,9 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void ShowEditBox<bool>(const std::string& id, bool& editable)
+    template<> bool ShowEditBox<bool>(void* owner, BaseProperty* prop, const std::string& id, bool& editable)
     {
-        ImGui::Checkbox(id.c_str(), &editable);
+        return ImGui::Checkbox(id.c_str(), &editable);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -120,9 +120,9 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void ShowEditBox<s32>(const std::string& id, s32& editable)
+    template<> bool ShowEditBox<s32>(void* owner, BaseProperty* prop, const std::string& id, s32& editable)
     {
-        ImGui::InputInt(id.c_str(), &editable);
+        return ImGui::InputInt(id.c_str(), &editable);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -134,9 +134,9 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void ShowEditBox<f32>(const std::string& id, f32& editable)
+    template<> bool ShowEditBox<f32>(void* owner, BaseProperty* prop, const std::string& id, f32& editable)
     {
-        ImGui::InputFloat(id.c_str(), &editable);
+        return ImGui::InputFloat(id.c_str(), &editable);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -148,9 +148,9 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void ShowEditBox<float2>(const std::string& id, float2& editable)
+    template<> bool ShowEditBox<float2>(void* owner, BaseProperty* prop, const std::string& id, float2& editable)
     {
-        ImGui::InputFloat2(id.c_str(), &editable.x, 3);
+        return ImGui::InputFloat2(id.c_str(), &editable.x, 3);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -162,9 +162,9 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void ShowEditBox<float3>(const std::string& id, float3& editable)
+    template<> bool ShowEditBox<float3>(void* owner, BaseProperty* prop, const std::string& id, float3& editable)
     {
-        ImGui::InputFloat3(id.c_str(), &editable.x, 3);
+        return ImGui::InputFloat3(id.c_str(), &editable.x, 3);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -176,16 +176,18 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void ShowEditBox<std::string>(const std::string& id, std::string& editable)
+    template<> bool ShowEditBox<std::string>(void* owner, BaseProperty* prop, const std::string& id, std::string& editable)
     {
         static constexpr const size_t maxBufferSize = 128u;
 
         char buffer[maxBufferSize];
         std::memcpy(buffer, editable.c_str(), glm::min(maxBufferSize, editable.length()));
 
-        ImGui::InputText(id.c_str(), buffer, maxBufferSize);
+        const bool changed = ImGui::InputText(id.c_str(), buffer, maxBufferSize);
 
         editable = buffer;
+
+        return changed;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -197,10 +199,11 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void ShowEditBox<Ref<Material>>(const std::string& id, Ref<Material>& editable)
+    template<> bool ShowEditBox<Ref<Material>>(void* owner, BaseProperty* prop, const std::string& id, Ref<Material>& editable)
     {
         // display a list of materials...
         ImGui::Text("Not yet implemented - MaterialRef");
+        return false;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -212,10 +215,11 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void ShowEditBox<Ref<VertexArray>>(const std::string& id, Ref<VertexArray>& editable)
+    template<> bool ShowEditBox<Ref<VertexArray>>(void* owner, BaseProperty* prop, const std::string& id, Ref<VertexArray>& editable)
     {
         // display a list of meshes...
         ImGui::Text("Not yet implemented - VertexArrayRef");
+        return false;
     }
 }
 

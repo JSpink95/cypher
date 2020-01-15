@@ -12,14 +12,26 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+class BaseProperty;
+
+//////////////////////////////////////////////////////////////////////////
+
 namespace RTTI
 {
     template<typename T>
     void SetValueFromString(const std::string& value, T& editable);
 
     template<typename T>
-    void ShowEditBox(const std::string& id, T& value);
+    bool ShowEditBox(void* owner, BaseProperty* prop, const std::string& id, T& value);
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+class IPropertyChangedListener
+{
+public:
+    virtual void OnPropertyChanged(BaseProperty* prop) {}
+};
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -28,11 +40,12 @@ class BaseProperty
 public:
     virtual ~BaseProperty() {}
 
+public:
     virtual void SetFromBlob(void* base, void* blob) = 0;
     virtual void SetFromString(void* base, const std::string& value) = 0;
 
 public:
-    virtual void ShowEditBox(const std::string& id, void* base) = 0;
+    virtual bool ShowEditBox(const std::string& id, void* base) = 0;
 
 public:
     size_t offset = 0;
@@ -71,49 +84,31 @@ public:
         RTTI::SetValueFromString<T>(string, GetValueFromContainer(base));
     }
 
-    virtual void ShowEditBox(const std::string& id, void* base) override
+    virtual bool ShowEditBox(const std::string& id, void* base) override
     {
-        RTTI::ShowEditBox<T>(id, GetValueFromContainer(base));
+        return RTTI::ShowEditBox<T>(base, this, id, GetValueFromContainer(base));
     }
 };
 
 //////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-class RefProperty: public BaseProperty
+class PropertyWithNotify : public Property<T>
 {
 public:
-    using RefType = Ref<T>;
-
-public:
-    inline RefType& GetValueFromContainer(void* base)
+    virtual bool ShowEditBox(const std::string& id, void* base) override
     {
-        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
-        return *(RefType*)(bytes + offset);
-    }
+        const bool changed = Property<T>::ShowEditBox(id, base);
 
-    inline void SetFromStrongType(void* base, const RefType& value)
-    {
-        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
-        *(RefType*)(bytes + offset) = value;
-    }
+        if (changed)
+        {
+            if (IPropertyChangedListener* listener = (IPropertyChangedListener*)base)
+            {
+                listener->OnPropertyChanged(this);
+            }
+        }
 
-    // maybe we can get away with doing some kind of cast...
-    virtual void SetFromBlob(void* base, void* blob) override
-    {
-        // this doesn't work for ref types
-    }
-
-public:
-    // needs concrete implementation per type.
-    virtual void SetFromString(void* base, const std::string& string) override
-    {
-        RTTI::SetValueFromString<RefType>(string, GetValueFromContainer(base));
-    }
-
-    virtual void ShowEditBox(const std::string& id, void* base) override
-    {
-        RTTI::ShowEditBox<RefType>(id, GetValueFromContainer(base));
+        return changed;
     }
 };
 
@@ -136,17 +131,17 @@ private:
 //////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename TProperty>
-class AutoRefPropertyRegister
+class AutoPropertyRegisterWithNotify
 {
 public:
-    AutoRefPropertyRegister(const std::string& id, const size_t offset)
+    AutoPropertyRegisterWithNotify(const std::string& id, const size_t offset)
     {
         TypeRegister::GetRegisteredType<T>()->AddProperty(id, &prop);
         prop.offset = offset;
     }
 
 private:
-    RefProperty<TProperty> prop;
+    PropertyWithNotify<TProperty> prop;
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -9,18 +9,18 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#define RTTI_BEGIN(Class)                                                        \
+#define RTTI_BEGIN(Class)                                                                                                   \
 static AutoTypeRegister<Class> RTTI_##Class;
 
 //////////////////////////////////////////////////////////////////////////
 
-#define RTTI_PROPERTY(Class, PropertyType, Property)                                                            \
-static AutoPropertyRegister<Class, PropertyType> RTTI_##Class_##Property(#Property, offsetof(Class, Property));
+#define RTTI_PROPERTY(Class, PropertyType, Property)                                                                        \
+static AutoPropertyRegister<Class, PropertyType> RTTI_##Class##_##Property(#Property, offsetof(Class, Property));
 
 //////////////////////////////////////////////////////////////////////////
 
-#define RTTI_PROPERTY_REF(Class, PropertyType, Property)                        \
-static AutoRefPropertyRegister<Class, PropertyType> RTTI_##Class_##Property(#Property, offsetof(Class, Property));
+#define RTTI_PROPERTY_WITH_NOTIFY(Class, PropertyType, Property)                                                            \
+static AutoPropertyRegisterWithNotify<Class, PropertyType> RTTI_##Class##_##Property(#Property, offsetof(Class, Property));
 
 //////////////////////////////////////////////////////////////////////////
 

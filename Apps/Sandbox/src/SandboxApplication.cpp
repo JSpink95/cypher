@@ -159,25 +159,26 @@ void SandboxApp::OnPostCreate()
     particleEmitter->SetMaxParticlesAlive(1024);
 
     Ref<ParticlePointEmitter> pointEmitter = std::make_shared<ParticlePointEmitter>();
-    pointEmitter->SetPoint(float3(0.0f));
+    pointEmitter->point = float3(0.0f);
 
     Ref<ParticleSetLifetimeRandom> randomLifetime = std::make_shared<ParticleSetLifetimeRandom>();
-    randomLifetime->SetRange(2.0f, 4.0f);
+    randomLifetime->minLifetime = 2.0f;
+    randomLifetime->maxLifetime = 4.0f;
 
     Ref<ParticleSetVelocityRandom> randomVelocity = std::make_shared<ParticleSetVelocityRandom>();
-    randomVelocity->SetStrength(float2(6.0f, 20.0f));
-    randomVelocity->SetMinDirection(float3(-0.3f, 1.0f, -0.3f));
-    randomVelocity->SetMaxDirection(float3( 0.3f, 1.0f,  0.3f));
+    randomVelocity->strength = float2(6.0f, 20.0f);
+    randomVelocity->minDirections = float3(-0.3f, 1.0f, -0.3f);
+    randomVelocity->maxDirections = float3( 0.3f, 1.0f,  0.3f);
 
     Ref<ParticleSetSizeRandom> randomSize = std::make_shared<ParticleSetSizeRandom>();
-    randomSize->SetMinSize(0.6f);
-    randomSize->SetMaxSize(0.8f);
+    randomSize->minSize = 0.6f;
+    randomSize->maxSize = 0.8f;
 
     Ref<ParticleGravity> gravity = std::make_shared<ParticleGravity>();
-    gravity->SetGravity(float3(0.0f, -1.0f, 0.0f));
+    gravity->gravity = float3(0.0f, -1.0f, 0.0f);
 
     Ref<ParticleLinearDrag> linearDrag = std::make_shared<ParticleLinearDrag>();
-    linearDrag->SetDrag(4.0f);
+    linearDrag->drag = 4.0f;
 
     Ref<ParticleEventOnDeath> onParticleDeath = std::make_shared<ParticleEventOnDeath>();
 

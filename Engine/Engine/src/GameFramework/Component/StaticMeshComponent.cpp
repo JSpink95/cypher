@@ -21,8 +21,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN(StaticMeshComponent)
-    RTTI_PROPERTY_REF(StaticMeshComponent, Material, material)
-    RTTI_PROPERTY_REF(StaticMeshComponent, VertexArray, mesh)
+    RTTI_PROPERTY(StaticMeshComponent, Ref<Material>, material)
+    RTTI_PROPERTY(StaticMeshComponent, Ref<VertexArray>, mesh)
     RTTI_PROPERTY(StaticMeshComponent, float3, scale)
 RTTI_END()
 

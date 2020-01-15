@@ -41,7 +41,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN(ParticleSystemComponent)
-    RTTI_PROPERTY_REF(ParticleSystemComponent, Material, material)
+    RTTI_PROPERTY(ParticleSystemComponent, Ref<Material>, material)
     RTTI_PROPERTY(ParticleSystemComponent, bool, localSpaceParticles)
     RTTI_PROPERTY(ParticleSystemComponent, f32, emissionRate)
     RTTI_PROPERTY(ParticleSystemComponent, s32, maxAliveParticles)
