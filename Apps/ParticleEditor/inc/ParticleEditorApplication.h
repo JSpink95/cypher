@@ -32,6 +32,7 @@ private:
 
 private:
     Ref<EditorController> editorController;
+	Ref<Object> ak47Object;
 	Ref<GameObject> lightObject;
     Ref<GameObject> gridObject;
     Ref<GameObject> activeParticleSystem;

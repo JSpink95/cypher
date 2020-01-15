@@ -203,6 +203,18 @@ void ParticleEditorApplication::OnPostCreate()
     
     window->Recentre();
     
+	ak47Object = CreateObject<Object>(ObjectId::Create("AK47"));
+
+	Ref<TransformComponent> ak47Transform = ak47Object->CreateComponent<TransformComponent>("Transform");
+
+	Ref<StaticMeshComponent> ak47StaticMesh = ak47Object->CreateComponent<StaticMeshComponent>("StaticMesh");
+	ak47StaticMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\ak47-material.xml"));
+	ak47StaticMesh->SetMesh(MeshLibrary::GetMesh("assets:\\models\\ak47.obj"));
+
+	{
+		RenderPassManager::AddObjectToPass(RenderPassType::Opaque, ak47Object);
+	}
+
 	editorController = CreateObject<EditorController>(ObjectId::Create("EditorController"));
 
 	lightObject = CreateObject<GameObject>(ObjectId::Create("MainLightSource"));
@@ -214,7 +226,7 @@ void ParticleEditorApplication::OnPostCreate()
     RenderPassManager::AddObjectToPass(RenderPassType::Opaque, gridObject);
 
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-checkerboard.xml"));
+    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-error.xml"));
     gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
     gridMesh->SetScale(float3(5.0f, 1.0f, 5.0f));
 

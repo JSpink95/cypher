@@ -12,7 +12,7 @@ layout(location = 2) out vec4 oNormal;
 
 void main()
 {
-	oAlbedo = texture(uTexture, fTex);
+	oAlbedo = texture(uTexture, vec2(fTex.x, 1.0 - fTex.y));
 	oPosition = vec4(fPos, 1.0);
 	oNormal = vec4(fNor, 1.0);
 }

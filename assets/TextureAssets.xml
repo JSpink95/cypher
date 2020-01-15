@@ -1,3 +1,4 @@
 <textures>
   <texture id="tx_crate" filepath="assets:\textures\crate.png"/>
+  <texture id="tx_ak47" filepath="assets:\textures\ak47.png"/>
 </textures>
