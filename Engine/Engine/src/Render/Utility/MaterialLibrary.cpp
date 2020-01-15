@@ -96,14 +96,13 @@ void MaterialLibrary::InitialiseImpl()
             pugi::xml_node root = doc.root().child("materials");
             for (pugi::xml_node materialNode : root)
             {
-                const char* id = materialNode.attribute("id").as_string();
                 const char* filepath = materialNode.attribute("filepath").as_string();
 
 #ifdef DEBUG
-                printf("Loading material('%s', '%s')\n", id, filepath);
+                printf("Loading material('%s')\n", filepath);
 #endif
 
-                RegisterMaterialImpl(id, filepath);
+                RegisterMaterialImpl(filepath, filepath);
             }
         }
     }
@@ -120,6 +119,12 @@ void MaterialLibrary::ReloadImpl()
 
 Ref<Material> MaterialLibrary::RegisterMaterialImpl(const std::string& id, const std::string& materialPath)
 {
+    auto it = loadedMaterials.find(id);
+    if (it != loadedMaterials.end())
+    {
+        return it->second;
+    }
+
     Ref<Material> loadedMaterial = Material::LoadFromFile(materialPath);
     loadedMaterials.insert(std::make_pair(id, loadedMaterial));
 
@@ -130,6 +135,12 @@ Ref<Material> MaterialLibrary::RegisterMaterialImpl(const std::string& id, const
 
 Ref<Material> MaterialLibrary::RegisterMaterialImpl(const std::string& id, Ref<Material> material)
 {
+    auto it = loadedMaterials.find(id);
+    if (it != loadedMaterials.end())
+    {
+        return it->second;
+    }
+
     loadedMaterials.insert(std::make_pair(id, material));
     return material;
 }
@@ -138,11 +149,8 @@ Ref<Material> MaterialLibrary::RegisterMaterialImpl(const std::string& id, Ref<M
 
 Ref<Material> MaterialLibrary::GetMaterialImpl(const std::string& id)
 {
-    auto it = loadedMaterials.find(id);
-    if (it != loadedMaterials.end())
-        return it->second;
-
-    return nullptr;
+    // #hack - bit naughty, but this can add/find a material because the id is now the filepath...
+    return RegisterMaterialImpl(id, id);
 }
 
 //////////////////////////////////////////////////////////////////////////

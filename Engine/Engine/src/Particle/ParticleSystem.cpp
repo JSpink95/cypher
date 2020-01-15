@@ -72,7 +72,7 @@ void ParticleSystemComponent::OnConstruct()
 
     updateStage = std::make_shared<ParticleUpdateStage>();
     emissionStage = std::make_shared<ParticleEmissionStage>();
-    material = MaterialLibrary::GetMaterial("particle-default");    // load the default material
+    material = MaterialLibrary::GetMaterial("assets:\\materials\\particle-default.xml");    // load the default material
 }
 
 //////////////////////////////////////////////////////////////////////////

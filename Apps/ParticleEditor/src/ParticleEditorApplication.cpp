@@ -214,7 +214,7 @@ void ParticleEditorApplication::OnPostCreate()
     RenderPassManager::AddObjectToPass(RenderPassType::Opaque, gridObject);
 
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("mesh-lit-tex-checkerboard"));
+    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-checkerboard.xml"));
     gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
     gridMesh->SetScale(float3(5.0f, 1.0f, 5.0f));
 

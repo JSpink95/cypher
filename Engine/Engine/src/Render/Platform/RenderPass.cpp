@@ -145,11 +145,11 @@ void RenderPassManager::InitialiseImpl()
 	framebufferSize = windowSize / 4.0f;
 
     // load materials
-    sslMaterial = MaterialLibrary::GetMaterial("pp-ssl");
-    ssaoMaterial = MaterialLibrary::GetMaterial("pp-ssao");
-    imageBlurMaterial = MaterialLibrary::GetMaterial("pp-blur");
-    imageBlendMaterial = MaterialLibrary::GetMaterial("pp-overlay");
-    imageRenderMaterial = MaterialLibrary::GetMaterial("pp-image-render");
+    sslMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-ssl.xml");
+    ssaoMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-ssao.xml");
+    imageBlurMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-blur.xml");
+    imageBlendMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-overlay.xml");
+    imageRenderMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-image-render.xml");
 
     // load framebuffers
 
