@@ -12,6 +12,17 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+namespace RTTI
+{
+    template<typename T>
+    void SetValueFromString(const std::string& value, T& editable);
+
+    template<typename T>
+    void ShowEditBox(const std::string& id, T& value);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 class BaseProperty
 {
 public:
@@ -21,7 +32,7 @@ public:
     virtual void SetFromString(void* base, const std::string& value) = 0;
 
 public:
-    virtual void ShowEditBox(void* base) = 0;
+    virtual void ShowEditBox(const std::string& id, void* base) = 0;
 
 public:
     size_t offset = 0;
@@ -34,14 +45,16 @@ class Property: public BaseProperty
 {
 public:
 
-    T& GetValueFromContainer(void* base)
+    inline T& GetValueFromContainer(void* base)
     {
-        *(T*)(reinterpret_cast<char*>(base) + offset);
+        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
+        return *(T*)(bytes + offset);
     }
 
-    void SetFromStrongType(void* base, const T& value)
+    inline void SetFromStrongType(void* base, const T& value)
     {
-        *(T*)(reinterpret_cast<char*>(base) + offset) = value;
+        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
+        *(T*)(bytes + offset) = value;
     }
 
     // maybe we can get away with doing some kind of cast...
@@ -51,18 +64,17 @@ public:
         SetFromStrongType(base, strongType);
     }
 
+public:
     // needs concrete implementation per type.
     virtual void SetFromString(void* base, const std::string& string) override
     {
-        // implemented elsewhere
+        RTTI::SetValueFromString<T>(string, GetValueFromContainer(base));
     }
 
-public:
-    virtual void ShowEditBox(void* base) override
+    virtual void ShowEditBox(const std::string& id, void* base) override
     {
-
+        RTTI::ShowEditBox<T>(id, GetValueFromContainer(base));
     }
-
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,9 +86,16 @@ public:
     using RefType = Ref<T>;
 
 public:
-    void SetFromStrongType(void* base, const RefType& value)
+    inline RefType& GetValueFromContainer(void* base)
     {
-        *(RefType*)(reinterpret_cast<char*>(base) + offset) = value;
+        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
+        return *(RefType*)(bytes + offset);
+    }
+
+    inline void SetFromStrongType(void* base, const RefType& value)
+    {
+        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
+        *(RefType*)(bytes + offset) = value;
     }
 
     // maybe we can get away with doing some kind of cast...
@@ -85,18 +104,17 @@ public:
         // this doesn't work for ref types
     }
 
+public:
     // needs concrete implementation per type.
     virtual void SetFromString(void* base, const std::string& string) override
     {
-        // implemented elsewhere
+        RTTI::SetValueFromString<RefType>(string, GetValueFromContainer(base));
     }
 
-public:
-    virtual void ShowEditBox(void* base) override
+    virtual void ShowEditBox(const std::string& id, void* base) override
     {
-        // this will need some thought...
+        RTTI::ShowEditBox<RefType>(id, GetValueFromContainer(base));
     }
-
 };
 
 //////////////////////////////////////////////////////////////////////////

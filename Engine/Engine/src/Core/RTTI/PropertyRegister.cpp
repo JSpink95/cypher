@@ -18,6 +18,11 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "glm/glm.hpp"
+#include "imgui.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include <algorithm>
 #include <iterator>
 #include <sstream>
@@ -81,77 +86,137 @@ namespace RTTI
         // assert
         return float3(floats.at(0), floats.at(1), floats.at(2));
     }
+
+    inline float4 ToFloat4(const std::string& value)
+    {
+        std::vector<f32> floats = GetFloatList(value);
+        // assert
+        return float4(floats.at(0), floats.at(1), floats.at(2), floats.at(3));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-template<> void Property<bool>::SetFromString(void* base, const std::string& string)
+namespace RTTI
 {
-    bool value = RTTI::ToBool(string);
-    SetFromStrongType(base, value);
-}
+    template<> void SetValueFromString<bool>(const std::string& string, bool& editable)
+    {
+        editable = RTTI::ToBool(string);
+    }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-template<> void Property<bool>::ShowEditBox(void* base)
-{
-    bool& editable = GetValueFromContainer(base);
-    //ImGui::Checkbox("Need an id...", &editable);
-}
+    template<> void ShowEditBox<bool>(const std::string& id, bool& editable)
+    {
+        ImGui::Checkbox(id.c_str(), &editable);
+    }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-template<> void Property<s32>::SetFromString(void* base, const std::string& string)
-{
-    s32 value = RTTI::ToInt32(string);
-    SetFromStrongType(base, value);
-}
+    template<> void SetValueFromString<s32>(const std::string& string, s32& editable)
+    {
+        editable = RTTI::ToInt32(string);
+    }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-template<> void Property<f32>::SetFromString(void* base, const std::string& string)
-{
-    f32 value = RTTI::ToFloat(string);
-    SetFromStrongType(base, value);
-}
+    template<> void ShowEditBox<s32>(const std::string& id, s32& editable)
+    {
+        ImGui::InputInt(id.c_str(), &editable);
+    }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-template<> void Property<float2>::SetFromString(void* base, const std::string& string)
-{
-    float2 value = RTTI::ToFloat2(string);
-    SetFromStrongType(base, value);
-}
+    template<> void SetValueFromString<f32>(const std::string& string, f32& editable)
+    {
+        editable = RTTI::ToFloat(string);
+    }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-template<> void Property<float3>::SetFromString(void* base, const std::string& string)
-{
-    float3 value = RTTI::ToFloat3(string);
-    SetFromStrongType(base, value);
-}
+    template<> void ShowEditBox<f32>(const std::string& id, f32& editable)
+    {
+        ImGui::InputFloat(id.c_str(), &editable);
+    }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-template<> void Property<std::string>::SetFromString(void* base, const std::string& string)
-{
-    SetFromStrongType(base, string);
-}
+    template<> void SetValueFromString<float2>(const std::string& string, float2& editable)
+    {
+        editable = RTTI::ToFloat2(string);
+    }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-template<> void RefProperty<Material>::SetFromString(void* base, const std::string& string)
-{
-    Ref<Material> material = MaterialLibrary::GetMaterial(string);
-    SetFromStrongType(base, material);
-}
+    template<> void ShowEditBox<float2>(const std::string& id, float2& editable)
+    {
+        ImGui::InputFloat2(id.c_str(), &editable.x, 3);
+    }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-template<> void RefProperty<VertexArray>::SetFromString(void* base, const std::string& string)
-{
-    Ref<VertexArray> mesh = MeshLibrary::GetMesh(string);
-    SetFromStrongType(base, mesh);
+    template<> void SetValueFromString<float3>(const std::string& string, float3& editable)
+    {
+        editable = RTTI::ToFloat3(string);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> void ShowEditBox<float3>(const std::string& id, float3& editable)
+    {
+        ImGui::InputFloat3(id.c_str(), &editable.x, 3);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> void SetValueFromString<std::string>(const std::string& string, std::string& editable)
+    {
+        editable = string;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> void ShowEditBox<std::string>(const std::string& id, std::string& editable)
+    {
+        static constexpr const size_t maxBufferSize = 128u;
+
+        char buffer[maxBufferSize];
+        std::memcpy(buffer, editable.c_str(), glm::min(maxBufferSize, editable.length()));
+
+        ImGui::InputText(id.c_str(), buffer, maxBufferSize);
+
+        editable = buffer;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> void SetValueFromString<Ref<Material>>(const std::string& string, Ref<Material>& editable)
+    {
+        editable = MaterialLibrary::GetMaterial(string);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> void ShowEditBox<Ref<Material>>(const std::string& id, Ref<Material>& editable)
+    {
+        // display a list of materials...
+        ImGui::Text("Not yet implemented - MaterialRef");
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> void SetValueFromString<Ref<VertexArray>>(const std::string& string, Ref<VertexArray>& editable)
+    {
+        editable = MeshLibrary::GetMesh(string);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> void ShowEditBox<Ref<VertexArray>>(const std::string& id, Ref<VertexArray>& editable)
+    {
+        // display a list of meshes...
+        ImGui::Text("Not yet implemented - VertexArrayRef");
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -235,10 +235,21 @@ void ParticleEditorApplication::OnImGuiRender()
 {
     Application::OnImGuiRender();
 
-    ImGui::Begin("TestWindow");
-    static bool value = false;
-    ImGui::Checkbox("Test", &value);
-    ImGui::End();
+    ImGui::SetNextWindowPos(ImVec2(4, 8));
+    if (ImGui::Begin("Active Particle System", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
+    {
+        if (activeParticleSystem)
+        {
+            ImGui::ShowObjectProperties(activeParticleSystem);
+        }
+        else
+        {
+            ImGui::Text("No particle system selected");
+        }
+
+        ImGui::End();
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////

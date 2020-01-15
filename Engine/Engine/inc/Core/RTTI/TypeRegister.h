@@ -73,17 +73,22 @@ public:
 class TypeRegister : public AutoConstructSingleton<TypeRegister>
 {
 public:
-    TypeRegister()
-    {
-        printf("created new TypeRegister singleton!\n");
-    }
-
     static inline void RegisterType(BaseType* type)
     {
         if (Ref<TypeRegister> tr = TypeRegister::Get())
         {
             tr->RegisterTypeImpl(type);
         }
+    }
+
+    static inline BaseType* GetRegisteredType(const std::string& typeId)
+    {
+        if (Ref<TypeRegister> tr = TypeRegister::Get())
+        {
+            return tr->GetRegisteredTypeImpl(typeId);
+        }
+
+        return nullptr;
     }
 
     template<typename T>
@@ -101,6 +106,17 @@ private:
     inline void RegisterTypeImpl(BaseType* type)
     {
         types.emplace(type->GetTypeId(), type);
+    }
+
+    inline BaseType* GetRegisteredTypeImpl(const std::string& typeId)
+    {
+        auto it = types.find(typeId);
+        if (it != types.end())
+        {
+            return it->second;
+        }
+
+        return nullptr;
     }
 
     template<typename T>

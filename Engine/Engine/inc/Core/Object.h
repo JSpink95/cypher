@@ -70,6 +70,15 @@ public:
         return nullptr;
     }
 
+    template<typename TPredicate>
+    inline void ForEachComponent(TPredicate predicate)
+    {
+        for (auto& componentPair : components)
+        {
+            predicate(componentPair.first, componentPair.second);
+        }
+    }
+
 public:
 
     template<typename TComponent>
@@ -121,6 +130,13 @@ inline Ref<TComponent> Object::CreateComponent(const std::string& id)
     components.emplace(newComponent->GetId(), newComponent);
     
     return newComponent;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+namespace ImGui
+{
+    void ShowObjectProperties(Ref<Object> object);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -30,6 +30,7 @@ public: static inline ClassId ClassUID()                                        
 #define DECLARE_BASE_COMPONENT(Base)                                            \
 DEFINE_CLASS_UID(Base)                                                          \
 public: virtual inline ClassId GetClassUID() { return ClassUID(); }             \
+public: virtual inline std::string GetTypeName() { return ClassName; }          \
 public: virtual inline bool IsTypeOf(ClassId id)                                \
 {                                                                               \
     return id == ClassUID();                                                    \
@@ -41,6 +42,7 @@ public: virtual inline bool IsTypeOf(ClassId id)                                
 DEFINE_CLASS_UID(Derived)                                                       \
 private: using Super = Base;                                                    \
 public: virtual inline ClassId GetClassUID() override { return ClassUID(); }    \
+public: virtual inline std::string GetTypeName() override { return ClassName; } \
 public: virtual inline bool IsTypeOf(ClassId id) override                       \
 {                                                                               \
     return (ClassUID() == id) || Super::IsTypeOf(id);                           \
