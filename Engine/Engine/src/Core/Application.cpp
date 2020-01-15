@@ -42,6 +42,7 @@
 #include "glfw.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "Render/OpenGL/OpenGlWindow.h"
 
 #endif // _OPENGL
@@ -119,9 +120,16 @@ void Application::RenderCreate()
     MeshLibrary::Initialise();
     RenderPassManager::Initialise();
 
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+
 #ifdef _OPENGL
     OpenGlWindow* glWindow = static_cast<OpenGlWindow*>(window.get());
     ImGui_ImplGlfw_InitForOpenGL(glWindow->GetContext(), true);
+    ImGui_ImplOpenGL3_Init("#version 130");
+#elif defined(_DX11)
+    Dx11Window* dxWindow = static_cast<Dx11Window*>(window.get());
+    // ImGui_ImplDX11();
 #endif
 
     GlCall(glEnable(GL_DEPTH_TEST));
@@ -193,7 +201,19 @@ void Application::OnPreRender()
 void Application::OnPostRender()
 {
     Renderer::EndScene();
+}
 
+//////////////////////////////////////////////////////////////////////////
+
+void Application::OnImGuiRender()
+{
+    // there be dragons here
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void Application::OnPresent()
+{
     window->PollEvents();
     window->Present();
 }

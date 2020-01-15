@@ -48,6 +48,8 @@ public:
     // called from the RenderThread
     virtual void OnPreRender();
     virtual void OnPostRender();
+    virtual void OnImGuiRender();
+    virtual void OnPresent();
 
     // called from the MainThread
     virtual void OnAppTick();

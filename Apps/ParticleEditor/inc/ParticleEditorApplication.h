@@ -25,6 +25,7 @@ protected:
     virtual void OnRenderCreate() override;
     virtual void OnPostCreate() override;
     virtual void OnPostUpdate() override;
+    virtual void OnImGuiRender() override;
 
 private:
     void AddNewDefaultEffect(const std::string& id, bool makeActive = false, const float3& atLocation = float3(0.0f));

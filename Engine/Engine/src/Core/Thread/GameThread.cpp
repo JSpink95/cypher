@@ -19,6 +19,15 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "imgui.h"
+
+#ifdef _OPENGL
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
+#endif
+
+//////////////////////////////////////////////////////////////////////////
+
 bool GameThread::IsObjectRegistered(WeakRef<Object> object)
 {
 	if (Ref<GameThread> thread = GetGameThread())
@@ -133,6 +142,17 @@ void GameThread::ThreadLoop()
         RenderPassManager::Render();
 
         GetApplication()->OnPostRender();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        GetApplication()->OnImGuiRender();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        GetApplication()->OnPresent();
 
         // briefly sleep so as not to run _too_ fast
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
