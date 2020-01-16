@@ -162,6 +162,16 @@ namespace KeyboardState
 
 //////////////////////////////////////////////////////////////////////////
 
+namespace MouseButton
+{
+    enum Enum
+    {
+        Left, Right, Middle, Max
+    };
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 class Input: public Singleton<Input>
 {
 public:
@@ -178,6 +188,7 @@ public:
     // mouse
     // 
 
+    static bool IsButtonDown(const MouseButton::Enum button);
     static float2 GetMousePosition();
     static float2 GetMouseDelta();
 
@@ -187,6 +198,8 @@ private:
 
     bool IsKeyDownImpl(const KeyboardKey::Enum key) const;
     KeyboardState::Enum GetKeyStateImpl(const KeyboardKey::Enum key) const;
+
+    bool IsButtonDownImpl(const MouseButton::Enum button) const;
 
 private:
 
@@ -200,6 +213,9 @@ private:
     // 
     // cursor
     // 
+
+    std::array<bool, MouseButton::Max> previousButtonStates;
+    std::array<bool, MouseButton::Max> currentButtonStates;
 
     float2 currentMousePos;
     float2 mouseDelta;

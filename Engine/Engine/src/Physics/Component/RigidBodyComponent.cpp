@@ -36,8 +36,8 @@ void RigidBodyComponent::OnConstruct()
 {
     Super::OnConstruct();
 
-    attachedCollider = owner->FindFirstComponentOfType<ColliderComponent>();
-    attachedTransform = owner->FindFirstComponentOfType<TransformComponent>();
+    attachedCollider = owner->FindFirstComponentOfType<ColliderComponent>();    // should be fine...
+    attachedTransform = owner->FindComponentAsType<TransformComponent>("RootTransform");
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -30,7 +30,7 @@ void LightComponent::OnConstruct()
     Super::OnConstruct();
 
     light = GetLightManager()->InsertInstance(vec3(0.0f), radius, vec4(color, 1.0f));
-    ownerTransform = GetOwner()->FindFirstComponentOfType<TransformComponent>();
+    ownerTransform = GetOwner()->FindComponentAsType<TransformComponent>("RootComponent");
 
     if (Ref<TransformComponent> transform = ownerTransform.lock())
     {

@@ -50,6 +50,7 @@ public:
 
     // input queries
     virtual bool IsKeyDown(const KeyboardKey::Enum key) const = 0;
+    virtual bool IsButtonDown(const MouseButton::Enum button) const = 0;
     virtual float2 GetMousePosition() const = 0;
 };
 

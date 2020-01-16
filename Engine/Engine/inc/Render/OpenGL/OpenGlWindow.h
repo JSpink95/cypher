@@ -59,6 +59,7 @@ public:
     // 
 
     virtual bool IsKeyDown(const KeyboardKey::Enum key) const override;
+    virtual bool IsButtonDown(const MouseButton::Enum button) const override;
     virtual float2 GetMousePosition() const override;
 
     // 

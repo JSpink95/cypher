@@ -63,6 +63,18 @@ KeyboardState::Enum Input::GetKeyState(const KeyboardKey::Enum key)
 
 //////////////////////////////////////////////////////////////////////////
 
+bool Input::IsButtonDown(const MouseButton::Enum button)
+{
+    if (Ref<Input> input = GetInput())
+    {
+        return input->IsButtonDownImpl(button);
+    }
+
+    return GetApplication()->GetWindowContext()->IsButtonDown(button);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 float2 Input::GetMousePosition()
 {
     Ref<Input> input = GetInput();
@@ -117,6 +129,13 @@ void Input::UpdateMouseImpl()
 #else
     currentMousePos = mpos;
 #endif
+
+    previousButtonStates = currentButtonStates;
+    for (u32 button = 0; button < MouseButton::Max; ++button)
+    {
+        const bool isDown = window->IsButtonDown((MouseButton::Enum)button);
+        currentButtonStates.at(button) = isDown;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -146,6 +165,13 @@ KeyboardState::Enum Input::GetKeyStateImpl(const KeyboardKey::Enum key) const
         return KeyboardState::Released;
 
     return KeyboardState::Idle;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Input::IsButtonDownImpl(const MouseButton::Enum button) const
+{
+    return currentButtonStates.at(button);
 }
 
 //////////////////////////////////////////////////////////////////////////

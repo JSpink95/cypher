@@ -265,9 +265,6 @@ Ref<Material> Material::LoadFromFile(const std::string& filepath)
     // extract material nodes
     pugi::xml_node parameters_node = root.child("parameters");
 
-    // get material root attributes
-    const char* material_id = root.attribute("id").as_string();
-
     // parse parameters
     for (pugi::xml_node parameter : parameters_node)
     {

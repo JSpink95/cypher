@@ -290,6 +290,20 @@ bool OpenGlWindow::IsKeyDown(const KeyboardKey::Enum key) const
 
 //////////////////////////////////////////////////////////////////////////
 
+bool OpenGlWindow::IsButtonDown(const MouseButton::Enum button) const
+{
+    static constexpr const s32 ButtonToGLFW[MouseButton::Max] =
+    {
+        GLFW_MOUSE_BUTTON_LEFT,
+        GLFW_MOUSE_BUTTON_RIGHT,
+        GLFW_MOUSE_BUTTON_MIDDLE,
+    };
+
+    return glfwGetMouseButton(context, ButtonToGLFW[button]) == GLFW_PRESS;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 float2 OpenGlWindow::GetMousePosition() const
 {
     f64 mx, my;

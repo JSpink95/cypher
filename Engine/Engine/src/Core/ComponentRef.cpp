@@ -1,19 +1,19 @@
 //////////////////////////////////////////////////////////////////////////
-//    File        	: GameObject.cpp
+//    File        	: ComponentRef.cpp
 //    Created By    : Jack Spink
-//    Created On 	: [18/10/2019]
+//    Created On 	: [16/1/2020]
 //////////////////////////////////////////////////////////////////////////
 
-#include "GameFramework/Object/GameObject.h"
-#include "GameFramework/Component/TransformComponent.h"
+#include "Core/ComponentRef.h"
 
 //////////////////////////////////////////////////////////////////////////
 
-void GameObject::OnConstruct()
-{
-    Super::OnConstruct();
+#include "Core/RTTI/RTTI.h"
 
-    transform = CreateComponent<TransformComponent>("RootTransform");
-}
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN(ComponentRefBase)
+    RTTI_PROPERTY(ComponentRefBase, std::string, componentName)
+RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////

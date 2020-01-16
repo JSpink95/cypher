@@ -32,7 +32,7 @@ void StaticMeshComponent::OnConstruct()
 {
     Super::OnConstruct();
 
-    ownerTransform = owner->FindFirstComponentOfType<TransformComponent>();
+    ownerTransform = owner->FindComponentAsType<TransformComponent>("RootTransform");
 }
 
 //////////////////////////////////////////////////////////////////////////

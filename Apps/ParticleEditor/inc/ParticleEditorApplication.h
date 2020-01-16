@@ -14,7 +14,6 @@
 
 class Object;
 class GameObject;
-class EditorController;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -31,8 +30,8 @@ private:
     void AddNewDefaultEffect(const std::string& id, bool makeActive = false, const float3& atLocation = float3(0.0f));
 
 private:
-    Ref<EditorController> editorController;
 	Ref<Object> ak47Object;
+    Ref<GameObject> editorController;
 	Ref<GameObject> lightObject;
     Ref<GameObject> gridObject;
     Ref<GameObject> activeParticleSystem;

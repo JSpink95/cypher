@@ -29,7 +29,7 @@ void ProjectileMovementComponent::OnConstruct()
 {
     Super::OnConstruct();
 
-    transform = GetOwner()->FindFirstComponentOfType<TransformComponent>();
+    transform = GetOwner()->FindComponentAsType<TransformComponent>("RootComponent");
 }
 
 //////////////////////////////////////////////////////////////////////////

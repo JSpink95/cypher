@@ -65,10 +65,9 @@ void ParticleSystemComponent::OnConstruct()
 
     GetGameThread()->PushThreadTask(this, &ParticleSystemComponent::RenderTask_InitialiseParticleMesh);
 
-    if (owner != nullptr)
-    {
-        ownerTransform = owner->FindFirstComponentOfType<TransformComponent>();
-    }
+    // this is manualfor now
+    attachedTransform.componentName = "RootTransform";
+    attachedTransform.OnConstruct(owner);
 
     updateStage = std::make_shared<ParticleUpdateStage>();
     emissionStage = std::make_shared<ParticleEmissionStage>();
@@ -160,10 +159,10 @@ fmat4 ParticleSystemComponent::CalculateTransformMatrix() const
 {
     mat4 worldTransform = fmat4(1.0f);
 
-    if (!ownerTransform.expired())
+    if (attachedTransform)
     {
         // take our parent object transform
-        worldTransform *= ownerTransform.lock()->CalculateTransformMatrix();
+        worldTransform *= attachedTransform->CalculateTransformMatrix();
     }
 
     // append our actual transform

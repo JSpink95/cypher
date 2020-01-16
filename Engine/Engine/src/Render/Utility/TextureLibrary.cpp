@@ -85,6 +85,19 @@ void TextureLibrary::InitialiseImpl()
         float3(0.0f, 0.0f, 0.0f), float3(1.0f, 0.0f, 1.0f), float3(0.0f, 0.0f, 0.0f), float3(1.0f, 0.0f, 1.0f), float3(0.0f, 0.0f, 0.0f), float3(1.0f, 0.0f, 1.0f), float3(0.0f, 0.0f, 0.0f), float3(1.0f, 0.0f, 1.0f),
     };
 
+    // white:lesswhite checkerboard
+    static const float3 devPixels[8 * 8] =
+    {
+        float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f),
+        float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f),
+        float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f),
+        float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f),
+        float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f),
+        float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f),
+        float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f),
+        float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f), float3(0.6f), float3(1.0f),
+    };
+
     // sphere texture (with alpha)
     std::vector<float4> spherePixels;
     for (uint x = 0; x < 16; ++x)
@@ -102,6 +115,7 @@ void TextureLibrary::InitialiseImpl()
     // load engine textures
     loadedTextures.insert(std::make_pair(EngineTextureId::White, GetApiManager()->CreateTexture2D(uint2(2), whitePixels)));
     loadedTextures.insert(std::make_pair(EngineTextureId::Error, GetApiManager()->CreateTexture2D(uint2(8), errorPixels)));
+    loadedTextures.insert(std::make_pair(EngineTextureId::Dev, GetApiManager()->CreateTexture2D(uint2(8), devPixels)));
     loadedTextures.insert(std::make_pair(EngineTextureId::ParticleSphere, GetApiManager()->CreateTexture2D(uint2(16), &spherePixels.at(0))));
 
     PathResult textureAssetPath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\TextureAssets.xml");

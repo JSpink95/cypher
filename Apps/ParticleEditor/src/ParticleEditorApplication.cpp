@@ -9,6 +9,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/ObjectManager.h"
+#include "Core/ComponentRef.h"
 #include "Core/Thread/GameThread.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -46,16 +47,17 @@ public:
         Super::OnConstruct();
 
         camera = std::make_shared<PerspectiveCamera>();
-        ownerTransform = owner->FindFirstComponentOfType<TransformComponent>();
+        attachedTransform.componentName = "RootTransform";
+        attachedTransform.OnConstruct(owner);
     }
 
     virtual void OnUpdate(const f32 dt) override
     {
         Super::OnUpdate(dt);
 
-        if (Ref<TransformComponent> transform = ownerTransform.lock())
+        if (attachedTransform)
         {
-            camera->SetPosition(transform->position);
+            camera->SetPosition(attachedTransform->position);
             camera->SetLookAt(orbitOrigin);
         }
     }
@@ -73,7 +75,7 @@ public:
     }
 
 private:
-    WeakRef<TransformComponent> ownerTransform;
+    ComponentRef<TransformComponent> attachedTransform;
     Ref<PerspectiveCamera> camera;
 
     float3 orbitOrigin = float3(0.0f);
@@ -81,80 +83,89 @@ private:
 
 //////////////////////////////////////////////////////////////////////////
 
-class EditorController : public Object
+class EditorControllerComponent : public Component
 {
-	DECLARE_DERIVED_OBJECT(EditorController, Object)
+    DECLARE_DERIVED_COMPONENT(EditorControllerComponent, Component)
 private:
-	struct InputState
-	{
-		bool bRotateLeftPressed = false;
-		bool bRotateRightPressed = false;
-		bool bRotateUpPressed = false;
-		bool bRotateDownPressed = false;
-		bool bZoomInPressed = false;
-		bool bZoomOutPressed = false;
-	};
+    struct CameraInput
+    {
+        bool bMouseDown = false;
+        bool bMiddleMouseDown = false;
+        bool bCtrlModifierDown = false;
+    };
 
 public:
 
-	virtual void OnConstruct() override
-	{
-		Super::OnConstruct();
+    virtual void OnConstruct() override
+    {
+        Super::OnConstruct();
 
-		transform = CreateComponent<TransformComponent>("Transform");
-		camera = CreateComponent<OrbitalCameraComponent>("Camera");
+        attachedTransform.componentName = "RootTransform";
+        attachedTransform.OnConstruct(owner);
 
-		camera->SetAsMainCamera();
+        attachedCameraComponent.componentName = "OrbitalCamera";
+        attachedCameraComponent.OnConstruct(owner);
 
-		GameThread::AddObject(self);
-	}
+        const float3 direction = glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f);
+        attachedTransform->position = float3(0.0f) + direction * amountOfZoom;
+    }
 
-	virtual void OnUpdate(const f32 dt) override
-	{
-		Super::OnUpdate(dt);
+    virtual void OnUpdate(const f32 dt)
+    {
+        Super::OnUpdate(dt);
 
-		input.bRotateLeftPressed = Input::IsKeyDown(KeyboardKey::LEFT);
-		input.bRotateRightPressed = Input::IsKeyDown(KeyboardKey::RIGHT);
-		input.bRotateUpPressed = Input::IsKeyDown(KeyboardKey::UP);
-		input.bRotateDownPressed = Input::IsKeyDown(KeyboardKey::DOWN);
-		input.bZoomInPressed = Input::IsKeyDown(KeyboardKey::E);
-		input.bZoomOutPressed = Input::IsKeyDown(KeyboardKey::Q);
+        input.bMouseDown = Input::IsButtonDown(MouseButton::Right);
+        input.bMiddleMouseDown = Input::IsButtonDown(MouseButton::Middle);
+        input.bCtrlModifierDown = Input::IsKeyDown(KeyboardKey::LEFT_CONTROL);
 
-		if (input.bZoomInPressed)
-			zoom = glm::max(0.5f, zoom - dt * zoomSpeed);
+        if (input.bMouseDown)
+        {
+            const float2 mouseDelta = Input::GetMouseDelta();
 
-		if (input.bZoomOutPressed)
-			zoom = glm::min(100.0f, zoom + dt * zoomSpeed);
+            if (input.bCtrlModifierDown)
+            {
+                // zoom
+                const f32 zoomMovement = mouseDelta.y * zoomSpeed;
+                amountOfZoom = glm::max(0.1f, amountOfZoom + zoomMovement * dt);
+            }
+            else
+            {
+                // rotate camera
+                const float2 movement = mouseDelta * rotationSpeed * -1.0f;
 
-		float2 movement = float2(0.0f);
-		if (input.bRotateLeftPressed)
-			movement.x -= rotSpeed;
+                attachedTransform->rotation.y += movement.x * dt;
+                attachedTransform->rotation.x = glm::clamp(attachedTransform->rotation.x + movement.y * dt, -89.0f, 89.0f);
+            }
 
-		if (input.bRotateRightPressed)
-			movement.x += rotSpeed;
+            const float3 direction = glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f);
+            attachedTransform->position = float3(0.0f) + direction * amountOfZoom;
+        }
+        else if (input.bMiddleMouseDown)
+        {
+            const float2 mouseDelta = Input::GetMouseDelta();
 
-		if (input.bRotateDownPressed)
-			movement.y -= rotSpeed;
+            // move orbit location
+            const float3 direction = -(glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f));
+            const float3 up = float3(0.0f, 1.0f, 0.0f);
+            const float3 right = glm::cross(direction, up);
 
-		if (input.bRotateUpPressed)
-			movement.y += rotSpeed;
+            const float3 orbitMovement = (up * -mouseDelta.y + right * -mouseDelta.x) * moveSpeed;
+            orbitLocation += orbitMovement * dt;
+        }
 
-		transform->rotation.y += movement.x * dt;
-		transform->rotation.x = glm::clamp(transform->rotation.x + movement.y * dt, -89.0f, 89.0f);
+    }
 
-		const float3 direction = glm::quat(glm::radians(transform->rotation)) * float3(0.0f, 0.0f, 1.0f);
-		transform->position = float3(0.0f) + direction * zoom;
-	}
+public:
+    float2 rotationSpeed = float2(10.0f);
+    f32 zoomSpeed = 2.0f;
+    f32 moveSpeed = 4.0f;
 
 private:
-	InputState input;
-
-	f32 rotSpeed = 90.0f;
-	f32 zoomSpeed = 5.0f;
-	f32 zoom = 0.5f;
-
-	Ref<TransformComponent> transform;
-	Ref<OrbitalCameraComponent> camera;
+    CameraInput input;
+    f32 amountOfZoom = 1.0f;
+    float3 orbitLocation = float3(0.0f);
+    ComponentRef<TransformComponent> attachedTransform;
+    ComponentRef<OrbitalCameraComponent> attachedCameraComponent;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -205,7 +216,7 @@ void ParticleEditorApplication::OnPostCreate()
     
 	ak47Object = CreateObject<Object>(ObjectId::Create("AK47"));
 
-	Ref<TransformComponent> ak47Transform = ak47Object->CreateComponent<TransformComponent>("Transform");
+	Ref<TransformComponent> ak47Transform = ak47Object->CreateComponent<TransformComponent>("RootTransform");
 
 	Ref<StaticMeshComponent> ak47StaticMesh = ak47Object->CreateComponent<StaticMeshComponent>("StaticMesh");
 	ak47StaticMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\ak47-material.xml"));
@@ -215,7 +226,16 @@ void ParticleEditorApplication::OnPostCreate()
 		RenderPassManager::AddObjectToPass(RenderPassType::Opaque, ak47Object);
 	}
 
-	editorController = CreateObject<EditorController>(ObjectId::Create("EditorController"));
+	editorController = CreateObject<GameObject>(ObjectId::Create("EditorController"));
+
+    Ref<OrbitalCameraComponent> orbitalCamera = editorController->CreateComponent<OrbitalCameraComponent>("OrbitalCamera");
+    orbitalCamera->SetAsMainCamera();
+
+    Ref<EditorControllerComponent> controller = editorController->CreateComponent<EditorControllerComponent>("EditorController");
+
+    {
+        GameThread::AddObject(editorController);
+    }
 
 	lightObject = CreateObject<GameObject>(ObjectId::Create("MainLightSource"));
 	lightObject->transform->position = float3(0.0f, 6.0f, 0.0f);
@@ -226,7 +246,7 @@ void ParticleEditorApplication::OnPostCreate()
     RenderPassManager::AddObjectToPass(RenderPassType::Opaque, gridObject);
 
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-error.xml"));
+    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
     gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
     gridMesh->SetScale(float3(5.0f, 1.0f, 5.0f));
 
