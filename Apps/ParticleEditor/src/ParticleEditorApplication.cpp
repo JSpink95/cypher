@@ -118,8 +118,11 @@ public:
         input.bMiddleMouseDown = Input::IsButtonDown(MouseButton::Middle);
         input.bCtrlModifierDown = Input::IsKeyDown(KeyboardKey::LEFT_CONTROL);
 
+        bool cameraUpdated = false;
+
         if (input.bMouseDown)
         {
+            cameraUpdated = true;
             const float2 mouseDelta = Input::GetMouseDelta();
 
             if (input.bCtrlModifierDown)
@@ -136,21 +139,28 @@ public:
                 attachedTransform->rotation.y += movement.x * dt;
                 attachedTransform->rotation.x = glm::clamp(attachedTransform->rotation.x + movement.y * dt, -89.0f, 89.0f);
             }
-
-            const float3 direction = glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f);
-            attachedTransform->position = float3(0.0f) + direction * amountOfZoom;
         }
         else if (input.bMiddleMouseDown)
         {
+            cameraUpdated = true;
             const float2 mouseDelta = Input::GetMouseDelta();
 
             // move orbit location
             const float3 direction = -(glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f));
             const float3 up = float3(0.0f, 1.0f, 0.0f);
-            const float3 right = glm::cross(direction, up);
+            const float3 right = glm::cross(up, direction);
 
-            const float3 orbitMovement = (up * -mouseDelta.y + right * -mouseDelta.x) * moveSpeed;
+            const float3 orbitMovement = (up * mouseDelta.y + right * mouseDelta.x) * moveSpeed;
             orbitLocation += orbitMovement * dt;
+
+        }
+
+        if (cameraUpdated)
+        {
+            attachedCameraComponent->SetOrbitOrigin(orbitLocation);
+
+            const float3 direction = glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f);
+            attachedTransform->position = orbitLocation + direction * amountOfZoom;
         }
 
     }
@@ -158,7 +168,7 @@ public:
 public:
     float2 rotationSpeed = float2(10.0f);
     f32 zoomSpeed = 2.0f;
-    f32 moveSpeed = 4.0f;
+    f32 moveSpeed = 1.0f;
 
 private:
     CameraInput input;
