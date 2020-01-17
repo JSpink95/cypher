@@ -40,7 +40,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSystemComponent)
+RTTI_BEGIN_WITH_BASE(ParticleSystemComponent, TransformComponent)
     RTTI_PROPERTY(ParticleSystemComponent, Ref<Material>, material)
     RTTI_PROPERTY(ParticleSystemComponent, bool, localSpaceParticles)
     RTTI_PROPERTY(ParticleSystemComponent, f32, emissionRate)
@@ -59,15 +59,18 @@ struct UniformBufferParticleExtra
 
 //////////////////////////////////////////////////////////////////////////
 
+ParticleSystemComponent::ParticleSystemComponent()
+{
+    parentTransform.componentName = "RootComponent";
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void ParticleSystemComponent::OnConstruct()
 {
     Super::OnConstruct();
 
     GetGameThread()->PushThreadTask(this, &ParticleSystemComponent::RenderTask_InitialiseParticleMesh);
-
-    // this is manualfor now
-    attachedTransform.componentName = "RootTransform";
-    attachedTransform.OnConstruct(owner);
 
     updateStage = std::make_shared<ParticleUpdateStage>();
     emissionStage = std::make_shared<ParticleEmissionStage>();
@@ -151,24 +154,6 @@ void ParticleSystemComponent::OnRender(RenderPassType::Enum pass, Ref<Material> 
 
         Renderer::Submit(material, particleMesh, worldTransform);
     }
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-fmat4 ParticleSystemComponent::CalculateTransformMatrix() const
-{
-    mat4 worldTransform = fmat4(1.0f);
-
-    if (attachedTransform)
-    {
-        // take our parent object transform
-        worldTransform *= attachedTransform->CalculateTransformMatrix();
-    }
-
-    // append our actual transform
-    worldTransform *= Super::CalculateTransformMatrix();
-
-    return worldTransform;
 }
 
 //////////////////////////////////////////////////////////////////////////

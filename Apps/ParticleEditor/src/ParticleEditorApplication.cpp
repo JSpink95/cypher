@@ -223,6 +223,7 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
+    window->SetWindowPosition(int2(1920, 200));
     
 	ak47Object = CreateObject<Object>(ObjectId::Create("AK47"));
 
@@ -258,7 +259,7 @@ void ParticleEditorApplication::OnPostCreate()
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
     gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
-    gridMesh->SetScale(float3(5.0f, 1.0f, 5.0f));
+    gridMesh->scale = float3(5.0f, 1.0f, 5.0f);
 
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);

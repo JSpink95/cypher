@@ -20,19 +20,23 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(StaticMeshComponent)
+RTTI_BEGIN_WITH_BASE(StaticMeshComponent, TransformComponent)
     RTTI_PROPERTY(StaticMeshComponent, Ref<Material>, material)
     RTTI_PROPERTY(StaticMeshComponent, Ref<VertexArray>, mesh)
-    RTTI_PROPERTY(StaticMeshComponent, float3, scale)
 RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+StaticMeshComponent::StaticMeshComponent()
+{
+    parentTransform.componentName = "RootComponent";
+}
 
 //////////////////////////////////////////////////////////////////////////
 
 void StaticMeshComponent::OnConstruct()
 {
     Super::OnConstruct();
-
-    ownerTransform = owner->FindComponentAsType<TransformComponent>("RootTransform");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -60,14 +64,7 @@ void StaticMeshComponent::OnRender(RenderPassType::Enum pass, Ref<Material> mate
 {
     Super::OnRender(pass, materialOverride);
 
-    fmat4 transform(1.0f);
-    if (!ownerTransform.expired())
-    {
-        transform = ownerTransform.lock()->CalculateTransformMatrix();
-    }
-
-    transform = glm::scale(transform, scale);
-
+    fmat4 transform = CalculateTransformMatrix();
     if (mesh != nullptr && material != nullptr)
     {
         Renderer::Submit(material, mesh, transform);

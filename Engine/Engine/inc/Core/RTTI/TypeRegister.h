@@ -31,6 +31,18 @@ public:
 
 public:
 
+    const std::string& GetBaseId() const
+    {
+        return baseId;
+    }
+
+public:
+
+    void SetBaseId(const std::string& newBaseId)
+    {
+        baseId = newBaseId;
+    }
+
     void AddProperty(const std::string& id, BaseProperty* prop)
     {
         properties.emplace(id, prop);
@@ -52,6 +64,7 @@ public:
 
 private:
     property_map properties;
+    std::string baseId;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -148,6 +161,22 @@ public:
 
 private:
     Type<T> type;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+template<typename TDerived, typename TBase>
+class AutoTypeRegisterWithBase
+{
+public:
+    AutoTypeRegisterWithBase()
+    {
+        TypeRegister::RegisterType(&type);
+        type.SetBaseId(TBase::ClassName);
+    }
+
+private:
+    Type<TDerived> type;
 };
 
 //////////////////////////////////////////////////////////////////////////

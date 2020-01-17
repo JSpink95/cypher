@@ -97,12 +97,20 @@ namespace ImGui
 
             if (ImGui::TreeNode(trimmedId.c_str()))
             {
-                if (BaseType* type = TypeRegister::GetRegisteredType(component->GetTypeName()))
+                BaseType* type = TypeRegister::GetRegisteredType(component->GetTypeName());
+                while (type != nullptr)
                 {
-                    for (BaseType::iterator it = type->begin(); it != type->end(); ++it)
+                    if (ImGui::TreeNode(type->GetTypeId().c_str()))
                     {
-                        it->second->ShowEditBox(it->first, (void*)component.get());
+                        for (BaseType::iterator it = type->begin(); it != type->end(); ++it)
+                        {
+                            it->second->ShowEditBox(it->first, (void*)component.get());
+                        }
+
+                        ImGui::TreePop();
                     }
+
+                    type = TypeRegister::GetRegisteredType(type->GetBaseId());
                 }
 
                 ImGui:TreePop();

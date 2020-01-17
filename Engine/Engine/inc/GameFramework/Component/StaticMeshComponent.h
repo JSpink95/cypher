@@ -8,7 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include "Core/Component.h"
+#include "GameFramework/Component/TransformComponent.h"
 #include "Render/Platform/RenderPass.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -19,27 +19,22 @@ class TransformComponent;
 
 //////////////////////////////////////////////////////////////////////////
 
-class StaticMeshComponent : public Component
+class StaticMeshComponent : public TransformComponent
 {
-    DECLARE_DERIVED_COMPONENT(StaticMeshComponent, Component)
+    DECLARE_DERIVED_COMPONENT(StaticMeshComponent, TransformComponent)
 public:
-    StaticMeshComponent() = default;
+    StaticMeshComponent();
     virtual ~StaticMeshComponent() = default;
 
     virtual void OnConstruct() override;
     virtual void OnDestruct() override;
 
-    void SetScale(const float3& newScale) { scale = newScale; }
     void SetMaterial(Ref<Material> newMaterial) { material = newMaterial; }
     void SetMesh(Ref<VertexArray> newMesh) { mesh = newMesh; }
 
 public:
     Ref<Material> material = nullptr;
     Ref<VertexArray> mesh = nullptr;
-    float3 scale = float3(1.0f);
-
-private:
-    WeakRef<TransformComponent> ownerTransform;
 
 public:
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;

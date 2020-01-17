@@ -19,7 +19,7 @@ public:
     virtual void OnConstruct(Object* owner) {}
 
 public:
-    std::string componentName;
+    std::string componentName = "";
 };
 
 //////////////////////////////////////////////////////////////////////////

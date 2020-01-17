@@ -97,7 +97,7 @@ void ReadObject(pugi::xml_node data, Ref<GameObject> o)
             Ref<StaticMeshComponent> staticmesh = o->CreateComponent<StaticMeshComponent>("");
             staticmesh->SetMesh(MeshLibrary::GetMesh(node.attribute("mesh").as_string()));
             staticmesh->SetMaterial(MaterialLibrary::GetMaterial(node.attribute("material").as_string()));
-            staticmesh->SetScale(ParseFloat3(node.attribute("scale").as_string()));
+            staticmesh->scale = ParseFloat3(node.attribute("scale").as_string());
         }
         else if (nodeName == "light")
         {

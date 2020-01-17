@@ -8,7 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include "Core/Component.h"
+#include "GameFramework/Component/TransformComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -17,9 +17,12 @@ class TransformComponent;
 
 //////////////////////////////////////////////////////////////////////////
 
-class LightComponent: public Component
+class LightComponent: public TransformComponent
 {
-    DECLARE_DERIVED_COMPONENT(LightComponent, Component)
+    DECLARE_DERIVED_COMPONENT(LightComponent, TransformComponent)
+public:
+    LightComponent();
+
 public:
     virtual void OnConstruct() override;
     virtual void OnDestruct() override;
@@ -28,13 +31,17 @@ public:
 
     inline Ref<LightObject> GetLightInstance() { return light; }
 
+    inline float3 GetTransformedLightPosition() const
+    {
+        return float3(CalculateTransformMatrix() * float4(0.0f, 0.0f, 0.0f, 1.0f));
+    }
+
 public:
     f32 radius = 16.0f;
     float3 color = float3(1.0f);
 
 private:
     Ref<LightObject> light;
-    WeakRef<TransformComponent> ownerTransform;
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -5,7 +5,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "GameFramework/Component/LightComponent.h"
-#include "GameFramework/Component/TransformComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -18,10 +17,17 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(LightComponent)
+RTTI_BEGIN_WITH_BASE(LightComponent, TransformComponent)
     RTTI_PROPERTY(LightComponent, f32, radius)
     RTTI_PROPERTY(LightComponent, float3, color)
 RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+LightComponent::LightComponent()
+{
+    parentTransform.componentName = "RootComponent";
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -30,12 +36,7 @@ void LightComponent::OnConstruct()
     Super::OnConstruct();
 
     light = GetLightManager()->InsertInstance(vec3(0.0f), radius, vec4(color, 1.0f));
-    ownerTransform = GetOwner()->FindComponentAsType<TransformComponent>("RootComponent");
-
-    if (Ref<TransformComponent> transform = ownerTransform.lock())
-    {
-        light->SetPosition(transform->position);
-    }
+    light->SetPosition(GetTransformedLightPosition());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,12 +55,9 @@ void LightComponent::OnUpdate(const f32 dt)
 {
     Super::OnUpdate(dt);
 
-    if (Ref<TransformComponent> transform = ownerTransform.lock())
-    {
-        light->SetRadius(radius);
-        light->SetColor(vec4(color, 1.0f));
-        light->SetPosition(transform->position);
-    }
+    light->SetRadius(radius);
+    light->SetColor(vec4(color, 1.0f));
+    light->SetPosition(GetTransformedLightPosition());
 }
 
 //////////////////////////////////////////////////////////////////////////

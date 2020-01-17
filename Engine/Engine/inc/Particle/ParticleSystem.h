@@ -66,6 +66,7 @@ class ParticleSystemComponent: public TransformComponent
 {
     DECLARE_DERIVED_COMPONENT(ParticleSystemComponent, TransformComponent)
 public:
+    ParticleSystemComponent();
 
     // 
     // overridden - Component
@@ -74,12 +75,6 @@ public:
     virtual void OnConstruct() override;
     virtual void OnUpdate(const f32 dt) override;
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;
-
-    // 
-    // overridden - TransformComponent
-    // 
-
-    virtual fmat4 CalculateTransformMatrix() const override;
 
     // request a new particle to be added in the next update iteration
     void RequestNewParticles(s32 count = 1);
@@ -117,8 +112,6 @@ public:
 private:
     void RenderTask_InitialiseParticleMesh();
 
-public:
-
 private:
     std::vector<Particle> particles;
 
@@ -150,9 +143,6 @@ private:
     // particle meshes
     Ref<VertexBuffer> particleBuffer;
     Ref<VertexArray> particleMesh;
-
-    // helper data
-    ComponentRef<TransformComponent> attachedTransform;
 };
 
 //////////////////////////////////////////////////////////////////////////

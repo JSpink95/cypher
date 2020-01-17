@@ -26,7 +26,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(RigidBodyComponent)
+RTTI_BEGIN_WITH_BASE(RigidBodyComponent, Component)
     RTTI_PROPERTY(RigidBodyComponent, f32, mass)
 RTTI_END()
 
@@ -36,8 +36,11 @@ void RigidBodyComponent::OnConstruct()
 {
     Super::OnConstruct();
 
-    attachedCollider = owner->FindFirstComponentOfType<ColliderComponent>();    // should be fine...
-    attachedTransform = owner->FindComponentAsType<TransformComponent>("RootTransform");
+    attachedCollider.componentName = "Collider";
+    attachedTransform.componentName = "RootTransform";
+
+    attachedCollider.OnConstruct(owner);
+    attachedTransform.OnConstruct(owner);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -46,8 +49,9 @@ void RigidBodyComponent::OnUpdate(const f32 dt)
 {
     Super::OnUpdate(dt);
 
-    if (Ref<TransformComponent> transform = attachedTransform.lock())
+    if (attachedTransform)
     {
+        Ref<TransformComponent> transform = attachedTransform.get();
         if (body != nullptr)
         {
             btTransform physicsTransform;
@@ -69,8 +73,8 @@ void RigidBodyComponent::OnUpdate(const f32 dt)
 
 void RigidBodyComponent::Initialise(const f32 mass_deprecated)
 {
-    Ref<BaseCollisionShape> collision = attachedCollider.expired() ? nullptr : attachedCollider.lock()->GetCollisionShape();
-    Ref<TransformComponent> transform = attachedTransform.expired() ? nullptr : attachedTransform.lock();
+    Ref<BaseCollisionShape> collision = attachedCollider ? attachedCollider->GetCollisionShape() : nullptr;
+    Ref<TransformComponent> transform = attachedTransform ? attachedTransform.get() : nullptr;
 
     body = Physics::CreateRigidBody(
         mass,

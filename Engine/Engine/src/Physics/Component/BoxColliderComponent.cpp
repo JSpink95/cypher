@@ -16,7 +16,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(BoxColliderComponent)
+RTTI_BEGIN_WITH_BASE(BoxColliderComponent, ColliderComponent)
     RTTI_PROPERTY_WITH_NOTIFY(BoxColliderComponent, float3, halfSize)
 RTTI_END()
 

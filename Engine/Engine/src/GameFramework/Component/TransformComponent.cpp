@@ -18,11 +18,20 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(TransformComponent)
+RTTI_BEGIN_WITH_BASE(TransformComponent, Component)
     RTTI_PROPERTY(TransformComponent, float3, position)
     RTTI_PROPERTY(TransformComponent, float3, rotation)
     RTTI_PROPERTY(TransformComponent, float3, scale)
 RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+void TransformComponent::OnConstruct()
+{
+    Super::OnConstruct();
+
+    parentTransform.OnConstruct(owner);
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -34,6 +43,11 @@ fmat4 TransformComponent::CalculateTransformMatrix() const
     result *= glm::mat4_cast(fquat(glm::radians(rotation)));
     result = glm::scale(result, scale);
 
+    if (parentTransform)
+    {
+        result = parentTransform->CalculateTransformMatrix() * result;
+    }
+    
     return result;
 }
 

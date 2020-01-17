@@ -8,8 +8,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include "Core/Types.h"
 #include "Core/Component.h"
+#include "Core/ComponentRef.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -39,8 +39,8 @@ private:
     btRigidBody* body = nullptr;
 
 private:
-    WeakRef<ColliderComponent> attachedCollider;
-    WeakRef<TransformComponent> attachedTransform;
+    ComponentRef<ColliderComponent> attachedCollider;
+    ComponentRef<TransformComponent> attachedTransform;
 };
 
 //////////////////////////////////////////////////////////////////////////

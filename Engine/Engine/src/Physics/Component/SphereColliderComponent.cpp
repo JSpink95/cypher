@@ -16,7 +16,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(SphereColliderComponent)
+RTTI_BEGIN_WITH_BASE(SphereColliderComponent, ColliderComponent)
     RTTI_PROPERTY(SphereColliderComponent, f32, radius)
 RTTI_END()
 

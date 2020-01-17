@@ -18,7 +18,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ProjectileMovementComponent)
+RTTI_BEGIN_WITH_BASE(ProjectileMovementComponent, Component)
     RTTI_PROPERTY(ProjectileMovementComponent, f32, speed)
     //RTTI_PROPERTY(ProjectileMovementComponent, float3, direction) // probably don't need to expose this to the RTTI system
 RTTI_END()
@@ -29,7 +29,8 @@ void ProjectileMovementComponent::OnConstruct()
 {
     Super::OnConstruct();
 
-    transform = GetOwner()->FindComponentAsType<TransformComponent>("RootComponent");
+    attachedTransform.componentName = "RootComponent";
+    attachedTransform.OnConstruct(owner);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -38,9 +39,9 @@ void ProjectileMovementComponent::OnUpdate(const f32 dt)
 {
     Super::OnUpdate(dt);
 
-    if (transform != nullptr)
+    if (attachedTransform)
     {
-        transform->position += (direction * speed * dt);
+        attachedTransform->position += (direction * speed * dt);
     }
 }
 

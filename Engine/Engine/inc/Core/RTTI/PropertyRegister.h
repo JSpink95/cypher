@@ -114,6 +114,37 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+template<typename T>
+class PropertyComponentRef : public BaseProperty
+{
+public:
+    //using ComponentRefType = ComponentRef<T>;
+
+public:
+
+    // maybe we can get away with doing some kind of cast...
+    virtual void SetFromBlob(void* base, void* blob) override
+    {
+        //T& strongType = *(T*)blob;
+        //SetFromStrongType(base, strongType);
+    }
+
+public:
+    // needs concrete implementation per type.
+    virtual void SetFromString(void* base, const std::string& string) override
+    {
+        //RTTI::SetValueFromString<T>(string, GetValueFromContainer(base));
+    }
+
+    virtual bool ShowEditBox(const std::string& id, void* base) override
+    {
+        return false;
+        //return RTTI::ShowEditBox<T>(base, this, id, GetValueFromContainer(base));
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 template<typename T, typename TProperty>
 class AutoPropertyRegister
 {
@@ -142,6 +173,22 @@ public:
 
 private:
     PropertyWithNotify<TProperty> prop;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+template<typename T, typename TProperty>
+class AutoPropertyRegisterComponentRef
+{
+public:
+    AutoPropertyRegisterComponentRef(const std::string& id, const size_t offset)
+    {
+        TypeRegister::GetRegisteredType<T>()->AddProperty(id, &prop);
+        prop.offset = offset;
+    }
+
+private:
+    PropertyComponentRef<TProperty> prop;
 };
 
 //////////////////////////////////////////////////////////////////////////
