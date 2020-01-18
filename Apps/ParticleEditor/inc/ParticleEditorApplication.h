@@ -31,6 +31,7 @@ private:
 
 private:
 	Ref<Object> ak47Object;
+	Ref<Object> tableObject;
     Ref<GameObject> editorController;
 	Ref<GameObject> lightObject;
     Ref<GameObject> gridObject;

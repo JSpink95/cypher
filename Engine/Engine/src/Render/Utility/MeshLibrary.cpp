@@ -50,6 +50,7 @@ void MeshLibrary::InitialiseImpl()
     RegisterMeshImpl("game:mesh-sphere-fs", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_fs.obj", { true, true, 1.0f }));
 	RegisterMeshImpl("game:mesh-sphere-ss", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_ss.obj", { true, true, 1.0f }));
 	RegisterMeshImpl("assets:\\models\\ak47.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\ak47.obj", { true, true, 1.0f }));
+	RegisterMeshImpl("assets:\\models\\table.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\table.obj", { true, true, 1.0f }));
 }
 
 //////////////////////////////////////////////////////////////////////////

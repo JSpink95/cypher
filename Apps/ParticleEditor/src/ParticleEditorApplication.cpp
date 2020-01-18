@@ -223,7 +223,7 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    window->SetWindowPosition(int2(1920, 200));
+    //window->SetWindowPosition(int2(1920, 200));
     
 	ak47Object = CreateObject<Object>(ObjectId::Create("AK47"));
 
@@ -233,7 +233,16 @@ void ParticleEditorApplication::OnPostCreate()
 	ak47StaticMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\ak47-material.xml"));
 	ak47StaticMesh->SetMesh(MeshLibrary::GetMesh("assets:\\models\\ak47.obj"));
 
+	tableObject = CreateObject<Object>(ObjectId::Create("Table"));
+
+	Ref<TransformComponent> tableTransform = tableObject->CreateComponent<TransformComponent>("RootTransform");
+
+	Ref<StaticMeshComponent> tableStaticMesh = tableObject->CreateComponent<StaticMeshComponent>("StaticMesh");
+	tableStaticMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\table-material.xml"));
+	tableStaticMesh->SetMesh(MeshLibrary::GetMesh("assets:\\models\\table.obj"));
+
 	{
+		RenderPassManager::AddObjectToPass(RenderPassType::Opaque, tableObject);
 		RenderPassManager::AddObjectToPass(RenderPassType::Opaque, ak47Object);
 	}
 
