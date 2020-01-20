@@ -29,7 +29,7 @@ RTTI_END()
 
 StaticMeshComponent::StaticMeshComponent()
 {
-    parentTransform.componentName = "RootComponent";
+    parentTransform.componentName = "RootTransform";
 }
 
 //////////////////////////////////////////////////////////////////////////

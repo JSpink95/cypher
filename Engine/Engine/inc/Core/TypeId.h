@@ -42,11 +42,11 @@ public:
 
 public:
     const std::string& GetStringId() const { return stringId; }
-    const u64 GetHashedId() const { return hashedId; }
+    const size_t GetHashedId() const { return hashedId; }
 
 private:
     std::string stringId;
-    u64 hashedId;
+    size_t hashedId;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ namespace std
     {
         size_t operator()(const HashedString& oid) const noexcept
         {
-            return (size_t)oid.GetHashedId();
+            return oid.GetHashedId();
         }
     };
 
@@ -91,7 +91,7 @@ namespace std
     {
         size_t operator()(const ComponentId& oid) const noexcept
         {
-            return (size_t)oid.GetHashedId();
+            return oid.GetHashedId();
         }
     };
 }
@@ -104,14 +104,14 @@ using ClassIdHashMap = std::unordered_map<ClassId, Value, std::hash<ClassId>>;
 //////////////////////////////////////////////////////////////////////////
 
 template<typename Value>
-using ObjectIdHashMap = std::unordered_map<ObjectId, Value, std::hash<ObjectId>>;
+using ObjectIdHashMap = std::unordered_map<ObjectId, Value>;
 
 using GenericObjectHashMap = ObjectIdHashMap<Ref<Object>>;
 
 //////////////////////////////////////////////////////////////////////////
 
 template<typename Value>
-using ComponentHashMap = std::unordered_map<ComponentId, Value, std::hash<ComponentId>>;
+using ComponentHashMap = std::unordered_map<ComponentId, Value>;
 
 using GenericComponentHashMap = ComponentHashMap<Ref<Component>>;
 

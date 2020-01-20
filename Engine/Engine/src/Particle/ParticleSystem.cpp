@@ -61,7 +61,7 @@ struct UniformBufferParticleExtra
 
 ParticleSystemComponent::ParticleSystemComponent()
 {
-    parentTransform.componentName = "RootComponent";
+    parentTransform.componentName = "RootTransform";
 }
 
 //////////////////////////////////////////////////////////////////////////

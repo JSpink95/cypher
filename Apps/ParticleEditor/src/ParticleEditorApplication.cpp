@@ -236,10 +236,11 @@ void ParticleEditorApplication::OnPostCreate()
 	tableObject = CreateObject<Object>(ObjectId::Create("Table"));
 
 	Ref<TransformComponent> tableTransform = tableObject->CreateComponent<TransformComponent>("RootTransform");
-
+    
 	Ref<StaticMeshComponent> tableStaticMesh = tableObject->CreateComponent<StaticMeshComponent>("StaticMesh");
 	tableStaticMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\table-material.xml"));
 	tableStaticMesh->SetMesh(MeshLibrary::GetMesh("assets:\\models\\table.obj"));
+    tableStaticMesh->scale = float3(0.5f);
 
 	{
 		RenderPassManager::AddObjectToPass(RenderPassType::Opaque, tableObject);
@@ -268,7 +269,7 @@ void ParticleEditorApplication::OnPostCreate()
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
     gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
-    gridMesh->scale = float3(5.0f, 1.0f, 5.0f);
+    gridMesh->scale = float3(4.0f, 1.0f, 4.0f);
 
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);

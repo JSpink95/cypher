@@ -29,7 +29,7 @@ void ProjectileMovementComponent::OnConstruct()
 {
     Super::OnConstruct();
 
-    attachedTransform.componentName = "RootComponent";
+    attachedTransform.componentName = "RootTransform";
     attachedTransform.OnConstruct(owner);
 }
 

@@ -26,7 +26,7 @@ RTTI_END()
 
 LightComponent::LightComponent()
 {
-    parentTransform.componentName = "RootComponent";
+    parentTransform.componentName = "RootTransform";
 }
 
 //////////////////////////////////////////////////////////////////////////
