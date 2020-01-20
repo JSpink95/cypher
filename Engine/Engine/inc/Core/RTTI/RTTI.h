@@ -30,7 +30,7 @@ static AutoPropertyRegisterWithNotify<Class, PropertyType> RTTI_##Class##_##Prop
 //////////////////////////////////////////////////////////////////////////
 
 #define RTTI_PROPERTY_COMPONENT_REF(Class, PropertyRefType, Property)                                                       \
-static AutoPropertyRegisterComponentRef<Class, PropertyType> RTTI_##Class##_##Property(#Property, offsetof(Class, Property));
+static AutoPropertyRegisterComponentRef<Class, PropertyRefType> RTTI_##Class##_##Property(#Property, offsetof(Class, Property));
 
 //////////////////////////////////////////////////////////////////////////
 

@@ -8,6 +8,11 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Object.h"
+#include "Core/ComponentRef.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Material.h"
 #include "Render/Platform/VertexArray.h"
 
@@ -38,6 +43,33 @@ inline std::stringstream& operator>>(std::stringstream& ss, std::vector<f32>& ou
     output.push_back(value);
 
     return ss;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+namespace ImGui
+{
+    bool VectorStringGetter(void* data, s32 index, const char** outText)
+    {
+        std::vector<std::string>& strings = *static_cast<std::vector<std::string>*>(data);
+        if (index >= strings.size())
+        {
+            return false;
+        }
+
+        *outText = strings.at(index).c_str();
+        return true;
+    }
+
+    bool VectorStringList(const std::string& label, std::vector<std::string>& strings, s32& selected)
+    {
+        return ImGui::ListBox(label.c_str(), &selected, VectorStringGetter, &strings, strings.size());
+    }
+
+    bool VectorStringComboBox(const std::string& label, std::vector<std::string>& strings, s32& selected)
+    {
+        return ImGui::Combo(label.c_str(), &selected, VectorStringGetter, &strings, strings.size());
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -219,6 +251,44 @@ namespace RTTI
     {
         // display a list of meshes...
         ImGui::Text("Not yet implemented - VertexArrayRef");
+        return false;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    bool ShowComponentRefEditBox(void* owner, BaseProperty* prop, ClassId classId, const std::string& id, ComponentRefBase* editable)
+    {
+        Component* ownerAsComponent = (Component*)owner;
+        Object* componentOwner = ownerAsComponent != nullptr ? ownerAsComponent->GetOwner() : nullptr;
+        if (componentOwner)
+        {
+            std::vector<std::string> componentNames;
+            componentOwner->ForEachComponent([&componentNames, classId](ComponentId id, Ref<Component> component) -> void
+            {
+                if (component->IsTypeOf(classId))
+                {
+                    const std::string& componentName = id.GetStringId();
+                    const std::string trimmedComponentName = componentName.substr(componentName.find_first_of(":") + 1);
+
+                    componentNames.push_back(trimmedComponentName);
+                }
+            });
+
+            auto it = std::find(componentNames.begin(), componentNames.end(), editable->componentName);
+
+            s32 selected = it != componentNames.end() ? std::distance(componentNames.begin(), it) : 0;
+            
+            const bool changed = ImGui::VectorStringComboBox(id, componentNames, selected);
+
+            if (changed)
+            {
+                editable->componentName = componentNames.at(selected);
+                editable->OnComponentChanged(componentOwner);
+            }
+
+            return changed;
+        }
+
         return false;
     }
 }

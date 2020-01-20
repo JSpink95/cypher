@@ -17,7 +17,7 @@ class ComponentRefBase
     DEFINE_CLASS_UID(ComponentRefBase)
 public:
     virtual void OnConstruct(Object* owner) {}
-
+    virtual void OnComponentChanged(Object* owner) {}
 public:
     std::string componentName = "";
 };
@@ -34,6 +34,13 @@ public:
         ComponentRefBase::OnConstruct(owner);
 
         // componentName should be populated by this point
+        OnComponentChanged(owner);
+    }
+
+    virtual void OnComponentChanged(Object* owner) override
+    {
+        ComponentRefBase::OnComponentChanged(owner);
+
         if (owner)
         {
             component = owner->FindComponentAsType<T>(componentName);

@@ -13,6 +13,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 class BaseProperty;
+class ComponentRefBase;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -23,6 +24,8 @@ namespace RTTI
 
     template<typename T>
     bool ShowEditBox(void* owner, BaseProperty* prop, const std::string& id, T& value);
+
+    bool ShowComponentRefEditBox(void* owner, BaseProperty* prop, ClassId classId, const std::string& id, ComponentRefBase* editable);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -118,7 +121,12 @@ template<typename T>
 class PropertyComponentRef : public BaseProperty
 {
 public:
-    //using ComponentRefType = ComponentRef<T>;
+
+    inline ComponentRefBase* GetValueFromContainer(void* base)
+    {
+        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
+        return (ComponentRefBase*)(bytes + offset);
+    }
 
 public:
 
@@ -138,7 +146,8 @@ public:
 
     virtual bool ShowEditBox(const std::string& id, void* base) override
     {
-        return false;
+        ComponentRefBase* editable = GetValueFromContainer(base);
+        return RTTI::ShowComponentRefEditBox(base, this, T::ClassUID(), id, editable);
         //return RTTI::ShowEditBox<T>(base, this, id, GetValueFromContainer(base));
     }
 };

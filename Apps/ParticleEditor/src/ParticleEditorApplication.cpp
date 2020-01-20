@@ -8,6 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/RTTI/RTTI.h"
 #include "Core/ObjectManager.h"
 #include "Core/ComponentRef.h"
 #include "Core/Thread/GameThread.h"
@@ -78,6 +79,11 @@ public:
 private:
     Ref<PerspectiveCamera> camera;
 };
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(OrbitalCameraComponent, TransformComponent)
+RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -166,9 +172,18 @@ public:
 private:
     CameraInput input;
     f32 amountOfZoom = 1.0f;
+
+public:
     ComponentRef<TransformComponent> attachedTransform;
     ComponentRef<OrbitalCameraComponent> attachedCameraComponent;
 };
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(EditorControllerComponent, Component)
+    RTTI_PROPERTY_COMPONENT_REF(EditorControllerComponent, TransformComponent, attachedTransform)
+    RTTI_PROPERTY_COMPONENT_REF(EditorControllerComponent, OrbitalCameraComponent, attachedCameraComponent)
+RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -280,14 +295,16 @@ void ParticleEditorApplication::OnImGuiRender()
     ImGui::SetNextWindowPos(ImVec2(4, 8));
     if (ImGui::Begin("Active Particle System", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
     {
-        if (activeParticleSystem)
-        {
-            ImGui::ShowObjectProperties(activeParticleSystem);
-        }
-        else
-        {
-            ImGui::Text("No particle system selected");
-        }
+        ImGui::ShowObjectProperties(editorController);
+
+        //if (activeParticleSystem)
+        //{
+        //    ImGui::ShowObjectProperties(activeParticleSystem);
+        //}
+        //else
+        //{
+        //    ImGui::Text("No particle system selected");
+        //}
 
         ImGui::End();
     }
