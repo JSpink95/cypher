@@ -17,6 +17,7 @@
 #include "Render/Platform/Window.h"
 #include "Render/Utility/MeshLibrary.h"
 #include "Render/Utility/MaterialLibrary.h"
+#include "Render/Utility/DebugMeshVertexGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -35,31 +36,30 @@
 #include "imgui.h"
 
 //////////////////////////////////////////////////////////////////////////
+
+#ifdef _OPENGL
+#include "glfw.h"
+#endif
+
+//////////////////////////////////////////////////////////////////////////
 // #temporary - make these engine classes
 //////////////////////////////////////////////////////////////////////////
 
-class OrbitalCameraComponent : public Component
+class OrbitalCameraComponent : public TransformComponent
 {
-    DECLARE_DERIVED_COMPONENT(OrbitalCameraComponent, Component)
+    DECLARE_DERIVED_COMPONENT(OrbitalCameraComponent, TransformComponent)
 public:
+
+    OrbitalCameraComponent()
+    {
+        parentTransform.componentName = "RootTransform";
+    }
+
     virtual void OnConstruct() override
     {
         Super::OnConstruct();
 
         camera = std::make_shared<PerspectiveCamera>();
-        attachedTransform.componentName = "RootTransform";
-        attachedTransform.OnConstruct(owner);
-    }
-
-    virtual void OnUpdate(const f32 dt) override
-    {
-        Super::OnUpdate(dt);
-
-        if (attachedTransform)
-        {
-            camera->SetPosition(attachedTransform->position);
-            camera->SetLookAt(orbitOrigin);
-        }
     }
 
 public:
@@ -69,16 +69,14 @@ public:
         Camera::SetActiveCamera(camera);
     }
 
-    void SetOrbitOrigin(const float3& newOrbitOrigin)
+    void UpdateCameraData()
     {
-        orbitOrigin = newOrbitOrigin;
+        camera->SetPosition(float3(CalculateTransformMatrix() * float4(0.0f, 0.0f, 0.0f, 1.0f)));
+        camera->SetLookAt(float3(parentTransform->CalculateTransformMatrix() * float4(0.0f, 0.0f, 0.0f, 1.0f)));
     }
 
 private:
-    ComponentRef<TransformComponent> attachedTransform;
     Ref<PerspectiveCamera> camera;
-
-    float3 orbitOrigin = float3(0.0f);
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,9 +103,6 @@ public:
 
         attachedCameraComponent.componentName = "OrbitalCamera";
         attachedCameraComponent.OnConstruct(owner);
-
-        const float3 direction = glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f);
-        attachedTransform->position = float3(0.0f) + direction * amountOfZoom;
     }
 
     virtual void OnUpdate(const f32 dt)
@@ -136,8 +131,8 @@ public:
                 // rotate camera
                 const float2 movement = mouseDelta * rotationSpeed * -1.0f;
 
-                attachedTransform->rotation.y += movement.x * dt;
-                attachedTransform->rotation.x = glm::clamp(attachedTransform->rotation.x + movement.y * dt, -89.0f, 89.0f);
+                attachedCameraComponent->rotation.y += movement.x * dt;
+                attachedCameraComponent->rotation.x = glm::clamp(attachedCameraComponent->rotation.x + movement.y * dt, -89.0f, 89.0f);
             }
         }
         else if (input.bMiddleMouseDown)
@@ -146,23 +141,21 @@ public:
             const float2 mouseDelta = Input::GetMouseDelta();
 
             // move orbit location
-            const float3 direction = -(glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f));
+            const float3 direction = -(glm::quat(glm::radians(attachedCameraComponent->rotation)) * float3(0.0f, 0.0f, 1.0f));
             const float3 up = float3(0.0f, 1.0f, 0.0f);
             const float3 right = glm::cross(up, direction);
 
             const float3 orbitMovement = (up * mouseDelta.y + right * mouseDelta.x) * moveSpeed;
-            orbitLocation += orbitMovement * dt;
-
+            attachedTransform->position += orbitMovement * dt;
+            
         }
 
         if (cameraUpdated)
         {
-            attachedCameraComponent->SetOrbitOrigin(orbitLocation);
-
-            const float3 direction = glm::quat(glm::radians(attachedTransform->rotation)) * float3(0.0f, 0.0f, 1.0f);
-            attachedTransform->position = orbitLocation + direction * amountOfZoom;
+            const float3 direction = glm::quat(glm::radians(attachedCameraComponent->rotation)) * float3(0.0f, 0.0f, 1.0f);
+            attachedCameraComponent->position = direction * amountOfZoom;
+            attachedCameraComponent->UpdateCameraData();
         }
-
     }
 
 public:
@@ -173,7 +166,6 @@ public:
 private:
     CameraInput input;
     f32 amountOfZoom = 1.0f;
-    float3 orbitLocation = float3(0.0f);
     ComponentRef<TransformComponent> attachedTransform;
     ComponentRef<OrbitalCameraComponent> attachedCameraComponent;
 };
@@ -214,6 +206,8 @@ Ref<GameObject> CreateDefaultParticleEffect(const std::string& id, u32 number)
 void ParticleEditorApplication::OnRenderCreate()
 {
     Application::OnRenderCreate();
+
+    GlCall(glLineWidth(2.0f));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -223,29 +217,18 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    //window->SetWindowPosition(int2(1920, 200));
-    
-	ak47Object = CreateObject<Object>(ObjectId::Create("AK47"));
+    window->SetWindowPosition(int2(-1920, 200));
 
-	Ref<TransformComponent> ak47Transform = ak47Object->CreateComponent<TransformComponent>("RootTransform");
+    gizmoObject = CreateObject<GameObject>(ObjectId::Create("Gizmo"));
+    gizmoObject->transform->position = float3(0.0f, 0.0f, 0.0f);
 
-	Ref<StaticMeshComponent> ak47StaticMesh = ak47Object->CreateComponent<StaticMeshComponent>("StaticMesh");
-	ak47StaticMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\ak47-material.xml"));
-	ak47StaticMesh->SetMesh(MeshLibrary::GetMesh("assets:\\models\\ak47.obj"));
+    Ref<StaticMeshComponent> gizmoMeshComponent = gizmoObject->CreateComponent<StaticMeshComponent>("StaticMesh");
+    gizmoMeshComponent->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\wireframe.xml"));
+    gizmoMeshComponent->SetMesh(MeshLibrary::GetMesh("engine:\\mesh\\wireframe-sphere"));
 
-	tableObject = CreateObject<Object>(ObjectId::Create("Table"));
-
-	Ref<TransformComponent> tableTransform = tableObject->CreateComponent<TransformComponent>("RootTransform");
-    
-	Ref<StaticMeshComponent> tableStaticMesh = tableObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-	tableStaticMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\table-material.xml"));
-	tableStaticMesh->SetMesh(MeshLibrary::GetMesh("assets:\\models\\table.obj"));
-    tableStaticMesh->scale = float3(0.5f);
-
-	{
-		RenderPassManager::AddObjectToPass(RenderPassType::Opaque, tableObject);
-		RenderPassManager::AddObjectToPass(RenderPassType::Opaque, ak47Object);
-	}
+    {
+        RenderPassManager::AddObjectToPass(RenderPassType::Debug, gizmoObject);
+    }
 
 	editorController = CreateObject<GameObject>(ObjectId::Create("EditorController"));
 
@@ -254,8 +237,14 @@ void ParticleEditorApplication::OnPostCreate()
 
     Ref<EditorControllerComponent> controller = editorController->CreateComponent<EditorControllerComponent>("EditorController");
 
+    Ref<StaticMeshComponent> orbitLocationGizmoMesh = editorController->CreateComponent<StaticMeshComponent>("GizmoMesh");
+    orbitLocationGizmoMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\wireframe.xml"));
+    orbitLocationGizmoMesh->SetMesh(MeshLibrary::GetMesh("engine:\\mesh\\wireframe-sphere"));
+    orbitLocationGizmoMesh->scale = float3(0.2f);
+
     {
         GameThread::AddObject(editorController);
+        RenderPassManager::AddObjectToPass(RenderPassType::Debug, editorController);
     }
 
 	lightObject = CreateObject<GameObject>(ObjectId::Create("MainLightSource"));

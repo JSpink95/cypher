@@ -1,0 +1,11 @@
+<material render_mode="LineList">
+  <program>
+    <shader type="vertex" path="assets:\shaders\vertex\wireframe.vs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\wireframe.ps"/>
+  </program>
+  <parameters>
+    <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
+    <parameter id="PerObject" type="materialblock-perobject" binding="1"/>
+    <parameter id="WireframeProperties" type="materialblock-custom" binding="2" memory_size="16"/>
+  </parameters>
+</material>

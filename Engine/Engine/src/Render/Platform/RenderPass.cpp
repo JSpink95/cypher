@@ -130,7 +130,8 @@ RenderPassManager::RenderPassManager()
         RenderPass(RenderPassType::Opaque),
         RenderPass(RenderPassType::Transparent),
         RenderPass(RenderPassType::Shadow),
-        RenderPass(RenderPassType::Particle)
+        RenderPass(RenderPassType::Particle),
+        RenderPass(RenderPassType::Debug)
       })
 {
 
@@ -458,6 +459,18 @@ void RenderPassManager::RenderImpl()
     imageRenderMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture", blendFramebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
 
     Renderer::Submit(imageRenderMaterial, screenQuad);
+
+    {
+        //GlCall(glViewport(0, 0, framebufferSize.x, framebufferSize.y));
+        //GlCall(glDisable(GL_DEPTH_TEST));
+
+        // debug drawing...
+        GlCall(glClear(GL_DEPTH_BUFFER_BIT));
+
+        renderPasses[RenderPassType::Debug].Perform();
+
+        //GlCall(glEnable(GL_DEPTH_TEST));
+    }
 
 #if 0
     GlCall(glClear(GL_DEPTH_BUFFER_BIT));

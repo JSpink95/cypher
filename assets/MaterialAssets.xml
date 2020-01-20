@@ -1,7 +1,8 @@
 <materials>
   <!-- load base materials -->
+  <material filepath="assets:\materials\wireframe.xml"/>
   <material filepath="assets:\materials\mesh-lit.xml"/>
-  <material ifilepath="assets:\materials\mesh-lit-tex.xml"/>
+  <material filepath="assets:\materials\mesh-lit-tex.xml"/>
   <material filepath="assets:\materials\pp-image-render.xml"/>
   <material filepath="assets:\materials\pp-overlay.xml"/>
   <material filepath="assets:\materials\pp-ssao.xml"/>

@@ -30,7 +30,7 @@ namespace RenderPassType
 {
     enum Enum
     {
-        Opaque, Transparent, Shadow, Particle, Max,
+        Opaque, Transparent, Shadow, Particle, Debug, Max,
     };
 }
 

@@ -30,8 +30,7 @@ private:
     void AddNewDefaultEffect(const std::string& id, bool makeActive = false, const float3& atLocation = float3(0.0f));
 
 private:
-	Ref<Object> ak47Object;
-	Ref<Object> tableObject;
+    Ref<GameObject> gizmoObject;
     Ref<GameObject> editorController;
 	Ref<GameObject> lightObject;
     Ref<GameObject> gridObject;
