@@ -5,6 +5,6 @@
   </program>
   <parameters>
     <parameter id="ImageDataBuffer" type="materialblock-custom" binding="0" memory_size="16"/>
-    <parameter id="uTexture" type="texture2D" binding="0" value="engine:white"/>
+    <parameter id="uTexture" type="texture2D" binding="0" value="engine:\textures\white"/>
   </parameters>
 </material>

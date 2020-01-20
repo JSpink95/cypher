@@ -8,6 +8,6 @@
     <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
     <parameter id="PerObject" type="materialblock-perobject" binding="1"/>
     <parameter id="ParticleExtra" type="materialblock-custom" binding="2" memory_size="16"/>
-    <parameter id="uTexture" type="texture2D" binding="0" value="engine:error"/>
+    <parameter id="uTexture" type="texture2D" binding="0" value="engine:\textures\error"/>
   </parameters>
 </material>

@@ -5,7 +5,7 @@
   </program>
   <parameters>
     <parameter id="ScreenInfo" type="materialblock-custom" binding="0" memory_size="16"/>
-    <parameter id="uTexture0" type="texture2D" binding="0" value="engine:white"/>
-    <parameter id="uTexture1" type="texture2D" binding="1" value="engine:white"/>
+    <parameter id="uTexture0" type="texture2D" binding="0" value="engine:\textures\white"/>
+    <parameter id="uTexture1" type="texture2D" binding="1" value="engine:\textures\white"/>
   </parameters>
 </material>

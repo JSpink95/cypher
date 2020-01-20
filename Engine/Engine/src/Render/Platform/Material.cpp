@@ -93,7 +93,7 @@ void ParseMaterialXmlNode_Empty(Material* material, pugi::xml_node root, char co
 void ParseMaterialXmlNode_Texture2D(Material* material, pugi::xml_node root, char const* id, char const* type)
 {
     // retrieve from texture library
-    char const* texture_value = root.attribute("value").as_string("engine:error");
+    char const* texture_value = root.attribute("value").as_string("engine:\\textures\\error");
     u32 const binding = root.attribute("binding").as_uint();
 
     Ref<MaterialParameterTexture2D> newTextureParameter = material->FindOrAddParameter<MaterialParameterTexture2D>(id);

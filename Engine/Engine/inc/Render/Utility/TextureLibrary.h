@@ -23,10 +23,10 @@ class Texture2D;
 
 namespace EngineTextureId
 {
-    static inline const std::string White = "engine:white";
-    static inline const std::string Error = "engine:error";
-    static inline const std::string Dev = "engine:dev";
-    static inline const std::string ParticleSphere = "engine-particle-sphere";
+    static inline const std::string White = "engine:\\textures\\white";
+    static inline const std::string Error = "engine:\\textures\\error";
+    static inline const std::string Dev = "engine:\\textures\\dev";
+    static inline const std::string ParticleSphere = "engine:\\textures\\particle-sphere";
 }
 
 //////////////////////////////////////////////////////////////////////////

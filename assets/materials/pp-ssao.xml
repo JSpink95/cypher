@@ -6,8 +6,8 @@
   <parameters>
     <parameter id="PerFrame" type="materialblock-perframe" binding="0"/>
     <parameter id="SsaoInput" type="materialblock-custom" binding="1" memory_size="520"/>
-    <parameter id="uPosition" type="texture2D" binding="0" value="engine:white"/>
-    <parameter id="uNormal" type="texture2D" binding="1" value="engine:white"/>
-    <parameter id="uNoise" type="texture2D" binding="2" value="engine:white"/>
+    <parameter id="uPosition" type="texture2D" binding="0" value="engine:\textures\white"/>
+    <parameter id="uNormal" type="texture2D" binding="1" value="engine:\textures\white"/>
+    <parameter id="uNoise" type="texture2D" binding="2" value="engine:\textures\white"/>
   </parameters>
 </material>

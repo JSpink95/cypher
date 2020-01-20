@@ -1,5 +1,5 @@
 <material id="mesh-lit-tex-checkerboard" based_on="assets:\materials\mesh-lit-tex.xml">
   <parameters>
-    <parameter id="uTexture" type="texture2D" binding="0" value="engine:error"/>
+    <parameter id="uTexture" type="texture2D" binding="0" value="engine:\textures\error"/>
   </parameters>
 </material>

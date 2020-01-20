@@ -9,11 +9,11 @@
     <parameter id="ShadowMatrices" type="materialblock-custom" binding="1" memory_size="1284"/>
     
     <!-- Textures -->
-    <parameter id="uAlbedo" type="texture2D" binding="0" value="engine:error"/>
-    <parameter id="uWorldPos" type="texture2D" binding="1" value="engine:error"/>
-    <parameter id="uObjectNormal" type="texture2D" binding="2" value="engine:error"/>
+    <parameter id="uAlbedo" type="texture2D" binding="0" value="engine:\textures\error"/>
+    <parameter id="uWorldPos" type="texture2D" binding="1" value="engine:\textures\error"/>
+    <parameter id="uObjectNormal" type="texture2D" binding="2" value="engine:\textures\error"/>
     
     <!-- Shadow Maps -->
-    <parameter id="uDirectionalShadowMap" type="texture2D" binding="3" value="engine:white"/>
+    <parameter id="uDirectionalShadowMap" type="texture2D" binding="3" value="engine:\textures\white"/>
   </parameters>
 </material>
