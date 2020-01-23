@@ -113,10 +113,10 @@ void TextureLibrary::InitialiseImpl()
     }
 
     // load engine textures
-    loadedTextures.insert(std::make_pair(EngineTextureId::White, GetApiManager()->CreateTexture2D(uint2(2), whitePixels)));
-    loadedTextures.insert(std::make_pair(EngineTextureId::Error, GetApiManager()->CreateTexture2D(uint2(8), errorPixels)));
-    loadedTextures.insert(std::make_pair(EngineTextureId::Dev, GetApiManager()->CreateTexture2D(uint2(8), devPixels)));
-    loadedTextures.insert(std::make_pair(EngineTextureId::ParticleSphere, GetApiManager()->CreateTexture2D(uint2(16), &spherePixels.at(0))));
+    loadedTextures.insert(std::make_pair("engine:\\textures\\white", GetApiManager()->CreateTexture2D(uint2(2), whitePixels)));
+    loadedTextures.insert(std::make_pair("engine:\\textures\\error", GetApiManager()->CreateTexture2D(uint2(8), errorPixels)));
+    loadedTextures.insert(std::make_pair("engine:\\textures\\dev", GetApiManager()->CreateTexture2D(uint2(8), devPixels)));
+    loadedTextures.insert(std::make_pair("engine:\\textures\\particle-sphere", GetApiManager()->CreateTexture2D(uint2(16), &spherePixels.at(0))));
 
     PathResult textureAssetPath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\TextureAssets.xml");
     if (textureAssetPath.valid)
@@ -128,11 +128,13 @@ void TextureLibrary::InitialiseImpl()
             pugi::xml_node root = doc.root().child("textures");
             for (pugi::xml_node textureNode : root)
             {
-                const char* id = textureNode.attribute("id").as_string();
                 const char* filepath = textureNode.attribute("filepath").as_string();
 
+                std::string id = filepath;
+                id = id.substr(0, id.find_last_of("."));
+
 #ifdef DEBUG
-                printf("Loading texture('%s', '%s')\n", id, filepath);
+                printf("Loading texture('%s')\n", id, filepath);
 #endif
 
                 RegisterTextureImpl(id, filepath);

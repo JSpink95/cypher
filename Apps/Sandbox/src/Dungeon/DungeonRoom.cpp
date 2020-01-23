@@ -210,8 +210,8 @@ void DungeonRoom::RenderThread_LoadRenderResources()
 {
     material = MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex.xml");
 
-    floorTexture = TextureLibrary::GetTexture(EngineTextureId::White);
-    wallTexture = TextureLibrary::GetTexture(EngineTextureId::White);
+    floorTexture = TextureLibrary::GetTexture("engine:\\textures\\white");
+    wallTexture = TextureLibrary::GetTexture(engine:\\textures\\white);
     wallTexture->SetTextureParameter(TextureParameterType::WrapMode, TextureParameterValue::Repeat);
 }
 

@@ -1,5 +1,5 @@
 <material id="crate-material" based_on="assets:\materials\mesh-lit-tex.xml">
   <parameters>
-    <parameter id="uTexture" type="texture2D" binding="0" value="tx_crate"/>
+    <parameter id="uTexture" type="texture2D" binding="0" value="assets:\textures\crate"/>
   </parameters>
 </material>

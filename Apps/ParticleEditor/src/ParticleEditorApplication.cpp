@@ -232,7 +232,7 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    //window->SetWindowPosition(int2(-1920, 200));
+    window->SetWindowPosition(int2(-1920, 200));
 
     gizmoObject = CreateObject<GameObject>(ObjectId::Create("Gizmo"));
     gizmoObject->transform->position = float3(0.0f, 0.0f, 0.0f);

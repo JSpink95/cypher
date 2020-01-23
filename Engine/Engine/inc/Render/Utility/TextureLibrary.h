@@ -21,16 +21,6 @@ class Texture2D;
 
 //////////////////////////////////////////////////////////////////////////
 
-namespace EngineTextureId
-{
-    static inline const std::string White = "engine:\\textures\\white";
-    static inline const std::string Error = "engine:\\textures\\error";
-    static inline const std::string Dev = "engine:\\textures\\dev";
-    static inline const std::string ParticleSphere = "engine:\\textures\\particle-sphere";
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 class TextureLibrary : public Singleton<TextureLibrary>
 {
 public:
