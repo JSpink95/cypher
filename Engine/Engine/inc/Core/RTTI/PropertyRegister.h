@@ -95,7 +95,7 @@ public:
 
 public:
     Property_ListBase(const size_t inOffset, const std::string& inPropertyName, const std::string& inValueTypeName)
-        : PropertyBase(inOffset, inPropertyName)
+        : PropertyBase(inOffset, inPropertyName, inValueTypeName)
         , valueTypeName(inValueTypeName)
     {}
 
@@ -129,7 +129,7 @@ public:
 
 public:
     Property_MapBase(const size_t inOffset, const std::string& inPropertyName, const std::string& inKeyTypeName, const std::string& inValueTypeName)
-        : PropertyBase(inOffset, inPropertyName)
+        : PropertyBase(inOffset, inPropertyName, inValueTypeName)
         , keyTypeName(inKeyTypeName)
         , valueTypeName(inValueTypeName)
     {}
