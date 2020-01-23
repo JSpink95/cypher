@@ -64,7 +64,7 @@ struct Particle
 
 class ParticleSystemComponent: public TransformComponent
 {
-    DECLARE_DERIVED_COMPONENT(ParticleSystemComponent, TransformComponent)
+    DECLARE_COMPONENT(ParticleSystemComponent, TransformComponent)
 public:
     ParticleSystemComponent();
 

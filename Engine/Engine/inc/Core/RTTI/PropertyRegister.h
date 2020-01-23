@@ -12,20 +12,35 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-class BaseProperty;
+#include <functional>
+
+//////////////////////////////////////////////////////////////////////////
+
+class Material;
+class RTTIObject;
+class VertexArray;
+class PropertyBase;
 class ComponentRefBase;
 
 //////////////////////////////////////////////////////////////////////////
 
 namespace RTTI
 {
-    template<typename T>
-    void SetValueFromString(const std::string& value, T& editable);
+    bool IsRefType(const std::string& typeName);
+    std::string TrimRefModifier(const std::string& typeName);
 
     template<typename T>
-    bool ShowEditBox(void* owner, BaseProperty* prop, const std::string& id, T& value);
+    bool DisplayEditBox(void* owner, PropertyBase* prop, const std::string& id, T& value) { return false; }
 
-    bool ShowComponentRefEditBox(void* owner, BaseProperty* prop, ClassId classId, const std::string& id, ComponentRefBase* editable);
+    // forward declare concrete implementations
+    template<> bool DisplayEditBox<bool>(void* owner, PropertyBase* prop, const std::string& id, bool& editable);
+    template<> bool DisplayEditBox<s32>(void* owner, PropertyBase* prop, const std::string& id, s32& editable);
+    template<> bool DisplayEditBox<f32>(void* owner, PropertyBase* prop, const std::string& id, f32& editable);
+    template<> bool DisplayEditBox<float2>(void* owner, PropertyBase* prop, const std::string& id, float2& editable);
+    template<> bool DisplayEditBox<float3>(void* owner, PropertyBase* prop, const std::string& id, float3& editable);
+    template<> bool DisplayEditBox<std::string>(void* owner, PropertyBase* prop, const std::string& id, std::string& editable);
+    template<> bool DisplayEditBox<Ref<Material>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Material>& editable);
+    template<> bool DisplayEditBox<Ref<VertexArray>>(void* owner, PropertyBase* prop, const std::string& id, Ref<VertexArray>& editable);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -33,171 +48,281 @@ namespace RTTI
 class IPropertyChangedListener
 {
 public:
-    virtual void OnPropertyChanged(BaseProperty* prop) {}
+    virtual void OnPropertyChanged(PropertyBase* prop) {}
 };
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-class BaseProperty
+class PropertyBase
 {
 public:
-    virtual ~BaseProperty() {}
+    PropertyBase(const size_t inOffset, const std::string& inPropertyName)
+        : offset(inOffset)
+        , propertyName(inPropertyName)
+    {}
+
+    virtual ~PropertyBase() {}
 
 public:
-    virtual void SetFromBlob(void* base, void* blob) = 0;
-    virtual void SetFromString(void* base, const std::string& value) = 0;
+    virtual bool IsRTTIObjectProperty() const;
+    virtual bool IsListProperty() const;
+    virtual bool IsMapProperty() const;
+
+    virtual bool IsRefType() const;
+
+    void* AsVoidPointer(void* base);
+    const void* AsVoidPointer(void* base) const;
+
+    RTTIObject* AsRTTIObject(void* base);
 
 public:
-    virtual bool ShowEditBox(const std::string& id, void* base) = 0;
+    virtual bool DisplayEditBox(void* base) = 0;
 
 public:
-    size_t offset = 0;
+    const size_t offset;
+    const std::string propertyName;
 };
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+class Property_ListBase : public PropertyBase
+{
+public:
+    using ListIteratorFunction = std::function<void(void*)>;
+
+public:
+    Property_ListBase(const size_t inOffset, const std::string& inPropertyName, const std::string& inValueTypeName)
+        : PropertyBase(inOffset, inPropertyName)
+        , valueTypeName(inValueTypeName)
+    {}
+
+    virtual ~Property_ListBase() {}
+
+public:
+    virtual bool IsListProperty() const override
+    {
+        return true;
+    }
+
+    virtual bool IsValueRefType() const
+    {
+        return RTTI::IsRefType(valueTypeName);
+    }
+
+public:
+    virtual size_t Count(void* base) const = 0;
+    virtual void ForEachItem(void* base, ListIteratorFunction predicate) = 0;
+
+public:
+    const std::string valueTypeName;
+};
+
+////////////////////////////////////////////////////////////////////////////
+
+class Property_MapBase : public PropertyBase
+{
+public:
+    using MapIteratorFunction = std::function<void(const void*, void*)>;
+
+public:
+    Property_MapBase(const size_t inOffset, const std::string& inPropertyName, const std::string& inKeyTypeName, const std::string& inValueTypeName)
+        : PropertyBase(inOffset, inPropertyName)
+        , keyTypeName(inKeyTypeName)
+        , valueTypeName(inValueTypeName)
+    {}
+
+    virtual ~Property_MapBase() {}
+
+public:
+    virtual bool IsMapProperty() const override
+    {
+        return true;
+    }
+
+    virtual bool IsKeyRefType() const
+    {
+        return RTTI::IsRefType(keyTypeName);
+    }
+
+    virtual bool IsValueRefType() const
+    {
+        return RTTI::IsRefType(valueTypeName);
+    }
+
+public:
+    TypeBase* GetKeyType();
+    TypeBase* GetValueType();
+
+public:
+    virtual size_t Count(void* base) const = 0;
+    virtual void ForEachItem(void* base, MapIteratorFunction predicate) = 0;
+
+public:
+    const std::string keyTypeName;
+    const std::string valueTypeName;
+};
+
+////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-class Property: public BaseProperty
+class Property : public PropertyBase
 {
 public:
+    Property(const size_t offset, const std::string& inPropertyName)
+        : PropertyBase(offset, inPropertyName)
+    {}
 
-    inline T& GetValueFromContainer(void* base)
-    {
-        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
-        return *(T*)(bytes + offset);
-    }
-
-    inline void SetFromStrongType(void* base, const T& value)
-    {
-        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
-        *(T*)(bytes + offset) = value;
-    }
-
-    // maybe we can get away with doing some kind of cast...
-    virtual void SetFromBlob(void* base, void* blob) override
-    {
-        T& strongType = *(T*)blob;
-        SetFromStrongType(base, strongType);
-    }
+    virtual ~Property() {}
 
 public:
-    // needs concrete implementation per type.
-    virtual void SetFromString(void* base, const std::string& string) override
+    virtual bool DisplayEditBox(void* base) override
     {
-        RTTI::SetValueFromString<T>(string, GetValueFromContainer(base));
-    }
-
-    virtual bool ShowEditBox(const std::string& id, void* base) override
-    {
-        return RTTI::ShowEditBox<T>(base, this, id, GetValueFromContainer(base));
+        return RTTI::DisplayEditBox<T>(base, this, propertyName, *(T*)AsVoidPointer(base));
     }
 };
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
-class PropertyWithNotify : public Property<T>
+template<template<typename> typename TList, typename TValue>
+class Property_List : public Property_ListBase
 {
 public:
-    virtual bool ShowEditBox(const std::string& id, void* base) override
-    {
-        const bool changed = Property<T>::ShowEditBox(id, base);
+    using list_type = TList<TValue>;
 
-        if (changed)
+public:
+    Property_List(const size_t offset, const std::string& inPropertyName, const std::string& inValueTypeName)
+        : Property_ListBase(offset, inPropertyName, inValueTypeName)
+    { }
+
+    virtual ~Property_List() {}
+
+public:
+
+    virtual size_t Count(void* base) const override
+    {
+        const list_type* list = (const list_type*)AsVoidPointer(base);
+        return list->size();
+    }
+
+    virtual void ForEachItem(void* base, ListIteratorFunction predicate) override
+    {
+        list_type* list = (list_type*)AsVoidPointer(base);
+        for (size_t index = 0; index < list->size(); ++index)
         {
-            if (IPropertyChangedListener* listener = (IPropertyChangedListener*)base)
-            {
-                listener->OnPropertyChanged(this);
-            }
+            TValue* value = &list->at(index);
+            predicate((void*)value);
         }
+    }
 
-        return changed;
+public:
+    virtual bool IsRefType() const override
+    {
+        return RTTI::IsRefType(valueTypeName);
+    }
+
+    virtual bool DisplayEditBox(void* base) override
+    {
+        const bool valueTypeIsRef = RTTI::IsRefType(valueTypeName);
+        const bool isRTTIObjectType = TypeRegister::IsRegisteredType(RTTI::TrimRefModifier(valueTypeName));
+
+        return false;
     }
 };
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
-class PropertyComponentRef : public BaseProperty
+template<template<typename, typename> typename TMap, typename TKey, typename TValue>
+class Property_Map: public Property_MapBase
 {
 public:
+    using map_type = TMap<TKey, TValue>;
 
-    inline ComponentRefBase* GetValueFromContainer(void* base)
+public:
+    Property_Map(const size_t offset, const std::string& inPropertyName, const std::string& inKeyTypeName, const std::string& inValueTypeName)
+        : Property_MapBase(offset, inPropertyName, inKeyTypeName, inValueTypeName)
     {
-        unsigned char* bytes = reinterpret_cast<unsigned char*>(base);
-        return (ComponentRefBase*)(bytes + offset);
+
+    }
+
+    virtual ~Property_Map() {}
+
+public:
+    virtual size_t Count(void* base) const override
+    {
+        map_type* map = (map_type*)AsVoidPointer(base);
+        return map->size();
+    }
+
+    virtual void ForEachItem(void* base, MapIteratorFunction predicate) override
+    {
+        map_type* map = (map_type*)AsVoidPointer(base);
+        for (auto it = map->begin(); it != map->end(); ++it)
+        {
+            const TKey* key = &it->first;
+            TValue* value = &it->second;
+            predicate((const void*)key, (void*)value);
+        }
     }
 
 public:
-
-    // maybe we can get away with doing some kind of cast...
-    virtual void SetFromBlob(void* base, void* blob) override
+    virtual bool IsRefType() const override
     {
-        //T& strongType = *(T*)blob;
-        //SetFromStrongType(base, strongType);
+        return RTTI::IsRefType(valueTypeName);
     }
 
-public:
-    // needs concrete implementation per type.
-    virtual void SetFromString(void* base, const std::string& string) override
+    virtual bool DisplayEditBox(void* base) override
     {
-        //RTTI::SetValueFromString<T>(string, GetValueFromContainer(base));
-    }
-
-    virtual bool ShowEditBox(const std::string& id, void* base) override
-    {
-        ComponentRefBase* editable = GetValueFromContainer(base);
-        return RTTI::ShowComponentRefEditBox(base, this, T::ClassUID(), id, editable);
-        //return RTTI::ShowEditBox<T>(base, this, id, GetValueFromContainer(base));
+        const bool isRTTIObjectType = TypeRegister::IsRegisteredType(valueTypeName);
+        return false;
     }
 };
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-template<typename T, typename TProperty>
+template<typename TOwnerType, typename TPropertyType>
 class AutoPropertyRegister
 {
 public:
-    AutoPropertyRegister(const std::string& id, const size_t offset)
+    AutoPropertyRegister(const std::string& name, const size_t offset)
+        : type(offset, name)
     {
-        TypeRegister::GetRegisteredType<T>()->AddProperty(id, &prop);
-        prop.offset = offset;
+        TypeRegister::GetRegisteredType<TOwnerType>()->AddProperty(&type);
     }
 
 private:
-    Property<TProperty> prop;
+    Property<TPropertyType> type;
 };
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-template<typename T, typename TProperty>
-class AutoPropertyRegisterWithNotify
+template<typename TOwnerType, template<typename> typename TList, typename TValue>
+class AutoPropertyRegister_List
 {
 public:
-    AutoPropertyRegisterWithNotify(const std::string& id, const size_t offset)
+    AutoPropertyRegister_List(const std::string& name, const size_t offset, const std::string& valueName)
+        : type(offset, name, valueName)
     {
-        TypeRegister::GetRegisteredType<T>()->AddProperty(id, &prop);
-        prop.offset = offset;
+        TypeRegister::GetRegisteredType<TOwnerType>()->AddProperty(&type);
     }
 
 private:
-    PropertyWithNotify<TProperty> prop;
+    Property_List<TList, TValue> type;
 };
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-template<typename T, typename TProperty>
-class AutoPropertyRegisterComponentRef
+template<typename TOwnerType, template<typename, typename> typename TMap, typename TKey, typename TValue>
+class AutoPropertyRegister_Map
 {
 public:
-    AutoPropertyRegisterComponentRef(const std::string& id, const size_t offset)
+    AutoPropertyRegister_Map(const std::string& name, const size_t offset, const std::string& keyName, const std::string& valueName)
+        : type(offset, name, keyName, valueName)
     {
-        TypeRegister::GetRegisteredType<T>()->AddProperty(id, &prop);
-        prop.offset = offset;
+        TypeRegister::GetRegisteredType<TOwnerType>()->AddProperty(&type);
     }
 
 private:
-    PropertyComponentRef<TProperty> prop;
+    Property_Map<TMap, TKey, TValue> type;
 };
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////

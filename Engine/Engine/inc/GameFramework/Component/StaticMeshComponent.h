@@ -21,7 +21,7 @@ class TransformComponent;
 
 class StaticMeshComponent : public TransformComponent
 {
-    DECLARE_DERIVED_COMPONENT(StaticMeshComponent, TransformComponent)
+    DECLARE_COMPONENT(StaticMeshComponent, TransformComponent)
 public:
     StaticMeshComponent();
     virtual ~StaticMeshComponent() = default;

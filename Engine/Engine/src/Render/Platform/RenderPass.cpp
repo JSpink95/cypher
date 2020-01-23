@@ -345,7 +345,7 @@ void RenderPassManager::RenderImpl()
     Renderer::EndScene();
 
     // ssao pass
-    // everything in the opaque and transparent pass weill be rendered again
+    // everything in the opaque and transparent pass will be rendered again
     Renderer::BeginScene(ssaoFramebuffer);
     {
         GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));

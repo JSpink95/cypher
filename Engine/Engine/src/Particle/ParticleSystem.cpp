@@ -45,9 +45,8 @@ RTTI_BEGIN_WITH_BASE(ParticleSystemComponent, TransformComponent)
     RTTI_PROPERTY(ParticleSystemComponent, bool, localSpaceParticles)
     RTTI_PROPERTY(ParticleSystemComponent, f32, emissionRate)
     RTTI_PROPERTY(ParticleSystemComponent, s32, maxAliveParticles)
-    //RTTI_PROPERTY_REF(ParticleSystemComponent, ParticleEmissionStage, emissionStage)
-    //RTTI_PROPERTY_REF(ParticleSystemComponent, ParticleUpdateStage, updateStage)
-    //RTTI_PROPERTY_REF(ParticleSystemComponent, ParticleEvent, onParticleDeath)
+    RTTI_PROPERTY(ParticleSystemComponent, Ref<ParticleEmissionStage>, emissionStage)
+    RTTI_PROPERTY(ParticleSystemComponent, Ref<ParticleUpdateStage>, updateStage)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////

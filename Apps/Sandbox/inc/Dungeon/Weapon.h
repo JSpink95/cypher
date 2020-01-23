@@ -20,7 +20,7 @@ class ProjectileMovementComponent;
 
 class BulletProjectile : public GameObject
 {
-    DECLARE_DERIVED_OBJECT(BulletProjectile, GameObject)
+    DECLARE_OBJECT(BulletProjectile, GameObject)
 public:
     virtual void OnConstruct() override;
     virtual void OnUpdate(const f32 dt) override;
@@ -41,7 +41,7 @@ private:
 
 class Weapon : public Object
 {
-    DECLARE_DERIVED_OBJECT(Weapon, Object)
+    DECLARE_OBJECT(Weapon, Object)
 public:
     virtual void OnConstruct() override;
     virtual void OnUpdate(const f32 dt) override;

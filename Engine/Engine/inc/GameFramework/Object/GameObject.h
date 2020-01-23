@@ -18,7 +18,7 @@ class TransformComponent;
 
 class GameObject: public Object
 {
-    DECLARE_DERIVED_OBJECT(GameObject, Object)
+    DECLARE_OBJECT(GameObject, Object)
 public:
     virtual ~GameObject() = default;
 

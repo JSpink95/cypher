@@ -12,7 +12,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ComponentRefBase)
+RTTI_BEGIN_WITH_BASE(ComponentRefBase, RTTIObject)
     RTTI_PROPERTY(ComponentRefBase, std::string, componentName)
 RTTI_END()
 

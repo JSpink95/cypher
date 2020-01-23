@@ -14,7 +14,7 @@
 
 class Character : public PhysicsObject
 {
-    DECLARE_DERIVED_OBJECT(Character, PhysicsObject)
+    DECLARE_OBJECT(Character, PhysicsObject)
 public:
     virtual void OnConstruct() override;
     virtual void OnPhysicsUpdate(const f32 dt) override;

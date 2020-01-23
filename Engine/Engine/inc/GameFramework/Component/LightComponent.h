@@ -19,7 +19,7 @@ class TransformComponent;
 
 class LightComponent: public TransformComponent
 {
-    DECLARE_DERIVED_COMPONENT(LightComponent, TransformComponent)
+    DECLARE_COMPONENT(LightComponent, TransformComponent)
 public:
     LightComponent();
 

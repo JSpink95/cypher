@@ -28,8 +28,8 @@ void PhysicsObject::OnConstruct()
 {
     Super::OnConstruct();
 
-    GetGameThread()->AddObject(self);
-    GetPhysicsThread()->AddObject(self);
+    //GetGameThread()->AddObject(self);
+    //GetPhysicsThread()->AddObject(self);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -113,8 +113,8 @@ void PhysicsObject::SetPositionAndRotation(const float3& position, const float3&
 
 void PhysicsObject::ApplyDirectImpulse(const float3& direction, const f32 strength)
 {
-    Ref<PhysicsObject> locked_self = std::dynamic_pointer_cast<PhysicsObject>(self.lock());
-    PhysicsWorld::GetActiveInstance()->ApplyImpulseToObject(locked_self, direction, strength);
+    //Ref<PhysicsObject> locked_self = std::dynamic_pointer_cast<PhysicsObject>(self.lock());
+    //PhysicsWorld::GetActiveInstance()->ApplyImpulseToObject(locked_self, direction, strength);
 }
 
 //////////////////////////////////////////////////////////////////////////

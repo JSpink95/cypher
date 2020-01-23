@@ -17,6 +17,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include <string>
 #include <unordered_map>
 
 //////////////////////////////////////////////////////////////////////////
@@ -33,6 +34,42 @@ namespace RenderMode
 //////////////////////////////////////////////////////////////////////////
 
 using MaterialParameterMap = std::unordered_map<std::string, Ref<MaterialParameter>>;
+
+//////////////////////////////////////////////////////////////////////////
+
+namespace DepthTestFunc
+{
+    enum Enum : u8
+    {
+        LessThan, GreaterThan, None, Invalid, Max
+    };
+
+    inline Enum FromString(const std::string& value)
+    {
+        static std::unordered_map<std::string, Enum> mapping =
+        {
+            { "lesser", LessThan },
+            { "greater", GreaterThan },
+            { "None", None },
+        };
+
+        auto it = mapping.find(value);
+        if (it != mapping.end())
+        {
+            return it->second;
+        }
+
+        return Invalid;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+struct MaterialPass
+{
+    //RenderPassType::Enum pass;
+    DepthTestFunc::Enum test = DepthTestFunc::LessThan;
+};
 
 //////////////////////////////////////////////////////////////////////////
 

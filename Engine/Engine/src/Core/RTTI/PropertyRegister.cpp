@@ -5,6 +5,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/RTTI/PropertyRegister.h"
+#include "Core/RTTI/RTTIObject.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -20,6 +21,10 @@
 
 #include "Render/Utility/MaterialLibrary.h"
 #include "Render/Utility/MeshLibrary.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Particle/ParticleUpdater.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -131,84 +136,69 @@ namespace RTTI
 
 namespace RTTI
 {
-    template<> void SetValueFromString<bool>(const std::string& string, bool& editable)
+    //////////////////////////////////////////////////////////////////////////
+
+    bool IsRefType(const std::string& typeName)
     {
-        editable = RTTI::ToBool(string);
+        return (typeName.rfind("Ref<", 0) == 0);
     }
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> bool ShowEditBox<bool>(void* owner, BaseProperty* prop, const std::string& id, bool& editable)
+    std::string TrimRefModifier(const std::string& typeName)
+    {
+        std::string result = typeName;
+
+        if (IsRefType(result))
+        {
+            // remove Ref< from start
+            result = result.substr(4);
+
+            // Remove > from end
+            result.pop_back();
+        }
+
+        return result;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool DisplayEditBox<bool>(void* owner, PropertyBase* prop, const std::string& id, bool& editable)
     {
         return ImGui::Checkbox(id.c_str(), &editable);
     }
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void SetValueFromString<s32>(const std::string& string, s32& editable)
-    {
-        editable = RTTI::ToInt32(string);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-
-    template<> bool ShowEditBox<s32>(void* owner, BaseProperty* prop, const std::string& id, s32& editable)
+    template<> bool DisplayEditBox<s32>(void* owner, PropertyBase* prop, const std::string& id, s32& editable)
     {
         return ImGui::InputInt(id.c_str(), &editable);
     }
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void SetValueFromString<f32>(const std::string& string, f32& editable)
-    {
-        editable = RTTI::ToFloat(string);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-
-    template<> bool ShowEditBox<f32>(void* owner, BaseProperty* prop, const std::string& id, f32& editable)
+    template<> bool DisplayEditBox<f32>(void* owner, PropertyBase* prop, const std::string& id, f32& editable)
     {
         return ImGui::InputFloat(id.c_str(), &editable);
     }
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void SetValueFromString<float2>(const std::string& string, float2& editable)
-    {
-        editable = RTTI::ToFloat2(string);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-
-    template<> bool ShowEditBox<float2>(void* owner, BaseProperty* prop, const std::string& id, float2& editable)
+    template<> bool DisplayEditBox<float2>(void* owner, PropertyBase* prop, const std::string& id, float2& editable)
     {
         return ImGui::InputFloat2(id.c_str(), &editable.x, 3);
     }
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void SetValueFromString<float3>(const std::string& string, float3& editable)
-    {
-        editable = RTTI::ToFloat3(string);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-
-    template<> bool ShowEditBox<float3>(void* owner, BaseProperty* prop, const std::string& id, float3& editable)
+    template<> bool DisplayEditBox<float3>(void* owner, PropertyBase* prop, const std::string& id, float3& editable)
     {
         return ImGui::InputFloat3(id.c_str(), &editable.x, 3);
     }
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void SetValueFromString<std::string>(const std::string& string, std::string& editable)
-    {
-        editable = string;
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-
-    template<> bool ShowEditBox<std::string>(void* owner, BaseProperty* prop, const std::string& id, std::string& editable)
+    template<> bool DisplayEditBox<std::string>(void* owner, PropertyBase* prop, const std::string& id, std::string& editable)
     {
         static constexpr const size_t maxBufferSize = 128u;
 
@@ -224,14 +214,7 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void SetValueFromString<Ref<Material>>(const std::string& string, Ref<Material>& editable)
-    {
-        editable = MaterialLibrary::GetMaterial(string);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-
-    template<> bool ShowEditBox<Ref<Material>>(void* owner, BaseProperty* prop, const std::string& id, Ref<Material>& editable)
+    template<> bool DisplayEditBox<Ref<Material>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Material>& editable)
     {
         // display a list of materials...
         ImGui::Text("Not yet implemented - MaterialRef");
@@ -240,14 +223,7 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> void SetValueFromString<Ref<VertexArray>>(const std::string& string, Ref<VertexArray>& editable)
-    {
-        editable = MeshLibrary::GetMesh(string);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-
-    template<> bool ShowEditBox<Ref<VertexArray>>(void* owner, BaseProperty* prop, const std::string& id, Ref<VertexArray>& editable)
+    template<> bool DisplayEditBox<Ref<VertexArray>>(void* owner, PropertyBase* prop, const std::string& id, Ref<VertexArray>& editable)
     {
         // display a list of meshes...
         ImGui::Text("Not yet implemented - VertexArrayRef");
@@ -255,42 +231,73 @@ namespace RTTI
     }
 
     //////////////////////////////////////////////////////////////////////////
+}
 
-    bool ShowComponentRefEditBox(void* owner, BaseProperty* prop, ClassId classId, const std::string& id, ComponentRefBase* editable)
-    {
-        Component* ownerAsComponent = (Component*)owner;
-        Object* componentOwner = ownerAsComponent != nullptr ? ownerAsComponent->GetOwner() : nullptr;
-        if (componentOwner)
-        {
-            std::vector<std::string> componentNames;
-            componentOwner->ForEachComponent([&componentNames, classId](ComponentId id, Ref<Component> component) -> void
-            {
-                if (component->IsTypeOf(classId))
-                {
-                    const std::string& componentName = id.GetStringId();
-                    const std::string trimmedComponentName = componentName.substr(componentName.find_first_of(":") + 1);
+//////////////////////////////////////////////////////////////////////////
 
-                    componentNames.push_back(trimmedComponentName);
-                }
-            });
+bool PropertyBase::IsRTTIObjectProperty() const
+{
+    return TypeRegister::IsRegisteredTypeOf(RTTI::TrimRefModifier(propertyName), RTTIObject::ClassUID());
+}
 
-            auto it = std::find(componentNames.begin(), componentNames.end(), editable->componentName);
+//////////////////////////////////////////////////////////////////////////
 
-            s32 selected = it != componentNames.end() ? std::distance(componentNames.begin(), it) : 0;
-            
-            const bool changed = ImGui::VectorStringComboBox(id, componentNames, selected);
+bool PropertyBase::IsListProperty() const
+{
+    return false;
+}
 
-            if (changed)
-            {
-                editable->componentName = componentNames.at(selected);
-                editable->OnComponentChanged(componentOwner);
-            }
+//////////////////////////////////////////////////////////////////////////
 
-            return changed;
-        }
+bool PropertyBase::IsMapProperty() const
+{
+    return false;
+}
 
-        return false;
-    }
+//////////////////////////////////////////////////////////////////////////
+
+bool PropertyBase::IsRefType() const
+{
+    // this needs some thought...
+    return RTTI::IsRefType(propertyName);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void* PropertyBase::AsVoidPointer(void* base)
+{
+    char* bytes = (reinterpret_cast<char*>(base) + offset);
+    return (void*)bytes;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+const void* PropertyBase::AsVoidPointer(void* base) const
+{
+    const char* bytes = (reinterpret_cast<const char*>(base) + offset);
+    return (const void*)bytes;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTIObject* PropertyBase::AsRTTIObject(void* base)
+{
+    char* bytes = (reinterpret_cast<char*>(base) + offset);
+    return (RTTIObject*)bytes;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+TypeBase* Property_MapBase::GetKeyType()
+{
+    return TypeRegister::GetRegisteredType(keyTypeName);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+TypeBase* Property_MapBase::GetValueType()
+{
+    return TypeRegister::GetRegisteredType(RTTI::TrimRefModifier(valueTypeName));
 }
 
 //////////////////////////////////////////////////////////////////////////

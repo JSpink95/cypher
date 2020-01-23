@@ -13,6 +13,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/RTTI/RTTIObject.h"
 #include "Core/RTTI/PropertyRegister.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -25,9 +26,11 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-class Component: public IPropertyChangedListener
+class Component
+    : public RTTIObject
+    , public IPropertyChangedListener
 {
-    DECLARE_BASE_COMPONENT(Component)
+    DECLARE_COMPONENT(Component, RTTIObject)
 public:
     Component();
     virtual ~Component();

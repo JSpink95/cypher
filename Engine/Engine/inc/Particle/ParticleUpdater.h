@@ -10,6 +10,7 @@
 
 #include "Core/Types.h"
 #include "Core/ObjectMacros.h"
+#include "Core/RTTI/RTTIObject.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -22,85 +23,99 @@ struct Particle;
 
 //////////////////////////////////////////////////////////////////////////
 
-class ParticleEvent
+class ParticleEvent: public RTTIObject
 {
+    DECLARE_DERIVED(ParticleEvent, RTTIObject)
 public:
     virtual void OnEvent(Particle& particle) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
-class ParticleEmissionProcess
+class ParticleProcess: public RTTIObject
 {
-    DEFINE_CLASS_UID(ParticleEmissionProcess)
+    DECLARE_DERIVED(ParticleProcess, RTTIObject)
+public:
+    virtual ~ParticleProcess() {}
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class ParticleEmissionProcess: public ParticleProcess
+{
+    DECLARE_DERIVED(ParticleEmissionProcess, ParticleProcess)
 public:
     virtual void Initialise(Particle& particle) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
-class ParticleUpdateProcess
+class ParticleUpdateProcess: public ParticleProcess
 {
-    DEFINE_CLASS_UID(ParticleUpdateProcess)
+    DECLARE_DERIVED(ParticleUpdateProcess, ParticleProcess)
 public:
     virtual void Update(const f32 dt, Particle& particle) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
-template<typename T>
-class TParticleStage
+class ParticleStage: public RTTIObject
 {
+    DECLARE_DERIVED(ParticleStage, RTTIObject)
 public:
-    using ProcessType = Ref<T>;
-
-public:
-    inline void AddOutput(ProcessType process)
-    {
-        processes.push_back(process);
-    }
-
-    inline void RemoveOutput(ProcessType process)
-    {
-        processes.erase(std::remove(processes.begin(), processes.end(), process), processes.end());
-    }
+    virtual void AddOutput(Ref<ParticleProcess> process) = 0;
 
 public:
 
-    template<typename O>
-    inline Ref<O> PushOutput()
+    template<typename T>
+    inline Ref<T> PushOutput()
     {
-        Ref<O> output = std::make_shared<O>();
-        processes.push_back(output);
+        Ref<T> output = std::make_shared<T>();
+
+        if (output)
+        {
+            AddOutput(output);
+        }
 
         return output;
     }
-
-protected:
-    std::vector<ProcessType> processes;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
-class ParticleEmissionStage : public TParticleStage<ParticleEmissionProcess>
+class ParticleEmissionStage: public ParticleStage
 {
+    DECLARE_DERIVED(ParticleEmissionStage, ParticleStage)
 public:
     void Initialise(Particle& particle);
+
+public:
+    virtual void AddOutput(Ref<ParticleProcess> process) override;
+
+public:
+    std::vector<Ref<ParticleEmissionProcess>> processes;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
-class ParticleUpdateStage: public TParticleStage<ParticleUpdateProcess>
+class ParticleUpdateStage: public ParticleStage
 {
+    DECLARE_DERIVED(ParticleUpdateStage, ParticleStage)
 public:
     void Update(const f32 dt, Particle& particle);
+
+public:
+    virtual void AddOutput(Ref<ParticleProcess> process) override;
+
+public:
+    std::vector<Ref<ParticleUpdateProcess>> processes;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
 class ParticlePointEmitter : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticlePointEmitter)
+    DECLARE_DERIVED(ParticlePointEmitter, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -112,7 +127,7 @@ public:
 
 class ParticleSphereEmitter : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticleSphereEmitter)
+    DECLARE_DERIVED(ParticleSphereEmitter, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -126,7 +141,7 @@ public:
 
 class ParticleSetLifetime : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticleSetLifetime)
+    DECLARE_DERIVED(ParticleSetLifetime, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -136,7 +151,7 @@ public:
 
 class ParticleSetLifetimeRandom : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticleSetLifetimeRandom)
+    DECLARE_DERIVED(ParticleSetLifetimeRandom, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -149,7 +164,7 @@ public:
 
 class ParticleSetSize : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticleSetSize)
+    DECLARE_DERIVED(ParticleSetSize, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -159,7 +174,7 @@ public:
 
 class ParticleSetSizeRandom : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticleSetSizeRandom)
+    DECLARE_DERIVED(ParticleSetSizeRandom, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -172,7 +187,7 @@ public:
 
 class ParticleSetUV : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticleSetUV)
+    DECLARE_DERIVED(ParticleSetUV, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -185,7 +200,7 @@ public:
 
 class ParticleSetVelocity : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticleSetVelocity)
+    DECLARE_DERIVED(ParticleSetVelocity, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -198,7 +213,7 @@ public:
 
 class ParticleSetVelocityRandom : public ParticleEmissionProcess
 {
-    DEFINE_CLASS_UID(ParticleSetVelocityRandom)
+    DECLARE_DERIVED(ParticleSetVelocityRandom, ParticleEmissionProcess)
 public:
     virtual void Initialise(Particle& particle) override;
 
@@ -212,7 +227,7 @@ public:
 
 class ParticleLinearDrag : public ParticleUpdateProcess
 {
-    DEFINE_CLASS_UID(ParticleLinearDrag)
+    DECLARE_DERIVED(ParticleLinearDrag, ParticleUpdateProcess)
 public:
     virtual void Update(const f32 dt, Particle& particle) override;
 
@@ -224,7 +239,7 @@ public:
 
 class ParticleGravity : public ParticleUpdateProcess
 {
-    DEFINE_CLASS_UID(ParticleGravity)
+    DECLARE_DERIVED(ParticleGravity, ParticleUpdateProcess)
 public:
     virtual void Update(const f32 dt, Particle& particle) override;
 

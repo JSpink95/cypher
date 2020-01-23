@@ -17,6 +17,12 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+RTTI_BEGIN_WITH_BASE(Object, RTTIObject)
+    RTTI_PROPERTY_MAP(Object, std::unordered_map, ComponentId, Ref<Component>, components)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
 Object::Object()
 {
 }
@@ -68,61 +74,14 @@ void Object::OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride/
 
 void Object::SetTickEnabled(bool const enabled)
 {
-    if (enabled)
-    {
-        GetGameThread()->AddObject(self);
-    }
-    else
-    {
-        GetGameThread()->RemoveObject(self);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-namespace ImGui
-{
-    void ShowObjectProperties(Ref<Object> object)
-    {
-        if (object == nullptr)
-            return;
-
-        auto foreachComponent = [object](ComponentId id, Ref<Component> component) -> void
-        {
-            if (component == nullptr)
-                return;
-
-            const std::string componentId = component->GetId().GetStringId();
-            const std::string trimmedId = componentId.substr(componentId.find_first_of(":") + 1);
-
-            if (ImGui::TreeNode(trimmedId.c_str()))
-            {
-                BaseType* type = TypeRegister::GetRegisteredType(component->GetTypeName());
-                while (type != nullptr)
-                {
-                    if (ImGui::TreeNode(type->GetTypeId().c_str()))
-                    {
-                        for (BaseType::iterator it = type->begin(); it != type->end(); ++it)
-                        {
-                            it->second->ShowEditBox(it->first, (void*)component.get());
-                        }
-
-                        ImGui::TreePop();
-                    }
-
-                    type = TypeRegister::GetRegisteredType(type->GetBaseId());
-                }
-
-                ImGui:TreePop();
-            }
-        };
-
-        if (ImGui::TreeNode(object->GetId().GetStringId().c_str()))
-        {
-            object->ForEachComponent(foreachComponent);
-            ImGui::TreePop();
-        }
-    }
+    //if (enabled)
+    //{
+    //    GetGameThread()->AddObject(self);
+    //}
+    //else
+    //{
+    //    GetGameThread()->RemoveObject(self);
+    //}
 }
 
 //////////////////////////////////////////////////////////////////////////

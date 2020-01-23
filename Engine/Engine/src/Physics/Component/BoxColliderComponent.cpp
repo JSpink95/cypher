@@ -17,7 +17,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN_WITH_BASE(BoxColliderComponent, ColliderComponent)
-    RTTI_PROPERTY_WITH_NOTIFY(BoxColliderComponent, float3, halfSize)
+    //RTTI_PROPERTY_WITH_NOTIFY(BoxColliderComponent, float3, halfSize)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ void BoxColliderComponent::OnConstruct()
 
 //////////////////////////////////////////////////////////////////////////
 
-void BoxColliderComponent::OnPropertyChanged(BaseProperty* prop)
+void BoxColliderComponent::OnPropertyChanged(PropertyBase* prop)
 {
     Super::OnPropertyChanged(prop);
 }

@@ -18,7 +18,7 @@ class PerspectiveCamera;
 
 class Player : public Character
 {
-    DECLARE_DERIVED_OBJECT(Player, Character)
+    DECLARE_OBJECT(Player, Character)
 public:
 
     virtual void OnConstruct() override;

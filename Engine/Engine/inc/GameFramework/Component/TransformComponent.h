@@ -15,7 +15,7 @@
 
 class TransformComponent : public Component
 {
-    DECLARE_DERIVED_COMPONENT(TransformComponent, Component)
+    DECLARE_COMPONENT(TransformComponent, Component)
 public:
     virtual void OnConstruct() override;
 

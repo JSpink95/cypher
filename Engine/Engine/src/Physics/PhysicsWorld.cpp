@@ -37,8 +37,6 @@ void PhysicsWorld::OnConstruct()
     Super::OnConstruct();
 
     // make a singleton
-    activeInstance = self;
-    GetPhysicsThread()->AddObject(self);
 
     config = new btDefaultCollisionConfiguration;
     collisionDispatcher = new btCollisionDispatcher(config);
@@ -51,7 +49,6 @@ void PhysicsWorld::OnConstruct()
 
     world = new btDiscreteDynamicsWorld(collisionDispatcher, broadphase, constraintSolver, config);
     world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
-
 }
 
 //////////////////////////////////////////////////////////////////////////

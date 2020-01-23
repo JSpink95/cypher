@@ -18,7 +18,7 @@ class BaseCollisionShape;
 
 class ColliderComponent : public Component
 {
-    DECLARE_DERIVED_COMPONENT(ColliderComponent, Component)
+    DECLARE_COMPONENT(ColliderComponent, Component)
 public:
     inline Ref<BaseCollisionShape> GetCollisionShape() { return collisionShape; }
 

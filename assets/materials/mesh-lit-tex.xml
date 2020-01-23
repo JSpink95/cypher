@@ -8,19 +8,4 @@
     <parameter id="PerObject" type="materialblock-perobject" binding="1"/>
     <parameter id="uTexture" type="texture2D" binding="0" value="engine:\textures\white"/>
   </parameters>
-
-  <pass id="0">
-    <properties>
-      <property id="depth_test" value="less"/>
-    </properties>
-  </pass>
-
-  <pass id="1">
-    <properties>
-      <property id="depth_test" value="greater"/>
-    </properties>
-    <parameters>
-      <parameter id="uTexture" type="texture2D" binding="0" value="engine:\textures\error"/>
-    </parameters>
-  </pass>
 </material>

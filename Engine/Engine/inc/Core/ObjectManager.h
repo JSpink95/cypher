@@ -52,7 +52,6 @@ static inline Ref<TObject> CreateObject(const ObjectId& id)
     {
         Ref<TObject> newObject = std::make_shared<TObject>();
         newObject->SetId(id);
-        newObject->SetSelf(newObject);
 
         manager->RegisterObject(newObject);
         newObject->OnConstruct();

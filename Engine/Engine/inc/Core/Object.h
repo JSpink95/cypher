@@ -15,6 +15,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/RTTI/RTTIObject.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/Component.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -32,9 +36,9 @@ class Material;
 
 //////////////////////////////////////////////////////////////////////////
 
-class Object
+class Object: public RTTIObject
 {
-    DECLARE_BASE_OBJECT(Object)
+    DECLARE_OBJECT(Object, RTTIObject)
 public:
     Object();
     virtual ~Object();
@@ -103,7 +107,7 @@ public:
         return std::dynamic_pointer_cast<TComponent>(FindComponent(name));
     }
 
-private:
+public:
     GenericComponentHashMap components;
 
 public:
@@ -130,13 +134,6 @@ inline Ref<TComponent> Object::CreateComponent(const std::string& id)
     components.emplace(newComponent->GetId(), newComponent);
     
     return newComponent;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-namespace ImGui
-{
-    void ShowObjectProperties(Ref<Object> object);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -48,7 +48,7 @@
 
 class OrbitalCameraComponent : public TransformComponent
 {
-    DECLARE_DERIVED_COMPONENT(OrbitalCameraComponent, TransformComponent)
+    DECLARE_COMPONENT(OrbitalCameraComponent, TransformComponent)
 public:
 
     OrbitalCameraComponent()
@@ -89,7 +89,7 @@ RTTI_END()
 
 class EditorControllerComponent : public Component
 {
-    DECLARE_DERIVED_COMPONENT(EditorControllerComponent, Component)
+    DECLARE_COMPONENT(EditorControllerComponent, Component)
 private:
     struct CameraInput
     {
@@ -181,8 +181,8 @@ public:
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN_WITH_BASE(EditorControllerComponent, Component)
-    RTTI_PROPERTY_COMPONENT_REF(EditorControllerComponent, TransformComponent, attachedTransform)
-    RTTI_PROPERTY_COMPONENT_REF(EditorControllerComponent, OrbitalCameraComponent, attachedCameraComponent)
+    RTTI_PROPERTY(EditorControllerComponent, TransformComponent, attachedTransform)
+    RTTI_PROPERTY(EditorControllerComponent, OrbitalCameraComponent, attachedCameraComponent)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
@@ -295,16 +295,16 @@ void ParticleEditorApplication::OnImGuiRender()
     ImGui::SetNextWindowPos(ImVec2(4, 8));
     if (ImGui::Begin("Active Particle System", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
     {
-        ImGui::ShowObjectProperties(editorController);
+        RTTI::DisplayObjectProperties("EditorController", editorController.get());
 
-        //if (activeParticleSystem)
-        //{
-        //    ImGui::ShowObjectProperties(activeParticleSystem);
-        //}
-        //else
-        //{
-        //    ImGui::Text("No particle system selected");
-        //}
+        if (activeParticleSystem)
+        {
+            RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
+        }
+        else
+        {
+            ImGui::Text("No particle system selected");
+        }
 
         ImGui::End();
     }

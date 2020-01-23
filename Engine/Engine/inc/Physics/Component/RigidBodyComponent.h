@@ -25,7 +25,7 @@ class TransformComponent;
 
 class RigidBodyComponent : public Component
 {
-    DECLARE_DERIVED_COMPONENT(RigidBodyComponent, Component)
+    DECLARE_COMPONENT(RigidBodyComponent, Component)
 public:
     virtual void OnConstruct() override;
     virtual void OnUpdate(const f32 dt) override;

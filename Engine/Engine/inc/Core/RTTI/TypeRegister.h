@@ -16,69 +16,81 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-class BaseProperty;
+class PropertyBase;
 
 //////////////////////////////////////////////////////////////////////////
 
-class BaseType
+class TypeBase
 {
 public:
-    virtual ~BaseType() {}
+    using property_iterator = std::unordered_map<std::string, PropertyBase*>::iterator;
+    using const_property_iterator = std::unordered_map<std::string, PropertyBase*>::const_iterator;
 
 public:
-    virtual const std::string& GetTypeId() const = 0;
-    virtual const size_t GetTypeSize() const = 0;
+    TypeBase(const std::string& inTypeName, ClassId inTypeId)
+        : typeName(inTypeName)
+        , typeId(inTypeId)
+    {}
+
+    virtual ~TypeBase() {}
 
 public:
+    virtual size_t GetSizeInBytes() const = 0;
 
-    const std::string& GetBaseId() const
+public:
+    inline const std::string& GetTypeName() const { return typeName; }
+    inline const ClassId& GetTypeId() const { return typeId; }
+
+    inline void SetBaseType(const std::string& inBaseTypeName, const ClassId& inBaseTypeId)
     {
-        return baseId;
+        baseTypeName = inBaseTypeName;
+        baseTypeId = inBaseTypeId;
     }
 
 public:
-
-    void SetBaseId(const std::string& newBaseId)
-    {
-        baseId = newBaseId;
-    }
-
-    void AddProperty(const std::string& id, BaseProperty* prop)
-    {
-        properties.emplace(id, prop);
-    }
+    void AddProperty(PropertyBase* newProperty);
+    TypeBase* GetBaseType();
 
 public:
 
-    // stl compatibility
+    inline property_iterator property_begin() { return properties.begin(); }
+    inline property_iterator property_end() { return properties.end(); }
 
-    using property_map = std::unordered_map<std::string, BaseProperty*>;
-    using iterator = property_map::iterator;
-    using const_iterator = property_map::const_iterator;
-
-    iterator begin() { return properties.begin(); }
-    const_iterator begin() const { return properties.begin(); }
-
-    iterator end() { return properties.end(); }
-    const_iterator end() const { return properties.end(); }
+    inline const_property_iterator property_begin() const { return properties.begin(); }
+    inline const_property_iterator property_end() const { return properties.end(); }
 
 private:
-    property_map properties;
-    std::string baseId;
+    const std::string typeName;
+    const ClassId typeId;
+
+    std::string baseTypeName;
+    ClassId baseTypeId;
+
+    std::unordered_map<std::string, PropertyBase*> properties;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-class Type: public BaseType
+class Type: public TypeBase
 {
 public:
-    static inline const std::string TypeId = T::ClassName;
-    static inline const size_t TypeSize = sizeof(T);
+    static inline const std::string TypeName = T::ClassName;
+    static inline const ClassId TypeId = T::ClassUID();
+    static inline const size_t ByteSize = sizeof(T);
 
 public:
-    virtual inline const std::string& GetTypeId() const override { return TypeId; };
-    virtual inline const size_t GetTypeSize() const override { return TypeSize; };
+    Type()
+        : TypeBase(TypeName, T::ClassUID())
+    {}
+
+    virtual ~Type() {}
+
+public:
+    inline virtual size_t GetSizeInBytes() const override
+    {
+        return ByteSize;
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,7 +98,7 @@ public:
 class TypeRegister : public AutoConstructSingleton<TypeRegister>
 {
 public:
-    static inline void RegisterType(BaseType* type)
+    static inline void RegisterType(TypeBase* type)
     {
         if (Ref<TypeRegister> tr = TypeRegister::Get())
         {
@@ -94,11 +106,31 @@ public:
         }
     }
 
-    static inline BaseType* GetRegisteredType(const std::string& typeId)
+    static inline bool IsRegisteredType(const std::string& typeName)
     {
         if (Ref<TypeRegister> tr = TypeRegister::Get())
         {
-            return tr->GetRegisteredTypeImpl(typeId);
+            return tr->IsRegisteredTypeImpl(typeName);
+        }
+
+        return false;
+    }
+
+    static inline bool IsRegisteredTypeOf(const std::string& typeName, ClassId classId)
+    {
+        if (Ref<TypeRegister> tr = TypeRegister::Get())
+        {
+            return tr->IsRegisteredTypeOfImpl(typeName, classId);
+        }
+
+        return false;
+    }
+
+    static inline TypeBase* GetRegisteredType(const std::string& typeName)
+    {
+        if (Ref<TypeRegister> tr = TypeRegister::Get())
+        {
+            return tr->GetRegisteredTypeImpl(typeName);
         }
 
         return nullptr;
@@ -107,45 +139,17 @@ public:
     template<typename T>
     static inline Type<T>* GetRegisteredType()
     {
-        if (Ref<TypeRegister> tr = TypeRegister::Get())
-        {
-            return tr->GetRegisteredTypeImpl<T>();
-        }
-
-        return nullptr;
+        return dynamic_cast<Type<T>*>(GetRegisteredType(Type<T>::TypeName));
     }
 
 private:
-    inline void RegisterTypeImpl(BaseType* type)
-    {
-        types.emplace(type->GetTypeId(), type);
-    }
-
-    inline BaseType* GetRegisteredTypeImpl(const std::string& typeId)
-    {
-        auto it = types.find(typeId);
-        if (it != types.end())
-        {
-            return it->second;
-        }
-
-        return nullptr;
-    }
-
-    template<typename T>
-    inline Type<T>* GetRegisteredTypeImpl()
-    {
-        auto it = types.find(Type<T>::TypeId);
-        if (it != types.end())
-        {
-            return static_cast<Type<T>*>(it->second);
-        }
-
-        return nullptr;
-    }
+    void RegisterTypeImpl(TypeBase* type);
+    bool IsRegisteredTypeImpl(const std::string& typeName);
+    bool IsRegisteredTypeOfImpl(const std::string& typeName, ClassId classId);
+    TypeBase* GetRegisteredTypeImpl(const std::string& typeName);
 
 private:
-    std::unordered_map<std::string, BaseType*> types;
+    std::unordered_map<std::string, TypeBase*> types;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -172,7 +176,7 @@ public:
     AutoTypeRegisterWithBase()
     {
         TypeRegister::RegisterType(&type);
-        type.SetBaseId(TBase::ClassName);
+        type.SetBaseType(TBase::ClassName, TBase::ClassUID());
     }
 
 private:

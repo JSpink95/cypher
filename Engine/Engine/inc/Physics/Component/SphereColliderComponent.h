@@ -14,7 +14,7 @@
 
 class SphereColliderComponent : public ColliderComponent
 {
-    DECLARE_DERIVED_COMPONENT(SphereColliderComponent, ColliderComponent)
+    DECLARE_COMPONENT(SphereColliderComponent, ColliderComponent)
 public:
     virtual void OnConstruct() override;
 

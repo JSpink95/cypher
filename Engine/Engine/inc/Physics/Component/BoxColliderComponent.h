@@ -14,11 +14,11 @@
 
 class BoxColliderComponent : public ColliderComponent
 {
-    DECLARE_DERIVED_COMPONENT(BoxColliderComponent, ColliderComponent)
+    DECLARE_COMPONENT(BoxColliderComponent, ColliderComponent)
 public:
     virtual void OnConstruct() override;
 
-    virtual void OnPropertyChanged(BaseProperty* prop) override;
+    virtual void OnPropertyChanged(PropertyBase* prop) override;
 
 public:
     float3 halfSize = float3(1.0f);

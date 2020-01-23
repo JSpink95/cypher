@@ -33,7 +33,6 @@ void BulletProjectile::OnConstruct()
     movement = CreateComponent<ProjectileMovementComponent>("Movement");
     trail = CreateComponent<ParticleSystemComponent>("ParticleTrail");
 
-    GetGameThread()->AddObject(self);
     GetGameThread()->PushThreadTask(this, &BulletProjectile::RenderTask_Initialise);
 }
 
@@ -67,7 +66,7 @@ void BulletProjectile::Initialise(const f32 newTimeUntilDeath, const float3& dir
 
 void BulletProjectile::RenderTask_Initialise()
 {
-    RenderPassManager::AddObjectToPass(RenderPassType::Particle, self.lock());
+    //RenderPassManager::AddObjectToPass(RenderPassType::Particle, self.lock());
 }
 
 //////////////////////////////////////////////////////////////////////////

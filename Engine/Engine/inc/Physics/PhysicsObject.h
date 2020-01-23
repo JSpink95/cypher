@@ -19,7 +19,7 @@ class BaseCollisionShape;
 
 class PhysicsObject : public GameObject
 {
-    DECLARE_DERIVED_OBJECT(PhysicsObject, GameObject)
+    DECLARE_OBJECT(PhysicsObject, GameObject)
 private:
     friend class PhysicsWorld;
 

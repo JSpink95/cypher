@@ -18,7 +18,7 @@ class PerspectiveCamera;
 
 class FpsCameraController : public GameObject
 {
-    DECLARE_DERIVED_OBJECT(FpsCameraController, GameObject)
+    DECLARE_OBJECT(FpsCameraController, GameObject)
 public:
     virtual ~FpsCameraController() = default;
 

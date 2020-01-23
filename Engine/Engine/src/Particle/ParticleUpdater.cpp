@@ -10,17 +10,58 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/RTTI/RTTI.h"
+#include "Core/RTTI/RTTIObject.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/Utility/RandomUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticlePointEmitter)
+RTTI_BEGIN_WITH_BASE(ParticleEvent, RTTIObject)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(ParticleProcess, RTTIObject)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(ParticleEmissionProcess, ParticleProcess)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(ParticleUpdateProcess, ParticleProcess)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(ParticleStage, RTTIObject)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(ParticleEmissionStage, ParticleStage)
+    RTTI_PROPERTY_LIST(ParticleEmissionStage, std::vector, Ref<ParticleEmissionProcess>, processes)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(ParticleUpdateStage, ParticleStage)
+    RTTI_PROPERTY_LIST(ParticleUpdateStage, std::vector, Ref<ParticleUpdateProcess>, processes)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(ParticlePointEmitter, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticlePointEmitter, float3, point)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSphereEmitter)
+RTTI_BEGIN_WITH_BASE(ParticleSphereEmitter, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSphereEmitter, float2, radius)
     RTTI_PROPERTY(ParticleSphereEmitter, float2, direction)
     RTTI_PROPERTY(ParticleSphereEmitter, bool, clampToEdge)
@@ -28,47 +69,47 @@ RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSetLifetime)
+RTTI_BEGIN_WITH_BASE(ParticleSetLifetime, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSetLifetime, f32, lifetime)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSetLifetimeRandom)
+RTTI_BEGIN_WITH_BASE(ParticleSetLifetimeRandom, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSetLifetimeRandom, float2, minLifetime)
     RTTI_PROPERTY(ParticleSetLifetimeRandom, float2, maxLifetime)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSetSize)
+RTTI_BEGIN_WITH_BASE(ParticleSetSize, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSetSize, f32, size)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSetSizeRandom)
+RTTI_BEGIN_WITH_BASE(ParticleSetSizeRandom, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSetSizeRandom, f32, minSize)
     RTTI_PROPERTY(ParticleSetSizeRandom, f32, maxSize)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSetUV)
+RTTI_BEGIN_WITH_BASE(ParticleSetUV, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSetUV, float2, scale)
     RTTI_PROPERTY(ParticleSetUV, float2, offset)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSetVelocity)
+RTTI_BEGIN_WITH_BASE(ParticleSetVelocity, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSetVelocity, f32, strength)
     RTTI_PROPERTY(ParticleSetVelocity, float3, direction)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleSetVelocityRandom)
+RTTI_BEGIN_WITH_BASE(ParticleSetVelocityRandom, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSetVelocityRandom, float2, strength)
     RTTI_PROPERTY(ParticleSetVelocityRandom, float3, minDirections)
     RTTI_PROPERTY(ParticleSetVelocityRandom, float3, maxDirections)
@@ -76,21 +117,31 @@ RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleLinearDrag)
+RTTI_BEGIN_WITH_BASE(ParticleLinearDrag, ParticleUpdateProcess)
     RTTI_PROPERTY(ParticleLinearDrag, f32, drag)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN(ParticleGravity)
+RTTI_BEGIN_WITH_BASE(ParticleGravity, ParticleUpdateProcess)
     RTTI_PROPERTY(ParticleGravity, float3, gravity)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
+void ParticleEmissionStage::AddOutput(Ref<ParticleProcess> process)
+{
+    if (Ref<ParticleEmissionProcess> emissionProcess = std::dynamic_pointer_cast<ParticleEmissionProcess>(process))
+    {
+        processes.push_back(emissionProcess);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void ParticleEmissionStage::Initialise(Particle& particle)
 {
-    for (ProcessType process : processes)
+    for (Ref<ParticleEmissionProcess> process : processes)
     {
         if (process)
         {
@@ -101,9 +152,19 @@ void ParticleEmissionStage::Initialise(Particle& particle)
 
 //////////////////////////////////////////////////////////////////////////
 
+void ParticleUpdateStage::AddOutput(Ref<ParticleProcess> process)
+{
+    if (Ref<ParticleUpdateProcess> updateProcess = std::dynamic_pointer_cast<ParticleUpdateProcess>(process))
+    {
+        processes.push_back(updateProcess);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void ParticleUpdateStage::Update(const f32 dt, Particle& particle)
 {
-    for (ProcessType process : processes)
+    for (Ref<ParticleUpdateProcess> process : processes)
     {
         if (process)
         {

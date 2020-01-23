@@ -32,7 +32,7 @@ using IgnoreList = std::vector<PhysicsObject*>;
 
 class PhysicsWorld: public Object
 {
-    DECLARE_DERIVED_OBJECT(PhysicsWorld, Object)
+    DECLARE_OBJECT(PhysicsWorld, Object)
 public:
 
     struct RayHit
@@ -74,18 +74,13 @@ private:
     bool simulatePhysics = false;
 
 private:
-    static inline WeakRef<Object> activeInstance;
+    static inline Ref<PhysicsWorld> activeInstance;
 
 public:
 
     static Ref<PhysicsWorld> GetActiveInstance()
     {
-        if (Ref<Object> o = activeInstance.lock())
-        {
-            return std::dynamic_pointer_cast<PhysicsWorld>(o);
-        }
-
-        return nullptr;
+        return activeInstance;
     }
 
     static void SetActiveInstance(Ref<PhysicsWorld> newActiveInstance)

@@ -19,7 +19,7 @@ class TransformComponent;
 
 class ProjectileMovementComponent : public Component
 {
-    DECLARE_DERIVED_COMPONENT(ProjectileMovementComponent, Component)
+    DECLARE_COMPONENT(ProjectileMovementComponent, Component)
 public:
     virtual void OnConstruct() override;
     virtual void OnUpdate(const f32 dt) override;

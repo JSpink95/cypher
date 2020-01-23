@@ -12,9 +12,9 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-class ComponentRefBase
+class ComponentRefBase: public RTTIObject
 {
-    DEFINE_CLASS_UID(ComponentRefBase)
+    DECLARE_OBJECT(ComponentRefBase, RTTIObject)
 public:
     virtual void OnConstruct(Object* owner) {}
     virtual void OnComponentChanged(Object* owner) {}

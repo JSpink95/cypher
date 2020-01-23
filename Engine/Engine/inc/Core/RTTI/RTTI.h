@@ -19,18 +19,28 @@ static AutoTypeRegisterWithBase<Class, Base> RTTI_##Class;
 
 //////////////////////////////////////////////////////////////////////////
 
-#define RTTI_PROPERTY(Class, PropertyType, Property)                                                                        \
-static AutoPropertyRegister<Class, PropertyType> RTTI_##Class##_##Property(#Property, offsetof(Class, Property));
+#define RTTI_PROPERTY(Class, PropertyType, PropertyName)                                                                    \
+static AutoPropertyRegister<Class, PropertyType> RTTI_##Class##_##PropertyName(                                             \
+    #PropertyName,                                                                                                          \
+    offsetof(Class, PropertyName)                                                                                           \
+);
 
 //////////////////////////////////////////////////////////////////////////
 
-#define RTTI_PROPERTY_WITH_NOTIFY(Class, PropertyType, Property)                                                            \
-static AutoPropertyRegisterWithNotify<Class, PropertyType> RTTI_##Class##_##Property(#Property, offsetof(Class, Property));
+#define RTTI_PROPERTY_LIST(Class, ListType, ListValueType, PropertyName)                                                    \
+static AutoPropertyRegister_List<Class, ListType, ListValueType> RTTI_##Class##_##PropertyName(                             \
+    #PropertyName,                                                                                                          \
+    offsetof(Class, PropertyName),                                                                                          \
+    #ListValueType                                                                                                          \
+);
 
-//////////////////////////////////////////////////////////////////////////
-
-#define RTTI_PROPERTY_COMPONENT_REF(Class, PropertyRefType, Property)                                                       \
-static AutoPropertyRegisterComponentRef<Class, PropertyRefType> RTTI_##Class##_##Property(#Property, offsetof(Class, Property));
+#define RTTI_PROPERTY_MAP(Class, MapType, MapKeyType, MapValueType, PropertyName)                                           \
+static AutoPropertyRegister_Map<Class, MapType, MapKeyType, MapValueType> RTTI_##Class##_##PropertyName(                    \
+    #PropertyName,                                                                                                          \
+    offsetof(Class, PropertyName),                                                                                          \
+    #MapKeyType,                                                                                                            \
+    #MapValueType                                                                                                           \
+);
 
 //////////////////////////////////////////////////////////////////////////
 

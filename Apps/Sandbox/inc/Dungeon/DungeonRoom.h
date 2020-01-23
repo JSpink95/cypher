@@ -32,7 +32,7 @@ class DungeonCell;
 
 class DungeonRoom: public GameObject
 {
-    DECLARE_DERIVED_OBJECT(DungeonRoom, GameObject)
+    DECLARE_OBJECT(DungeonRoom, GameObject)
 public:
     static inline constexpr const s32 Width = 16;
     static inline constexpr const s32 Depth = 16;

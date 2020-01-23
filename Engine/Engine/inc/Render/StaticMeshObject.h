@@ -27,7 +27,7 @@ class StaticMeshComponent;
 
 class StaticMeshObject : public GameObject
 {
-    DECLARE_DERIVED_OBJECT(StaticMeshObject, GameObject)
+    DECLARE_OBJECT(StaticMeshObject, GameObject)
 public:
     ~StaticMeshObject() = default;
 

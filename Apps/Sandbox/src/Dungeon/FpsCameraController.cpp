@@ -49,8 +49,6 @@ void FpsCameraController::OnConstruct()
 
     transform->position = float3(8.0f, 0.0f, 1.0f);
 
-    GetGameThread()->AddObject(GetWeakRef());
-
     InputManager::RegisterInput(StrafeLeft, { KeyboardKey::A, KeyboardKey::LEFT });
     InputManager::RegisterInput(StrafeRight, { KeyboardKey::D, KeyboardKey::RIGHT });
     InputManager::RegisterInput(MoveForward, { KeyboardKey::W, KeyboardKey::UP });
