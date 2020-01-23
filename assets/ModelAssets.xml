@@ -1,8 +1,0 @@
-<models>
-  <!-- load simple models -->
-  <model id="mesh-capsule" path="assets:\models\capsule.obj"/>
-  <model id="mesh-box" path="assets:\models\box.obj"/>
-  <model id="mesh-plane" path="assets:\models\plane.obj"/>
-  <model id="mesh-sphere-fs" path="assets:\models\sphere_fs.obj"/>
-  <model id="mesh-sphere-ss" path="assets:\models\sphere_ss.obj"/>
-</models>

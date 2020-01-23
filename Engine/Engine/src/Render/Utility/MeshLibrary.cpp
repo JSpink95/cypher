@@ -8,8 +8,16 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/FileVolumeManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Utility/ObjMeshLoader.h"
 #include "Render/Utility/DebugMeshVertexGenerator.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "pugixml.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -63,15 +71,37 @@ Ref<VertexArray> MeshLibrary::GetMesh(const std::string& id)
 
 void MeshLibrary::InitialiseImpl()
 {
-    // load default objects here...
-    RegisterMeshImpl("assets:\\models\\capsule.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\capsule.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("assets:\\models\\box.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\box.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("assets:\\models\\plane.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\plane.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("assets:\\models\\sphere_fs.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_fs.obj", { true, true, 1.0f }));
-	RegisterMeshImpl("assets:\\models\\sphere_ss.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_ss.obj", { true, true, 1.0f }));
-	RegisterMeshImpl("assets:\\models\\ak47.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\ak47.obj", { true, true, 1.0f }));
-	RegisterMeshImpl("assets:\\models\\table.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\table.obj", { true, true, 1.0f }));
+    // load engine objects here...
     RegisterMeshImpl("engine:\\mesh\\wireframe-sphere", DebugMeshVertexGenerator::CreateWireframeSphere(1.0f));
+
+    // now load asset meshes
+    PathResult meshAssetPath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\MeshAssets.xml");
+    if (meshAssetPath.valid)
+    {
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file(meshAssetPath.fullpath.c_str());
+
+        if (result)
+        {
+            pugi::xml_node root = doc.root().child("meshes");
+            for (pugi::xml_node meshNode : root)
+            {
+                const char* filepath = meshNode.attribute("filepath").as_string();
+                const bool hasUvs = meshNode.attribute("load_uvs").as_bool(true);
+                const bool hasNormals = meshNode.attribute("load_normals").as_bool(true);
+                const f32 scale = meshNode.attribute("scale").as_float(1.0f);
+
+#ifdef DEBUG
+                printf("Loading mesh('%s')\n", filepath);
+#endif
+
+                // #todo - add support for more than obj meshes
+
+                Ref<VertexArray> vertexList = ObjMeshLoader::LoadObjFromFile(filepath, { hasNormals, hasUvs, scale });
+                RegisterMeshImpl(filepath, vertexList);
+            }
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

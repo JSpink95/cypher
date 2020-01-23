@@ -1,0 +1,9 @@
+<meshes>
+  <mesh filepath="assets:\models\capsule.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\box.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\plane.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\sphere_fs.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\sphere_ss.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\ak47.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\table.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+</meshes>
