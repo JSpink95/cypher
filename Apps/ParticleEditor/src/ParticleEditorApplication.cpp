@@ -232,14 +232,14 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    window->SetWindowPosition(int2(-1920, 200));
+    //window->SetWindowPosition(int2(-1920, 200));
 
     gizmoObject = CreateObject<GameObject>(ObjectId::Create("Gizmo"));
     gizmoObject->transform->position = float3(0.0f, 0.0f, 0.0f);
 
     Ref<StaticMeshComponent> gizmoMeshComponent = gizmoObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     gizmoMeshComponent->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\wireframe.xml"));
-    gizmoMeshComponent->SetMesh(MeshLibrary::GetMesh("engine:\\mesh\\wireframe-sphere"));
+    gizmoMeshComponent->SetMesh("engine:\\mesh\\wireframe-sphere");
 
     {
         RenderPassManager::AddObjectToPass(RenderPassType::Debug, gizmoObject);
@@ -254,7 +254,7 @@ void ParticleEditorApplication::OnPostCreate()
 
     Ref<StaticMeshComponent> orbitLocationGizmoMesh = editorController->CreateComponent<StaticMeshComponent>("GizmoMesh");
     orbitLocationGizmoMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\wireframe.xml"));
-    orbitLocationGizmoMesh->SetMesh(MeshLibrary::GetMesh("engine:\\mesh\\wireframe-sphere"));
+    orbitLocationGizmoMesh->SetMesh("engine:\\mesh\\wireframe-sphere");
     orbitLocationGizmoMesh->scale = float3(0.2f);
 
     {
@@ -272,7 +272,7 @@ void ParticleEditorApplication::OnPostCreate()
 
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
-    gridMesh->SetMesh(MeshLibrary::GetMesh("game:mesh-plane"));
+    gridMesh->SetMesh("assets:\\models\\plane.obj");
     gridMesh->scale = float3(4.0f, 1.0f, 4.0f);
 
     // create an initial particle system

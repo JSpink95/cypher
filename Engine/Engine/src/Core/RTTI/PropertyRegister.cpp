@@ -24,6 +24,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "GameFramework/Component/StaticMeshComponent.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Particle/ParticleUpdater.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -217,17 +221,40 @@ namespace RTTI
     template<> bool DisplayEditBox<Ref<Material>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Material>& editable)
     {
         // display a list of materials...
-        ImGui::Text("Not yet implemented - MaterialRef");
-        return false;
+
+        std::vector<std::string> materials;
+        MaterialLibrary::GetMaterialNames(materials);
+
+        s32 index = std::distance(materials.begin(), std::find(materials.begin(), materials.end(), editable->GetPath()));
+        const bool changed = ImGui::Combo(id.c_str(), &index, ImGui::VectorStringGetter, &materials, materials.size());
+
+        if (changed)
+        {
+            editable = MaterialLibrary::GetMaterial(materials.at(index));
+        }
+
+        return changed;
     }
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> bool DisplayEditBox<Ref<VertexArray>>(void* owner, PropertyBase* prop, const std::string& id, Ref<VertexArray>& editable)
+    template<> bool DisplayEditBox<StaticMesh>(void* owner, PropertyBase* prop, const std::string& id, StaticMesh& editable)
     {
         // display a list of meshes...
-        ImGui::Text("Not yet implemented - VertexArrayRef");
-        return false;
+
+        std::vector<std::string> meshes;
+        MeshLibrary::GetMeshNames(meshes);
+
+        s32 index = std::distance(meshes.begin(), std::find(meshes.begin(), meshes.end(), editable.name));
+        const bool changed = ImGui::Combo(id.c_str(), &index, ImGui::VectorStringGetter, &meshes, meshes.size());
+
+        if (changed)
+        {
+            editable.name = meshes.at(index);
+            editable.vertexList = MeshLibrary::GetMesh(editable.name);
+        }
+
+        return changed;
     }
 
     //////////////////////////////////////////////////////////////////////////

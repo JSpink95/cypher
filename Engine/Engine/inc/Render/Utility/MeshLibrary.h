@@ -23,6 +23,7 @@ public:
 
     static Ref<VertexArray> RegisterMesh(const std::string& id, Ref<VertexArray> mesh);
 
+    static void GetMeshNames(std::vector<std::string>& output);
     static Ref<VertexArray> GetMesh(const std::string& id);
 
 private:
@@ -30,9 +31,11 @@ private:
 
     Ref<VertexArray> RegisterMeshImpl(const std::string& id, Ref<VertexArray> mesh);
 
+    void GetMeshNamesImpl(std::vector<std::string>& output);
     Ref<VertexArray> GetMeshImpl(const std::string& id);
 
 private:
+    using mesh_map_iterator = std::unordered_map<std::string, Ref<VertexArray>>::iterator;
     std::unordered_map<std::string, Ref<VertexArray>> meshes;
 };
 

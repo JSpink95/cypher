@@ -19,22 +19,29 @@ class TransformComponent;
 
 //////////////////////////////////////////////////////////////////////////
 
+class StaticMesh
+{
+public:
+    std::string name;
+    Ref<VertexArray> vertexList;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class StaticMeshComponent : public TransformComponent
 {
     DECLARE_COMPONENT(StaticMeshComponent, TransformComponent)
 public:
     StaticMeshComponent();
-    virtual ~StaticMeshComponent() = default;
+    virtual ~StaticMeshComponent() {}
 
-    virtual void OnConstruct() override;
-    virtual void OnDestruct() override;
-
-    void SetMaterial(Ref<Material> newMaterial) { material = newMaterial; }
-    void SetMesh(Ref<VertexArray> newMesh) { mesh = newMesh; }
+public:
+    inline void SetMaterial(Ref<Material> newMaterial) { material = newMaterial; }
+    void SetMesh(const std::string& name);
 
 public:
     Ref<Material> material = nullptr;
-    Ref<VertexArray> mesh = nullptr;
+    StaticMesh mesh;
 
 public:
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;

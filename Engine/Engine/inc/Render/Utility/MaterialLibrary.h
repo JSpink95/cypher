@@ -29,6 +29,7 @@ public:
     static Ref<Material> RegisterMaterial(const std::string& id, const std::string& materialPath);
     static Ref<Material> RegisterMaterial(const std::string& id, Ref<Material> material);
 
+    static void GetMaterialNames(std::vector<std::string>& materials);
     static Ref<Material> GetMaterial(const std::string& id);
 
 private:
@@ -38,6 +39,7 @@ private:
     Ref<Material> RegisterMaterialImpl(const std::string& id, const std::string& materialPath);
     Ref<Material> RegisterMaterialImpl(const std::string& id, Ref<Material> material);
 
+    void GetMaterialNamesImpl(std::vector<std::string>& materials);
     Ref<Material> GetMaterialImpl(const std::string& id);
 
     void ReloadMaterialImpl(const std::string& id);

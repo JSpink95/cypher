@@ -17,12 +17,13 @@
 
 #include "Render/Platform/Renderer.h"
 #include "Render/Platform/VertexArray.h"
+#include "Render/Utility/MeshLibrary.h"
 
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN_WITH_BASE(StaticMeshComponent, TransformComponent)
     RTTI_PROPERTY(StaticMeshComponent, Ref<Material>, material)
-    RTTI_PROPERTY(StaticMeshComponent, Ref<VertexArray>, mesh)
+    RTTI_PROPERTY(StaticMeshComponent, StaticMesh, mesh)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
@@ -34,41 +35,23 @@ StaticMeshComponent::StaticMeshComponent()
 
 //////////////////////////////////////////////////////////////////////////
 
-void StaticMeshComponent::OnConstruct()
-{
-    Super::OnConstruct();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void StaticMeshComponent::OnDestruct()
-{
-    Super::OnDestruct();
-
-    if (mesh != nullptr)
-    {
-        mesh->OnDestroy();
-        mesh = nullptr;
-    }
-
-    if (material != nullptr)
-    {
-        material->OnDestroy();
-        material = nullptr;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 void StaticMeshComponent::OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride)
 {
     Super::OnRender(pass, materialOverride);
 
     fmat4 transform = CalculateTransformMatrix();
-    if (mesh != nullptr && material != nullptr)
+    if (mesh.vertexList != nullptr && material != nullptr)
     {
-        Renderer::Submit(material, mesh, transform);
+        Renderer::Submit(material, mesh.vertexList, transform);
     }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void StaticMeshComponent::SetMesh(const std::string& name)
+{
+    mesh.name = name;
+    mesh.vertexList = MeshLibrary::GetMesh(name);
 }
 
 //////////////////////////////////////////////////////////////////////////

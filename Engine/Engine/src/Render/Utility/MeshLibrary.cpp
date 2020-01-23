@@ -13,6 +13,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+
+//////////////////////////////////////////////////////////////////////////
+
 void MeshLibrary::Initialise()
 {
     if (Ref<MeshLibrary> library = GetMeshLibrary())
@@ -33,6 +37,18 @@ Ref<VertexArray> MeshLibrary::RegisterMesh(const std::string& id, Ref<VertexArra
     return nullptr;
 }
 
+//////////////////////////////////////////////////////////////////////////
+
+void MeshLibrary::GetMeshNames(std::vector<std::string>& output)
+{
+    if (Ref<MeshLibrary> library = GetMeshLibrary())
+    {
+        library->GetMeshNamesImpl(output);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 Ref<VertexArray> MeshLibrary::GetMesh(const std::string& id)
 {
     if (Ref<MeshLibrary> library = GetMeshLibrary())
@@ -48,11 +64,11 @@ Ref<VertexArray> MeshLibrary::GetMesh(const std::string& id)
 void MeshLibrary::InitialiseImpl()
 {
     // load default objects here...
-    RegisterMeshImpl("game:mesh-capsule", ObjMeshLoader::LoadObjFromFile("assets:\\models\\capsule.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("game:mesh-box", ObjMeshLoader::LoadObjFromFile("assets:\\models\\box.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("game:mesh-plane", ObjMeshLoader::LoadObjFromFile("assets:\\models\\plane.obj", { true, true, 1.0f }));
-    RegisterMeshImpl("game:mesh-sphere-fs", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_fs.obj", { true, true, 1.0f }));
-	RegisterMeshImpl("game:mesh-sphere-ss", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_ss.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("assets:\\models\\capsule.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\capsule.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("assets:\\models\\box.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\box.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("assets:\\models\\plane.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\plane.obj", { true, true, 1.0f }));
+    RegisterMeshImpl("assets:\\models\\sphere_fs.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_fs.obj", { true, true, 1.0f }));
+	RegisterMeshImpl("assets:\\models\\sphere_ss.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\sphere_ss.obj", { true, true, 1.0f }));
 	RegisterMeshImpl("assets:\\models\\ak47.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\ak47.obj", { true, true, 1.0f }));
 	RegisterMeshImpl("assets:\\models\\table.obj", ObjMeshLoader::LoadObjFromFile("assets:\\models\\table.obj", { true, true, 1.0f }));
     RegisterMeshImpl("engine:\\mesh\\wireframe-sphere", DebugMeshVertexGenerator::CreateWireframeSphere(1.0f));
@@ -64,6 +80,13 @@ Ref<VertexArray> MeshLibrary::RegisterMeshImpl(const std::string& id, Ref<Vertex
 {
     meshes.emplace(id, mesh);
     return mesh;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void MeshLibrary::GetMeshNamesImpl(std::vector<std::string>& output)
+{
+    std::transform(meshes.begin(), meshes.end(), std::back_inserter(output), [](const std::pair<std::string, Ref<VertexArray>>& it) -> std::string { return it.first; });
 }
 
 //////////////////////////////////////////////////////////////////////////

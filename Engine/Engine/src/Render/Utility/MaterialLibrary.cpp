@@ -20,6 +20,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+
+//////////////////////////////////////////////////////////////////////////
+
 void MaterialLibrary::Initialise()
 {
     Ref<MaterialLibrary> library = GetMaterialLibrary();
@@ -64,6 +68,17 @@ Ref<Material> MaterialLibrary::RegisterMaterial(const std::string& id, Ref<Mater
     }
 
     return nullptr;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void MaterialLibrary::GetMaterialNames(std::vector<std::string>& materials)
+{
+    Ref<MaterialLibrary> library = GetMaterialLibrary();
+    if (library)
+    {
+        library->GetMaterialNamesImpl(materials);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -143,6 +158,13 @@ Ref<Material> MaterialLibrary::RegisterMaterialImpl(const std::string& id, Ref<M
 
     loadedMaterials.insert(std::make_pair(id, material));
     return material;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void MaterialLibrary::GetMaterialNamesImpl(std::vector<std::string>& materials)
+{
+    std::transform(loadedMaterials.begin(), loadedMaterials.end(), std::back_inserter(materials), [](const std::pair<std::string, Ref<Material>>& it) -> std::string { return it.first; });
 }
 
 //////////////////////////////////////////////////////////////////////////

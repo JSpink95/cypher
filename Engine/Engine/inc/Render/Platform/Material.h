@@ -96,6 +96,7 @@ public:
 
 public:
 
+    inline const std::string& GetPath() const { return path; }
     inline const Ref<Shader>& GetShader() const { return shader; }
     inline RenderMode::Enum GetRenderMode() const { return renderMode; }
 
