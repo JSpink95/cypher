@@ -56,9 +56,10 @@ public:
 class PropertyBase
 {
 public:
-    PropertyBase(const size_t inOffset, const std::string& inPropertyName)
+    PropertyBase(const size_t inOffset, const std::string& inPropertyName, const std::string inTypeName)
         : offset(inOffset)
         , propertyName(inPropertyName)
+        , typeName(inTypeName)
     {}
 
     virtual ~PropertyBase() {}
@@ -73,6 +74,7 @@ public:
     void* AsVoidPointer(void* base);
     const void* AsVoidPointer(void* base) const;
 
+    TypeBase* GetType();
     RTTIObject* AsRTTIObject(void* base);
 
 public:
@@ -81,6 +83,7 @@ public:
 public:
     const size_t offset;
     const std::string propertyName;
+    const std::string typeName;
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -168,8 +171,8 @@ template<typename T>
 class Property : public PropertyBase
 {
 public:
-    Property(const size_t offset, const std::string& inPropertyName)
-        : PropertyBase(offset, inPropertyName)
+    Property(const size_t offset, const std::string& inPropertyName, const std::string& inTypeName)
+        : PropertyBase(offset, inPropertyName, inTypeName)
     {}
 
     virtual ~Property() {}
@@ -283,8 +286,8 @@ template<typename TOwnerType, typename TPropertyType>
 class AutoPropertyRegister
 {
 public:
-    AutoPropertyRegister(const std::string& name, const size_t offset)
-        : type(offset, name)
+    AutoPropertyRegister(const size_t offset, const std::string& name, const std::string& typeName)
+        : type(offset, name, typeName)
     {
         TypeRegister::GetRegisteredType<TOwnerType>()->AddProperty(&type);
     }
@@ -299,7 +302,7 @@ template<typename TOwnerType, template<typename> typename TList, typename TValue
 class AutoPropertyRegister_List
 {
 public:
-    AutoPropertyRegister_List(const std::string& name, const size_t offset, const std::string& valueName)
+    AutoPropertyRegister_List(const size_t offset, const std::string& name, const std::string& valueName)
         : type(offset, name, valueName)
     {
         TypeRegister::GetRegisteredType<TOwnerType>()->AddProperty(&type);
@@ -315,7 +318,7 @@ template<typename TOwnerType, template<typename, typename> typename TMap, typena
 class AutoPropertyRegister_Map
 {
 public:
-    AutoPropertyRegister_Map(const std::string& name, const size_t offset, const std::string& keyName, const std::string& valueName)
+    AutoPropertyRegister_Map(const size_t offset, const std::string& name, const std::string& keyName, const std::string& valueName)
         : type(offset, name, keyName, valueName)
     {
         TypeRegister::GetRegisteredType<TOwnerType>()->AddProperty(&type);

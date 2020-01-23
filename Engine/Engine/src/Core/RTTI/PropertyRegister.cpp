@@ -237,7 +237,7 @@ namespace RTTI
 
 bool PropertyBase::IsRTTIObjectProperty() const
 {
-    return TypeRegister::IsRegisteredTypeOf(RTTI::TrimRefModifier(propertyName), RTTIObject::ClassUID());
+    return TypeRegister::IsRegisteredTypeOf(RTTI::TrimRefModifier(typeName), RTTIObject::ClassUID());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -258,8 +258,7 @@ bool PropertyBase::IsMapProperty() const
 
 bool PropertyBase::IsRefType() const
 {
-    // this needs some thought...
-    return RTTI::IsRefType(propertyName);
+    return RTTI::IsRefType(typeName);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -276,6 +275,13 @@ const void* PropertyBase::AsVoidPointer(void* base) const
 {
     const char* bytes = (reinterpret_cast<const char*>(base) + offset);
     return (const void*)bytes;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+TypeBase* PropertyBase::GetType()
+{
+    return TypeRegister::GetRegisteredType(RTTI::TrimRefModifier(typeName));
 }
 
 //////////////////////////////////////////////////////////////////////////
