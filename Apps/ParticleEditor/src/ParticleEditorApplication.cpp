@@ -187,6 +187,47 @@ RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
+class RotatingObjectComponent : public Component
+{
+    DECLARE_COMPONENT(RotatingObjectComponent, Component)
+public:
+    RotatingObjectComponent()
+    {
+        attachedTransform.componentName = "RootTransform";
+    }
+
+public:
+    virtual void OnConstruct() override
+    {
+        Super::OnConstruct();
+
+        attachedTransform.OnConstruct(owner);
+    }
+
+    virtual void OnUpdate(const f32 dt) override
+    {
+        Super::OnUpdate(dt);
+
+        if (attachedTransform)
+        {
+            attachedTransform->rotation.y += rotationDegreesPerSec * dt;
+        }
+    }
+
+public:
+    f32 rotationDegreesPerSec = 45.0f;
+    ComponentRef<TransformComponent> attachedTransform;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(RotatingObjectComponent, Component)
+    RTTI_PROPERTY(RotatingObjectComponent, f32, rotationDegreesPerSec)
+    RTTI_PROPERTY(RotatingObjectComponent, ComponentRef<TransformComponent>, attachedTransform)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
 Ref<GameObject> CreateDefaultParticleEffect(const std::string& id, u32 number)
 {
     Ref<GameObject> effect = CreateObject<GameObject>(ObjectId::Create(id + "-" + std::to_string(number)));
@@ -277,11 +318,17 @@ void ParticleEditorApplication::OnPostCreate()
 
     barrelObject = CreateObject<GameObject>(ObjectId::Create("Barrel"));
     RenderPassManager::AddObjectToPass(RenderPassType::Opaque, barrelObject);
+    GameThread::AddObject(barrelObject);
+
+    barrelObject->transform->position.y = 0.5f;
+
+    Ref<RotatingObjectComponent> rotator = barrelObject->CreateComponent<RotatingObjectComponent>("Rotator");
+    rotator->rotationDegreesPerSec = 180.0f;
 
     Ref<StaticMeshComponent> barrelMesh = barrelObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-    barrelMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\barrel-material.xml"));
-    barrelMesh->SetMesh("assets:\\models\\barrel.obj");
-    barrelMesh->scale = float3(0.1f);
+    barrelMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-error.xml"));
+    barrelMesh->SetMesh("assets:\\models\\double_barrelled_shotgun.obj");
+    barrelMesh->scale = float3(0.5f);
 
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);
