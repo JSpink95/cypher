@@ -16,4 +16,5 @@
   <material filepath="assets:\materials\mesh-lit-tex-error.xml"/>
   <material filepath="assets:\materials\crate-material.xml"/>
   <material filepath="assets:\materials\ak47-material.xml"/>
+  <material filepath="assets:\materials\barrel-material.xml"/>
 </materials>

@@ -32,13 +32,25 @@ namespace RTTI
         else if (prop->IsListProperty())
         {
             Property_ListBase* propAsList = dynamic_cast<Property_ListBase*>(prop);
-            const bool valueIsRef = propAsList->IsValueRefType();
+            TypeBase* valueType = propAsList->GetType();
+            const bool valueIsRTTI = propAsList->IsValueRTTIObjectType();
 
             if (ImGui::TreeNode(prop->propertyName.c_str()))
             {
                 auto predicate = [&](void* value) -> void
                 {
+                    if (valueIsRTTI)
+                    {
+                        Ref<RTTIObject>* object = (Ref<RTTIObject>*)value;
+                        if (object)
+                        {
+                            DisplayObjectProperties((*object)->GetTypeName(), object->get());
+                        }
+                    }
+                    else
+                    {
 
+                    }
                 };
 
                 propAsList->ForEachItem(object, predicate);
@@ -50,19 +62,23 @@ namespace RTTI
         {
             Property_MapBase* propAsMap = dynamic_cast<Property_MapBase*>(prop);
             TypeBase* valueType = propAsMap->GetValueType();
-            const bool valueIsRef = propAsMap->IsValueRefType();
+            const bool valueIsRTTI = propAsMap->IsValueRTTIObjectType();
 
             if (ImGui::TreeNode(prop->propertyName.c_str()))
             {
                 auto predicate = [&](const void* key, void* value) -> void
                 {
-                    if (valueIsRef && valueType)
+                    if (valueIsRTTI)
                     {
                         Ref<RTTIObject>* object = (Ref<RTTIObject>*)value;
                         if (object)
                         {
                             DisplayObjectProperties((*object)->GetTypeName(), object->get());
                         }
+                    }
+                    else
+                    {
+
                     }
                 };
 

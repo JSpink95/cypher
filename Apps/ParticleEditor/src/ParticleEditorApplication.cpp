@@ -275,6 +275,14 @@ void ParticleEditorApplication::OnPostCreate()
     gridMesh->SetMesh("assets:\\models\\plane.obj");
     gridMesh->scale = float3(4.0f, 1.0f, 4.0f);
 
+    barrelObject = CreateObject<GameObject>(ObjectId::Create("Barrel"));
+    RenderPassManager::AddObjectToPass(RenderPassType::Opaque, barrelObject);
+
+    Ref<StaticMeshComponent> barrelMesh = barrelObject->CreateComponent<StaticMeshComponent>("StaticMesh");
+    barrelMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\barrel-material.xml"));
+    barrelMesh->SetMesh("assets:\\models\\barrel.obj");
+    barrelMesh->scale = float3(0.1f);
+
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);
 }

@@ -264,7 +264,7 @@ namespace RTTI
 
 bool PropertyBase::IsRTTIObjectProperty() const
 {
-    return TypeRegister::IsRegisteredTypeOf(RTTI::TrimRefModifier(typeName), RTTIObject::ClassUID());
+    return TypeRegister::IsRegisteredType(RTTI::TrimRefModifier(typeName));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -317,6 +317,76 @@ RTTIObject* PropertyBase::AsRTTIObject(void* base)
 {
     char* bytes = (reinterpret_cast<char*>(base) + offset);
     return (RTTIObject*)bytes;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_ListBase::IsRTTIObjectProperty() const
+{
+    return false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_ListBase::IsListProperty() const
+{
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_ListBase::IsValueRefType() const
+{
+    return RTTI::IsRefType(valueTypeName);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_ListBase::IsValueRTTIObjectType() const
+{
+    return TypeRegister::IsRegisteredType(RTTI::TrimRefModifier(valueTypeName));
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_MapBase::IsRTTIObjectProperty() const
+{
+    return false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_MapBase::IsMapProperty() const
+{
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_MapBase::IsKeyRefType() const
+{
+    return RTTI::IsRefType(keyTypeName);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_MapBase::IsKeyRTTIObjectType() const
+{
+    return TypeRegister::IsRegisteredType(RTTI::TrimRefModifier(keyTypeName));
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_MapBase::IsValueRefType() const
+{
+    return RTTI::IsRefType(valueTypeName);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool Property_MapBase::IsValueRTTIObjectType() const
+{
+    return TypeRegister::IsRegisteredType(RTTI::TrimRefModifier(valueTypeName));
 }
 
 //////////////////////////////////////////////////////////////////////////

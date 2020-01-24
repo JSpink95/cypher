@@ -1,5 +1,6 @@
 <textures>
-  <texture id="tx_crate" filepath="assets:\textures\crate.png"/>
-  <texture id="tx_ak47" filepath="assets:\textures\ak47.png"/>
-  <texture id="tx_table_texture" filepath="assets:\textures\table_texture.png"/>
+  <texture filepath="assets:\textures\crate.png"/>
+  <texture filepath="assets:\textures\ak47.png"/>
+  <texture filepath="assets:\textures\table_texture.png"/>
+  <texture filepath="assets:\textures\barrel_explosive.png"/>
 </textures>

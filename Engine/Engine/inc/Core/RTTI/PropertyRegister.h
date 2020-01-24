@@ -103,15 +103,12 @@ public:
     virtual ~Property_ListBase() {}
 
 public:
-    virtual bool IsListProperty() const override
-    {
-        return true;
-    }
+    virtual bool IsRTTIObjectProperty() const override;
+    virtual bool IsListProperty() const override;
 
-    virtual bool IsValueRefType() const
-    {
-        return RTTI::IsRefType(valueTypeName);
-    }
+public:
+    virtual bool IsValueRefType() const;
+    virtual bool IsValueRTTIObjectType() const;
 
 public:
     virtual size_t Count(void* base) const = 0;
@@ -138,20 +135,14 @@ public:
     virtual ~Property_MapBase() {}
 
 public:
-    virtual bool IsMapProperty() const override
-    {
-        return true;
-    }
+    virtual bool IsRTTIObjectProperty() const override;
+    virtual bool IsMapProperty() const override;
 
-    virtual bool IsKeyRefType() const
-    {
-        return RTTI::IsRefType(keyTypeName);
-    }
-
-    virtual bool IsValueRefType() const
-    {
-        return RTTI::IsRefType(valueTypeName);
-    }
+public:
+    virtual bool IsKeyRefType() const;
+    virtual bool IsKeyRTTIObjectType() const;
+    virtual bool IsValueRefType() const;
+    virtual bool IsValueRTTIObjectType() const;
 
 public:
     TypeBase* GetKeyType();
