@@ -8,4 +8,6 @@
   <mesh filepath="assets:\models\table.obj" scale="1.0" load_normals="true" load_uvs="true"/>
   <mesh filepath="assets:\models\barrel.obj" scale="1.0" load_normals="true" load_uvs="true"/>
   <mesh filepath="assets:\models\double_barrelled_shotgun.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\potion_bottle.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\wine_bottle.obj" scale="1.0" load_normals="true" load_uvs="true"/>
 </meshes>

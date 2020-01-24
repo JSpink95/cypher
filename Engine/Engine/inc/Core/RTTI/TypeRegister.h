@@ -36,6 +36,7 @@ public:
 
 public:
     virtual size_t GetSizeInBytes() const = 0;
+    virtual void* New() = 0;
 
 public:
     inline const std::string& GetTypeName() const { return typeName; }
@@ -90,6 +91,11 @@ public:
     inline virtual size_t GetSizeInBytes() const override
     {
         return ByteSize;
+    }
+
+    inline virtual void* New() override
+    {
+        return new T;
     }
 };
 

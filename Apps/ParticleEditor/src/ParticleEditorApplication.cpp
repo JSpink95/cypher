@@ -351,15 +351,8 @@ void ParticleEditorApplication::OnImGuiRender()
     if (ImGui::Begin("Active Particle System", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
     {
         RTTI::DisplayObjectProperties("EditorController", editorController.get());
-
-        if (activeParticleSystem)
-        {
-            RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
-        }
-        else
-        {
-            ImGui::Text("No particle system selected");
-        }
+        RTTI::DisplayObjectProperties("Gun", barrelObject.get());
+        RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
 
         ImGui::End();
     }
