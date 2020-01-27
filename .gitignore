@@ -355,3 +355,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Custom files
+
+# Don't ignore objs in the assets directory
+![Aa]ssets/*.obj
