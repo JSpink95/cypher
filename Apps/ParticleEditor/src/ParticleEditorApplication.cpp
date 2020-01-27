@@ -60,24 +60,25 @@ public:
     {
         Super::OnConstruct();
 
-        camera = std::make_shared<PerspectiveCamera>();
+        camera = std::make_shared<CameraPerspective>();
     }
 
 public:
 
     void SetAsMainCamera()
     {
-        Camera::SetActiveCamera(camera);
+        camera->MakeThisActive();
     }
 
     void UpdateCameraData()
     {
-        camera->SetPosition(float3(CalculateTransformMatrix() * float4(0.0f, 0.0f, 0.0f, 1.0f)));
-        camera->SetLookAt(float3(parentTransform->CalculateTransformMatrix() * float4(0.0f, 0.0f, 0.0f, 1.0f)));
+        const float3 eye = float3(CalculateTransformMatrix() * float4(0.0f, 0.0f, 0.0f, 1.0f));
+        const float3 eyeDirection = glm::normalize(float3(parentTransform->CalculateTransformMatrix() * float4(0.0f, 0.0f, 0.0f, 1.0f)) - eye);
+        camera->SetEyeAndDirection(eye, eyeDirection);
     }
 
 private:
-    Ref<PerspectiveCamera> camera;
+    Ref<CameraPerspective> camera;
 };
 
 //////////////////////////////////////////////////////////////////////////

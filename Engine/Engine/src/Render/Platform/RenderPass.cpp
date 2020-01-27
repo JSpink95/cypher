@@ -129,6 +129,7 @@ RenderPassManager::RenderPassManager()
     : renderPasses({
         RenderPass(RenderPassType::Opaque),
         RenderPass(RenderPassType::Transparent),
+        RenderPass(RenderPassType::Unlit),
         RenderPass(RenderPassType::Shadow),
         RenderPass(RenderPassType::Particle),
         RenderPass(RenderPassType::Debug)
@@ -162,6 +163,13 @@ void RenderPassManager::InitialiseImpl()
     mainFbInit.colorBuffers.at(GBuffer::CB_DepthStencil) = { true, true };
 
     mainFramebuffer = GetApiManager()->CreateFramebuffer(mainFbInit);
+
+    FramebufferData unlitFbInit;
+    unlitFbInit.resolution = uint2(framebufferSize);
+    unlitFbInit.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
+    unlitFbInit.colorBuffers.at(GBuffer::CB_DepthStencil) = { true, true };
+
+    unlitFramebuffer = GetApiManager()->CreateFramebuffer(unlitFbInit);
 
     FramebufferData lightFbInit;
     lightFbInit.resolution = uint2(shadowFramebufferSize);
@@ -305,7 +313,7 @@ void RenderPassManager::RenderImpl()
         return;
     }
 
-    Ref<Camera> camera = Camera::GetActiveCamera();
+    CameraBase* camera = CameraBase::GetActiveCamera();
     if (camera != nullptr)
     {
         Renderer::SetViewProjectionMatrix(camera->GetViewMatrix(), camera->GetProjectionMatrix());
@@ -325,13 +333,25 @@ void RenderPassManager::RenderImpl()
     }
     Renderer::EndScene();
 
+    // unlit pass
+    Renderer::BeginScene(unlitFramebuffer);
+    {
+        GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
+        GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+        unlitFramebuffer->GetColorBuffer(GBuffer::CB_DepthStencil)->CopyAttachmentData(mainFramebuffer->GetColorBuffer(GBuffer::CB_DepthStencil));
+
+        renderPasses[RenderPassType::Unlit].Perform();
+    }
+    Renderer::EndScene();
+
     // particle pass
     Renderer::BeginScene(particleFramebuffer);
     {
         GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
         GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        particleFramebuffer->GetColorBuffer(GBuffer::CB_DepthStencil)->CopyAttachmentData(mainFramebuffer->GetColorBuffer(GBuffer::CB_DepthStencil));
+        particleFramebuffer->GetColorBuffer(GBuffer::CB_DepthStencil)->CopyAttachmentData(unlitFramebuffer->GetColorBuffer(GBuffer::CB_DepthStencil));
 
         GlCall(glEnable(GL_BLEND));
         GlCall(glDepthMask(GL_FALSE));
@@ -431,7 +451,7 @@ void RenderPassManager::RenderImpl()
     }
     Renderer::EndScene();
 
-    // blendBuffer + particle blending
+    // blendBuffer + unlit + particle blending
     Renderer::BeginScene(blendFramebuffer);
     {
         GlCall(glClear(GL_DEPTH_BUFFER_BIT));
@@ -443,6 +463,10 @@ void RenderPassManager::RenderImpl()
         imageBlendMaterial->SetParameterBlock<BlendInput>("ScreenInfo", blendInput);
 
         imageBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture0", blendFramebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
+        imageBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture1", unlitFramebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
+
+        Renderer::Submit(imageBlendMaterial, screenQuad);
+
         imageBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture1", particleFramebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
 
         Renderer::Submit(imageBlendMaterial, screenQuad);

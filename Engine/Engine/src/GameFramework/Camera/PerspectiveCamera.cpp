@@ -12,39 +12,6 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-void PerspectiveCamera::SetPosition(const float3& newPosition)
-{
-    eye = newPosition;
-    RebuildMatrixCache();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void PerspectiveCamera::SetLookAt(const float3& newLookAt)
-{
-    lookAt = newLookAt;
-    RebuildMatrixCache();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void PerspectiveCamera::SetLookDirection(const float3& newLookDir)
-{
-    lookAt = eye + newLookDir;
-    RebuildMatrixCache();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void PerspectiveCamera::RebuildMatrixCache()
-{
-    cachedView = glm::lookAt(eye, lookAt, vec3(0.0f, 1.0f, 0.0f));
-    cachedProjection = glm::perspectiveFov(glm::radians(60.0f), 1280.0f / 4.0f, 720.0f / 4.0f, 0.01f, 100.0f);
-    cachedViewProjection = cachedProjection * cachedView;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 RTTI_BEGIN_WITH_BASE(CameraPerspective, RTTIObject)
     RTTI_PROPERTY(CameraPerspective, f32, fovDegrees)
     RTTI_PROPERTY(CameraPerspective, f32, nearClip)
@@ -53,8 +20,54 @@ RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-void CameraPerspective::UpdateCamera()
+fmat4 CameraPerspective::GetViewMatrix() const
 {
+    return view;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+fmat4 CameraPerspective::GetProjectionMatrix() const
+{
+    return projection;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+fmat4 CameraPerspective::GetViewProjectionMatrix() const
+{
+    return viewProjection;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+float3 CameraPerspective::GetEyeLocation() const
+{
+    return eye;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+float3 CameraPerspective::GetEyeDirection() const
+{
+    return direction;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void CameraPerspective::OnUpdate(const f32 dt)
+{
+    Super::OnUpdate(dt);
+
+    RebuildMatrixCache();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void CameraPerspective::SetEyeAndDirection(const float3& e, const float3& d)
+{
+    eye = e;
+    direction = d;
     RebuildMatrixCache();
 }
 
@@ -63,14 +76,14 @@ void CameraPerspective::UpdateCamera()
 void CameraPerspective::SetScreenDimensions(const float2& dimensions)
 {
     screenDimensions = dimensions;
-    UpdateCamera();
+    RebuildMatrixCache();
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void CameraPerspective::RebuildMatrixCache()
 {
-    view = fmat4(1.0f);
+    view = glm::lookAt(eye, eye + direction, float3(0.0f, 1.0f, 0.0f));
     projection = glm::perspectiveFov(glm::radians(fovDegrees), screenDimensions.x, screenDimensions.y, nearClip, farClip);
     viewProjection = projection * view;
 }

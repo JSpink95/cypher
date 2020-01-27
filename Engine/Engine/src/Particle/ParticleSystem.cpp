@@ -147,7 +147,7 @@ void ParticleSystemComponent::OnRender(RenderPassType::Enum pass, Ref<Material> 
         particleBuffer->UpdateBuffer(vertices.size(), sizeof(ParticleVertex), (vertices.size() == 0) ? nullptr : &vertices.at(0));
 
         UniformBufferParticleExtra particleExtra;
-        particleExtra.cameraPosition = vec4(Camera::GetActiveCamera()->GetEyePosition(), 1.0f);
+        particleExtra.cameraPosition = vec4(CameraBase::GetActiveCamera()->GetEyeLocation(), 1.0f);
 
         material->SetParameterBlock<UniformBufferParticleExtra>("ParticleExtra", particleExtra);
 

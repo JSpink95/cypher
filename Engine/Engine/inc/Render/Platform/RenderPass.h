@@ -30,10 +30,22 @@ namespace RenderPassType
 {
     enum Enum
     {
-        Opaque, Transparent, Shadow, Particle, Debug, Max,
+        Opaque, Transparent, Unlit, Shadow, Particle, Debug, Max,
     };
 }
 
+//////////////////////////////////////////////////////////////////////////
+// ideal render pass scenario;
+// class RenderPassBase//: public RTTIObject
+// {
+// public:
+//     RenderPassBase(const HashedId& id);
+//
+// public:
+//     virtual void OnBegin() = 0;
+//     virtual void OnFinish() = 0;
+//     virtual void OnPerform() = 0;
+// };
 //////////////////////////////////////////////////////////////////////////
 
 class RenderPass
@@ -103,6 +115,7 @@ private:
 	float2 framebufferSize;
 
     Ref<Framebuffer> mainFramebuffer;
+    Ref<Framebuffer> unlitFramebuffer;
     Ref<Framebuffer> lightFramebuffer;
     Ref<Framebuffer> sslFramebuffer;
     Ref<Framebuffer> ssaoFramebuffer;

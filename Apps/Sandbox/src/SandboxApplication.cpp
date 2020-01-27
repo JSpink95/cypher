@@ -58,7 +58,8 @@ void FpsCameraController::OnConstruct()
     Super::OnConstruct();
 
     transform.OnConstruct(owner);
-    camera = std::make_shared<PerspectiveCamera>();
+    camera = std::make_shared<CameraPerspective>();
+    camera->MakeThisActive();
 }
 
 //////////////////////////////////////////////////////////////////////////

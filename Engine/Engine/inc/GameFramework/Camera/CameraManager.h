@@ -18,7 +18,7 @@
 //////////////////////////////////////////////////////////////////////////
 // forward declarations
 
-class Camera;
+class CameraBase;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -109,7 +109,7 @@ public:
     fmat4 GetViewMatrix() const;
     fmat4 GetViewProjectionMatrix() const;
 
-    inline void SetActiveCamera(const Ref<Camera>& cam) { activeCamera = cam; }
+    inline void SetActiveCamera(const Ref<CameraBase>& cam) { activeCamera = cam; }
 
     void Update();
     void PerformShake(const Ref<CameraShakeData>& shakeData);
@@ -117,7 +117,7 @@ public:
 private:
 
     fmat4 shakeMatrix = fmat4(1.0f);
-    Ref<Camera> activeCamera;
+    Ref<CameraBase> activeCamera;
 
     float3 positionOffset;
     std::vector<CameraShake> shakes;

@@ -27,7 +27,7 @@ class ParticleEvent: public RTTIObject
 {
     DECLARE_DERIVED(ParticleEvent, RTTIObject)
 public:
-    virtual void OnEvent(Particle& particle) = 0;
+    virtual void OnEvent(Particle& particle) {};
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ class ParticleEmissionProcess: public ParticleProcess
 {
     DECLARE_DERIVED(ParticleEmissionProcess, ParticleProcess)
 public:
-    virtual void Initialise(Particle& particle) = 0;
+    virtual void Initialise(Particle& particle) {};
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ class ParticleUpdateProcess: public ParticleProcess
 {
     DECLARE_DERIVED(ParticleUpdateProcess, ParticleProcess)
 public:
-    virtual void Update(const f32 dt, Particle& particle) = 0;
+    virtual void Update(const f32 dt, Particle& particle) {};
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ class ParticleStage: public RTTIObject
 {
     DECLARE_DERIVED(ParticleStage, RTTIObject)
 public:
-    virtual void AddOutput(Ref<ParticleProcess> process) = 0;
+    virtual void AddOutput(Ref<ParticleProcess> process) {};
 
 public:
 
