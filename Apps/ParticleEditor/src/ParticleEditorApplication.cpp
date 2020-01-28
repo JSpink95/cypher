@@ -22,6 +22,12 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Platform/RenderPass/RenderPassLit.h"
+#include "Render/Platform/RenderPass/RenderPassParticle.h"
+#include "Render/Platform/RenderPass/RenderPassManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "GameFramework/Object/GameObject.h"
 #include "GameFramework/Camera/PerspectiveCamera.h"
 #include "GameFramework/Component/StaticMeshComponent.h"
@@ -284,7 +290,7 @@ void ParticleEditorApplication::OnPostCreate()
     gizmoMeshComponent->SetMesh("engine:\\mesh\\wireframe-sphere");
 
     {
-        RenderPassManager::AddObjectToPass(RenderPassType::Debug, gizmoObject);
+        //RenderPassManager::GetPassAsType<RenderPassDebug>(RenderPassDebug::Id)->AddObject(gizmoObject);
     }
 
 	editorController = CreateObject<GameObject>(ObjectId::Create("EditorController"));
@@ -301,7 +307,7 @@ void ParticleEditorApplication::OnPostCreate()
 
     {
         GameThread::AddObject(editorController);
-        RenderPassManager::AddObjectToPass(RenderPassType::Debug, editorController);
+        //RenderPassManager::GetPassAsType<RenderPassDebug>(RenderPassDebug::Id)->AddObject(editorController);
     }
 
 	lightObject = CreateObject<GameObject>(ObjectId::Create("MainLightSource"));
@@ -310,7 +316,7 @@ void ParticleEditorApplication::OnPostCreate()
 	Ref<LightComponent> light = lightObject->CreateComponent<LightComponent>("Light");
 
     gridObject = CreateObject<GameObject>(ObjectId::Create("Grid"));
-    RenderPassManager::AddObjectToPass(RenderPassType::Opaque, gridObject);
+    RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddObjectToPass(gridObject.get(), false);
 
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
@@ -318,7 +324,7 @@ void ParticleEditorApplication::OnPostCreate()
     gridMesh->scale = float3(4.0f, 1.0f, 4.0f);
 
     barrelObject = CreateObject<GameObject>(ObjectId::Create("Barrel"));
-    RenderPassManager::AddObjectToPass(RenderPassType::Opaque, barrelObject);
+    RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddObjectToPass(barrelObject.get(), false);
     GameThread::AddObject(barrelObject);
 
     barrelObject->transform->position.y = 0.5f;
@@ -369,7 +375,7 @@ void ParticleEditorApplication::AddNewDefaultEffect(const std::string& id, bool 
     editableParticleSystems.push_back(effect);
 
     GameThread::AddObject(effect);
-    RenderPassManager::AddObjectToPass(RenderPassType::Particle, effect);
+    RenderPassManager::GetPassAsType<RenderPassParticle>(RenderPassParticle::Id)->AddObjectToPass(effect.get());
 
     if (makeActive)
     {

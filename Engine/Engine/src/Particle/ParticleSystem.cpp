@@ -22,10 +22,13 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include "Render/Platform/RenderPass.h"
 #include "Render/Platform/ApiManager.h"
 #include "Render/Platform/VertexArray.h"
 #include "Render/Platform/Renderer.h"
+#include "Render/Platform/RenderPass/RenderPassBase.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Utility/TextureLibrary.h"
 #include "Render/Utility/MaterialLibrary.h"
 

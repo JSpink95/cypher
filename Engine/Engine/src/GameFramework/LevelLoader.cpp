@@ -45,8 +45,8 @@ void ParseRenderPassString(const std::string& rp, std::vector<RenderPassType::En
 {
     static std::unordered_map<std::string, RenderPassType::Enum> stringToType = 
     {
-        std::make_pair("opaque", RenderPassType::Opaque),
-        std::make_pair("transparent", RenderPassType::Transparent),
+        //std::make_pair("opaque", RenderPassType::Opaque),
+        //std::make_pair("transparent", RenderPassType::Transparent),
         std::make_pair("shadow", RenderPassType::Shadow),
         std::make_pair("particle", RenderPassType::Particle),
     };
@@ -84,7 +84,7 @@ void ReadObject(pugi::xml_node data, Ref<GameObject> o)
 
             for (RenderPassType::Enum rp : passes)
             {
-                RenderPassManager::AddObjectToPass(rp, o);
+                //RenderPassManager::AddObjectToPass(rp, o);
             }
         }
         else if (nodeName == "transform")

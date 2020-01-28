@@ -26,7 +26,7 @@
 #include "Render/Platform/ApiManager.h"
 #include "Render/Platform/Renderer.h"
 #include "Render/Platform/Texture2D.h"
-#include "Render/Platform/RenderPass.h"
+#include "Render/Platform/RenderPass/RenderPassManager.h"
 #include "Render/Effects/LightManager.h"
 
 //////////////////////////////////////////////////////////////////////////

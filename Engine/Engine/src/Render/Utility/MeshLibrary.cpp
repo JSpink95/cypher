@@ -17,11 +17,54 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Platform/Buffer.h"
+#include "Render/Platform/ApiManager.h"
+#include "Render/Platform/VertexArray.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "pugixml.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+
+//////////////////////////////////////////////////////////////////////////
+
+struct PositionVertex
+{
+    static inline VertexBufferLayout layout = {
+        { "aPosition", ShaderData::Float2 }
+    };
+
+    float2 position;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+struct MeshGenerator
+{
+    static Ref<VertexArray> CreateScreenQuad();
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+Ref<VertexArray> MeshGenerator::CreateScreenQuad()
+{
+    PositionVertex vertices[] =
+    {
+        { float2(-1.0f, -1.0f) }, { float2(1.0f, -1.0f) }, { float2( 1.0f, 1.0f) },
+        { float2(-1.0f, -1.0f) }, { float2(1.0f,  1.0f) }, { float2(-1.0f, 1.0f) },
+    };
+
+    Ref<VertexBuffer> buffer = GetApiManager()->CreateVertexBuffer(6, sizeof(PositionVertex), vertices);
+    buffer->SetLayout(PositionVertex::layout);
+
+    Ref<VertexArray> mesh = GetApiManager()->CreateVertexArray();
+    mesh->AddBuffer(buffer);
+
+    return mesh;
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -73,6 +116,7 @@ void MeshLibrary::InitialiseImpl()
 {
     // load engine objects here...
     RegisterMeshImpl("engine:\\mesh\\wireframe-sphere", DebugMeshVertexGenerator::CreateWireframeSphere(1.0f));
+    RegisterMeshImpl("engine:\\mesh\\screen-quad", MeshGenerator::CreateScreenQuad());
 
     // now load asset meshes
     PathResult meshAssetPath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\MeshAssets.xml");
