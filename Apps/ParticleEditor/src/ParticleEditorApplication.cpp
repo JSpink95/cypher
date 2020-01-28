@@ -334,7 +334,7 @@ void ParticleEditorApplication::OnPostCreate()
 
     Ref<StaticMeshComponent> barrelMesh = barrelObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     barrelMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-error.xml"));
-    barrelMesh->SetMesh("assets:\\models\\double_barrelled_shotgun.obj");
+    barrelMesh->SetMesh("assets:\\models\\katana.obj");
     barrelMesh->scale = float3(0.5f);
 
     // create an initial particle system
