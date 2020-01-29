@@ -11,4 +11,5 @@
   <mesh filepath="assets:\models\potion_bottle.obj" scale="1.0" load_normals="true" load_uvs="true"/>
   <mesh filepath="assets:\models\wine_bottle.obj" scale="1.0" load_normals="true" load_uvs="true"/>
   <mesh filepath="assets:\models\katana.obj" scale="1.0" load_normals="true" load_uvs="true"/>
+  <mesh filepath="assets:\models\test-multi-object.obj" scale="1.0" load_normals="true" load_uvs="true"/>
 </meshes>

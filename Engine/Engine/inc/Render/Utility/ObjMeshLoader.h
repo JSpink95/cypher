@@ -86,7 +86,7 @@ struct MtlFileResult
 class ObjMeshLoader
 {
 public:
-    static Ref<VertexArray> LoadObjFromFile(const std::string& filepath, LoadMeshParams const& params = { true, true, 1.0f });
+    static Ref<VertexArray> LoadObjFromFile(const std::string& filepath, const LoadMeshParams& params = { true, true, 1.0f });
 };
 
 //////////////////////////////////////////////////////////////////////////

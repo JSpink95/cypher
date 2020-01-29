@@ -15,6 +15,13 @@
 class OpenGlVertexArray : public VertexArray
 {
 public:
+    struct VAO
+    {
+        u32 id;
+        Ref<VertexBuffer> buffer;
+    };
+
+public:
     OpenGlVertexArray();
     virtual ~OpenGlVertexArray();
 
@@ -27,8 +34,9 @@ public:
     virtual void OnDestroy() override;
 
 private:
-    u32 id;
-    Ref<VertexBuffer> buffer;
+    //u32 id;
+    //Ref<VertexBuffer> buffer;
+    std::vector<VAO> arrays;
 };
 
 //////////////////////////////////////////////////////////////////////////

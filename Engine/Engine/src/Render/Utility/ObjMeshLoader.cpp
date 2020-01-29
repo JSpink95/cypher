@@ -33,11 +33,11 @@ struct Face
 {
     FaceVertex a, b, c;
 
-    inline float3 CalculateFaceNormal(std::vector<float3> const& positions) const
+    inline float3 CalculateFaceNormal(const std::vector<float3>& positions) const
     {
-        float3 const& pa = positions.at(a.p);
-        float3 const& pb = positions.at(b.p);
-        float3 const& pc = positions.at(c.p);
+        const float3& pa = positions.at(a.p);
+        const float3& pb = positions.at(b.p);
+        const float3& pc = positions.at(c.p);
 
         return glm::cross(glm::normalize(pb - pa), glm::normalize(pc - pa));
     }
@@ -67,6 +67,28 @@ struct Face
 
 //////////////////////////////////////////////////////////////////////////
 
+struct ObjectGroup
+{
+public:
+    ObjectGroup(const std::string& inName)
+        : name(inName)
+    {}
+
+public:
+    const std::string name;
+
+public:
+    s32 positionStartOffset = 0u;
+    s32 normalStartOffset = 0u;
+    s32 texcoordStartOffset = 0u;
+
+    std::vector<float3> positions, normals;
+    std::vector<float2> texcoords;
+    std::vector<Face> faces;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 std::vector<std::string> split_string(const std::string& string, const char on = ' ')
 {
     std::vector<std::string> result;
@@ -91,31 +113,28 @@ std::vector<std::string> split_string(const std::string& string, const char on =
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<VertexBuffer> CreateBufferFromFaceData(
-    const std::vector<Face>& faces, LoadMeshParams const& params,
-    const std::vector<float3>& positions, const std::vector<float3>& normals, const std::vector<float2>& texcoords
-)
+Ref<VertexBuffer> CreateBufferFromFaceData(const ObjectGroup& object, const LoadMeshParams& params)
 {
-    bool const hasTexcoords = texcoords.size() > 0;
-    bool const hasNormals = normals.size() > 0;
+    const bool hasTexcoords = object.texcoords.size() > 0;
+    const bool hasNormals = object.normals.size() > 0;
 
     if (params.loadNormals && params.loadTexcoords)
     {
         std::vector<ObjVertex_Pos3Nor3Tex2> vertices;
-        for (Face const& face : faces)
+        for (const Face& face : object.faces)
         {
             for (u32 idx = 0; idx < 3; ++idx)
             {
                 ObjVertex_Pos3Nor3Tex2 vertex;
-                vertex.position = positions.at(face[idx].p);
+                vertex.position = object.positions.at(face[idx].p);
 
                 if (hasNormals)
-                    vertex.normal = normals.at(face[idx].n);
+                    vertex.normal = object.normals.at(face[idx].n);
                 else
-                    vertex.normal = face.CalculateFaceNormal(positions);
+                    vertex.normal = face.CalculateFaceNormal(object.positions);
 
                 if (hasTexcoords)
-                    vertex.texcoord = texcoords.at(face[idx].t);
+                    vertex.texcoord = object.texcoords.at(face[idx].t);
                 else
                     vertex.texcoord = vec2(0.0f);
 
@@ -131,18 +150,17 @@ Ref<VertexBuffer> CreateBufferFromFaceData(
     else if (params.loadNormals)
     {
         std::vector<ObjVertex_Pos3Nor3> vertices;
-        for (Face const& face : faces)
+        for (const Face& face : object.faces)
         {
             for (u32 idx = 0; idx < 3; ++idx)
             {
                 ObjVertex_Pos3Nor3 vertex;
-                vertex.position = positions.at(face[idx].p);
+                vertex.position = object.positions.at(face[idx].p);
 
                 if (hasNormals)
-                    vertex.normal = normals.at(face[idx].n);
+                    vertex.normal = object.normals.at(face[idx].n);
                 else
-                    vertex.normal = face.CalculateFaceNormal(positions);
-
+                    vertex.normal = face.CalculateFaceNormal(object.positions);
 
                 vertices.push_back(vertex);
             }
@@ -156,15 +174,15 @@ Ref<VertexBuffer> CreateBufferFromFaceData(
     else if (params.loadTexcoords)
     {
         std::vector<ObjVertex_Pos3Tex2> vertices;
-        for (Face const& face : faces)
+        for (const Face& face : object.faces)
         {
             for (u32 idx = 0; idx < 3; ++idx)
             {
                 ObjVertex_Pos3Tex2 vertex;
-                vertex.position = positions.at(face[idx].p);
+                vertex.position = object.positions.at(face[idx].p);
 
                 if (hasTexcoords)
-                    vertex.texcoord = texcoords.at(face[idx].t);
+                    vertex.texcoord = object.texcoords.at(face[idx].t);
                 else
                     vertex.texcoord = vec2(0.0f);
 
@@ -180,12 +198,12 @@ Ref<VertexBuffer> CreateBufferFromFaceData(
     else
     {
         std::vector<ObjVertex_Pos3> vertices;
-        for (Face const& face : faces)
+        for (const Face& face : object.faces)
         {
             for (u32 idx = 0; idx < 3; ++idx)
             {
                 ObjVertex_Pos3 vertex;
-                vertex.position = positions.at(face[idx].p);
+                vertex.position = object.positions.at(face[idx].p);
 
                 vertices.push_back(vertex);
             }
@@ -200,7 +218,7 @@ Ref<VertexBuffer> CreateBufferFromFaceData(
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, LoadMeshParams const& params/* = { true, true, 1.0f }*/)
+Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, const LoadMeshParams& params/* = { true, true, 1.0f }*/)
 {
     const std::string convertedFilePath = FileVolumeManager::GetRealPathFromVirtualPath(filepath).fullpath;
     std::ifstream file(convertedFilePath.c_str());
@@ -221,11 +239,12 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, Loa
         return float3(std::stof(strings.at(0)), std::stof(strings.at(1)), std::stof(strings.at(2)));
     };
 
-    std::vector<float3> positions;
-    std::vector<float3> normals;
-    std::vector<float2> texcoords;
+    std::string currentObjectId = "";
+    std::unordered_map<std::string, ObjectGroup> objects;
 
-    std::vector<Face> faces;
+    s32 maxPositionIndex = 0;
+    s32 maxNormalIndex = 0;
+    s32 maxTexcoordIndex = 0;
 
     std::string line;
     while (std::getline(file, line))
@@ -235,6 +254,13 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, Loa
 
         if (line.at(0) == 'v')
         {
+            if (currentObjectId == "")
+            {
+                currentObjectId = "root";
+                objects.emplace(currentObjectId, ObjectGroup(currentObjectId));
+            }
+
+            ObjectGroup& group = objects.at(currentObjectId);
             char const type = line.at(1);
 
             std::string data = line.substr(line.find_first_of(' ') + 1);
@@ -245,7 +271,7 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, Loa
                 case ' ':
                 {
                     // load position + apply the scale from the load params
-                    positions.push_back(convertStringsToFloat3(numbers) * params.modelScale);
+                    group.positions.push_back(convertStringsToFloat3(numbers) * params.modelScale);
                     break;
                 }
 
@@ -254,7 +280,7 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, Loa
                     // load normals
                     if (params.loadNormals)
                     {
-                        normals.push_back(convertStringsToFloat3(numbers));
+                        group.normals.push_back(convertStringsToFloat3(numbers));
                     }
                     break;
                 }
@@ -264,7 +290,7 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, Loa
                     // load texcoord
                     if (params.loadTexcoords)
                     {
-                        texcoords.push_back(convertStringsToFloat2(numbers));
+                        group.texcoords.push_back(convertStringsToFloat2(numbers));
                     }
                     break;
                 }
@@ -278,6 +304,8 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, Loa
         {
             // read faces
             // in obj files, faces start at index 1 (v_v)
+
+            ObjectGroup& group = objects.at(currentObjectId);
 
             Face face;
 
@@ -295,38 +323,61 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, Loa
             }
 
             s32 faceVertexIndex = 0;
-            for (std::string const& faceVertex : faceVertices)
+            for (const std::string& faceVertex : faceVertices)
             {
                 std::vector<std::string> faceVertexData = split_string(faceVertex, '/');
 
-                s32 const positionVertexIndex = std::stoi(faceVertexData.at(0)) - 1;
-                face[faceVertexIndex].p = positionVertexIndex;
+                const s32 positionVertexIndex = std::stoi(faceVertexData.at(0));
+                maxPositionIndex = glm::max(maxPositionIndex, positionVertexIndex);
+
+                face[faceVertexIndex].p = positionVertexIndex - group.positionStartOffset - 1;
 
                 if (params.loadTexcoords && faceVertexData.size() >= 2 && faceVertexData.at(1) != "")
                 {
-                    s32 const texcoordVertexIndex = std::stoi(faceVertexData.at(1)) - 1;
-                    face[faceVertexIndex].t = texcoordVertexIndex;
+                    const s32 texcoordVertexIndex = std::stoi(faceVertexData.at(1));
+                    maxTexcoordIndex = glm::max(maxTexcoordIndex, texcoordVertexIndex);
+
+                    face[faceVertexIndex].t = texcoordVertexIndex - group.texcoordStartOffset - 1;
                 }
 
                 if (params.loadNormals && faceVertexData.size() >= 3 && faceVertexData.at(2) != "")
                 {
-                    s32 const normalVertexIndex = std::stoi(faceVertexData.at(2)) - 1;
-                    face[faceVertexIndex].n = normalVertexIndex;
+                    const s32 normalVertexIndex = std::stoi(faceVertexData.at(2));
+                    maxNormalIndex = glm::max(maxNormalIndex, normalVertexIndex);
+
+                    face[faceVertexIndex].n = normalVertexIndex - group.normalStartOffset - 1;
                 }
 
                 ++faceVertexIndex;
                 faceVertexIndex %= 3;
             }
 
-            faces.push_back(face);
+            group.faces.push_back(face);
+        }
+        else if (line.at(0) == 'o')
+        {
+            // new object in the mesh, we should treat this as a new vertex buffer
+            currentObjectId = line.substr(line.find_first_of(' ') + 1);
+
+            ObjectGroup object = ObjectGroup(currentObjectId);
+            object.positionStartOffset = maxPositionIndex;
+            object.normalStartOffset = maxNormalIndex;
+            object.texcoordStartOffset = maxTexcoordIndex;
+
+            objects.emplace(currentObjectId, object);
         }
     }
 
     file.close();
 
-    Ref<VertexBuffer> buffer = CreateBufferFromFaceData(faces, params, positions, normals, texcoords);
     Ref<VertexArray> mesh = GetApiManager()->CreateVertexArray();
-    mesh->AddBuffer(buffer);
+
+    for (auto& it : objects)
+    {
+        ObjectGroup& object = it.second;
+        Ref<VertexBuffer> buffer = CreateBufferFromFaceData(object, params);
+        mesh->AddBuffer(buffer);
+    }
 
     return mesh;
 }
@@ -336,14 +387,6 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, Loa
 MtlFileResult MtlFileLoader::LoadMtlFromFile(const std::string& filepath)
 {
     MtlFileResult result;
-
-    //std::ifstream file(filepath.c_str());
-    //if (file.fail())
-    //{
-    //    return result;
-    //}
-
-    //file.close();
 
     return result;
 }

@@ -178,7 +178,7 @@ public:
 
 private:
     CameraInput input;
-    f32 amountOfZoom = 1.0f;
+    f32 amountOfZoom = 4.0f;
 
 public:
     ComponentRef<TransformComponent> attachedTransform;
@@ -280,7 +280,7 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    window->SetWindowPosition(int2(-1920, 200));
+    //window->SetWindowPosition(int2(1920, 200));
 
     gizmoObject = CreateObject<GameObject>(ObjectId::Create("Gizmo"));
     gizmoObject->transform->position = float3(0.0f, 0.0f, 0.0f);
@@ -334,7 +334,7 @@ void ParticleEditorApplication::OnPostCreate()
 
     Ref<StaticMeshComponent> barrelMesh = barrelObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     barrelMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-error.xml"));
-    barrelMesh->SetMesh("assets:\\models\\katana.obj");
+    barrelMesh->SetMesh("assets:\\models\\test-multi-object.obj");
     barrelMesh->scale = float3(0.5f);
 
     // create an initial particle system
