@@ -54,6 +54,7 @@ workspace(workspace_name)
         include("External\\json")
         include("External\\pugixml")
         include("External\\imgui")
+        include("External\\irrklang")
 
     group "Engine"
         include("Engine\\Engine")

@@ -17,13 +17,14 @@ project "Engine"
         project_external_root.."pugixml\\inc\\",
         project_external_root.."bullet\\src\\",
         project_external_root.."imgui\\src\\",
+        project_external_root.."irrklang\\inc\\",
 
         current_dir.."inc\\",
         current_dir.."src\\",
     }
 
     links {
-        "glm", "stb", "spdlog", "pugixml", "bullet", "imgui"
+        "glm", "stb", "spdlog", "pugixml", "bullet", "imgui", "irrklanglib"
     }
 
     filter "platforms:Dx11"
