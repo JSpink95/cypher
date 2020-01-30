@@ -12,6 +12,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Mesh.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Renderer.h"
 #include "Render/Platform/Material.h"
 #include "Render/Platform/ApiManager.h"
@@ -99,7 +103,7 @@ void RenderPassFinal::OnPerform()
     Ref<RenderPassBase> unlitPass = RenderPassManager::GetPass(RenderPassUnlit::Id);
     Ref<RenderPassBase> particlePass = RenderPassManager::GetPass(RenderPassParticle::Id);
 
-    Ref<VertexArray> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad");
+    Ref<Mesh> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad");
 
     if (screen != nullptr)
     {
@@ -116,7 +120,7 @@ void RenderPassFinal::OnPerform()
             //overlay->SetParameterValue<MaterialParameterTexture2D>("uTexture1", ssaoPass->GetAttachment(GBuffer::CB_Albedo)->ToTexture());
             overlay->SetParameterValue<MaterialParameterTexture2D>("uTexture1", TextureLibrary::GetTexture("engine:\\textures\\white"));
 
-            Renderer::Submit(overlay, screen);
+            screen->Render(overlay, fmat4(1.0f));
         }
 
         overlayInput.blendMode = vec2(0.0f, 0.0f);
@@ -129,7 +133,7 @@ void RenderPassFinal::OnPerform()
             overlay->SetParameterValue<MaterialParameterTexture2D>("uTexture0", framebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
             overlay->SetParameterValue<MaterialParameterTexture2D>("uTexture1", unlitPass->GetAttachment(GBuffer::CB_Albedo)->ToTexture());
 
-            Renderer::Submit(overlay, screen);
+            screen->Render(overlay, fmat4(1.0f));
         }
 
         if (particlePass != nullptr)
@@ -139,7 +143,7 @@ void RenderPassFinal::OnPerform()
             overlay->SetParameterValue<MaterialParameterTexture2D>("uTexture0", framebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
             overlay->SetParameterValue<MaterialParameterTexture2D>("uTexture1", particlePass->GetAttachment(GBuffer::CB_Albedo)->ToTexture());
 
-            Renderer::Submit(overlay, screen);
+            screen->Render(overlay, fmat4(1.0f));
         }
     }
 }
@@ -156,7 +160,7 @@ void RenderPassFinal::OnFinish()
 
     GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-    Ref<VertexArray> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad");
+    Ref<Mesh> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad");
     if (screen != nullptr)
     {
         ImageOutput outputData;
@@ -166,7 +170,7 @@ void RenderPassFinal::OnFinish()
         output->SetParameterBlock<ImageOutput>("ImageDataBuffer", outputData);
         output->SetParameterValue<MaterialParameterTexture2D>("uTexture", framebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
 
-        Renderer::Submit(output, screen);
+        screen->Render(output, fmat4(1.0f));
     }
 }
 

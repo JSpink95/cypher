@@ -6,16 +6,13 @@
 
 #pragma once
 
-// 
-// stl include
-// 
+//////////////////////////////////////////////////////////////////////////
 
 #include <memory>
 #include <cstdint>
+#include <unordered_map>
 
-// 
-// glm include
-// 
+//////////////////////////////////////////////////////////////////////////
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -168,73 +165,16 @@ using GpuFloat4 = float4;
 
 //////////////////////////////////////////////////////////////////////////
 
+template<typename TKey, typename TValue, typename THasher = std::hash<TKey>>
+using HashMap = std::unordered_map<TKey, TValue, THasher>;
+
+//////////////////////////////////////////////////////////////////////////
+
 using ClassId = s32;
 
 //////////////////////////////////////////////////////////////////////////
 
 static constexpr uint2 DefaultWindowSize = uint2(640u, 480u);
 //static constexpr uint2 DefaultWindowSize = uint2(1280u, 720u);
-
-//////////////////////////////////////////////////////////////////////////
-
-#include <any>
-#include <unordered_map>
-
-//////////////////////////////////////////////////////////////////////////
-
-class GenericBlueprint
-{
-public:
-    using key = std::string;
-    using value = std::any;
-    using container = std::unordered_map<key, value>;
-    using iterator = container::iterator;
-    using const_iterator = container::const_iterator;
-
-    inline iterator begin() { return bundle.begin(); }
-    inline const_iterator begin() const { return bundle.begin(); }
-
-    inline iterator end() { return bundle.end(); }
-    inline const_iterator end() const { return bundle.end(); }
-
-    inline iterator find(const key& k)
-    {
-        return bundle.find(k);
-    }
-
-    inline bool exists(const key& k)
-    {
-        return find(k) != bundle.end();
-    }
-
-    inline value& at(const key& k)
-    {
-        return bundle.at(k);
-    }
-
-    inline const value& at(const key& k) const
-    {
-        return bundle.at(k);
-    }
-
-    inline void add(const key& k, const value& v)
-    {
-        bundle.emplace(k, v);
-    }
-
-    inline bool remove(const key& k)
-    {
-        if (exists(k))
-        {
-            bundle.erase(k);
-            return true;
-        }
-
-        return false;
-    }
-
-private:
-    container bundle;
-};
 
 //////////////////////////////////////////////////////////////////////////

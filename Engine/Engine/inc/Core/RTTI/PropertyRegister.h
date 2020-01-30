@@ -16,12 +16,12 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+class Mesh;
 class Material;
 class RTTIObject;
 class VertexArray;
 class PropertyBase;
 class ComponentRefBase;
-class StaticMesh;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +41,7 @@ namespace RTTI
     template<> bool DisplayEditBox<float3>(void* owner, PropertyBase* prop, const std::string& id, float3& editable);
     template<> bool DisplayEditBox<std::string>(void* owner, PropertyBase* prop, const std::string& id, std::string& editable);
     template<> bool DisplayEditBox<Ref<Material>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Material>& editable);
-    template<> bool DisplayEditBox<StaticMesh>(void* owner, PropertyBase* prop, const std::string& id, StaticMesh& editable);
+    template<> bool DisplayEditBox<Ref<Mesh>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Mesh>& editable);
 }
 
 //////////////////////////////////////////////////////////////////////////

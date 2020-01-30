@@ -15,6 +15,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Mesh.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Renderer.h"
 #include "Render/Platform/VertexArray.h"
 #include "Render/Utility/MeshLibrary.h"
@@ -23,7 +27,7 @@
 
 RTTI_BEGIN_WITH_BASE(StaticMeshComponent, TransformComponent)
     RTTI_PROPERTY(StaticMeshComponent, Ref<Material>, material)
-    RTTI_PROPERTY(StaticMeshComponent, StaticMesh, mesh)
+    RTTI_PROPERTY(StaticMeshComponent, Ref<Mesh>, mesh)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
@@ -40,9 +44,9 @@ void StaticMeshComponent::OnRender(RenderPassType::Enum pass, Ref<Material> mate
     Super::OnRender(pass, materialOverride);
 
     fmat4 transform = CalculateTransformMatrix();
-    if (mesh.vertexList != nullptr && material != nullptr)
+    if (mesh != nullptr)
     {
-        Renderer::Submit(material, mesh.vertexList, transform);
+        mesh->Render(material, transform);
     }
 }
 
@@ -50,8 +54,7 @@ void StaticMeshComponent::OnRender(RenderPassType::Enum pass, Ref<Material> mate
 
 void StaticMeshComponent::SetMesh(const std::string& name)
 {
-    mesh.name = name;
-    mesh.vertexList = MeshLibrary::GetMesh(name);
+    mesh = MeshLibrary::GetMesh(name);
 }
 
 //////////////////////////////////////////////////////////////////////////

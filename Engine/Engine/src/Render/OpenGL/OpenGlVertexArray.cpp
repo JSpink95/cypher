@@ -62,6 +62,7 @@ inline s32 GetAttributeDataType(const ShaderData::Type type)
 
 OpenGlVertexArray::OpenGlVertexArray()
 {
+    glCreateVertexArrays(1, &id);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,17 +75,15 @@ OpenGlVertexArray::~OpenGlVertexArray()
 
 void OpenGlVertexArray::AddBuffer(const Ref<VertexBuffer>& newBuffer)
 {
-    //buffer = newBuffer;
+    buffer = newBuffer;
 
-    VAO newVAO;
-    glCreateVertexArrays(1, &newVAO.id);
-    glBindVertexArray(newVAO.id);
+    glBindVertexArray(id);
 
-    newVAO.buffer = newBuffer;
-    newVAO.buffer->Bind();
+    buffer = newBuffer;
+    buffer->Bind();
 
     u32 attributeIndex = 0u;
-    const VertexBufferLayout& layout = newVAO.buffer->GetLayout();
+    const VertexBufferLayout& layout = buffer->GetLayout();
 
     u32 offset = 0u;
     for (const VertexAttribute& attribute : layout)
@@ -98,7 +97,7 @@ void OpenGlVertexArray::AddBuffer(const Ref<VertexBuffer>& newBuffer)
                 ShaderData::GetElementCount(attribute.dataType),
                 GetAttributeDataType(attribute.dataType),
                 GL_FALSE,
-                newVAO.buffer->GetStride(),
+                buffer->GetStride(),
                 (void*)offset
             );
         }
@@ -108,7 +107,7 @@ void OpenGlVertexArray::AddBuffer(const Ref<VertexBuffer>& newBuffer)
                 attributeIndex,
                 ShaderData::GetElementCount(attribute.dataType),
                 GetAttributeDataType(attribute.dataType),
-                newVAO.buffer->GetStride(),
+                buffer->GetStride(),
                 (void*)offset
             );
         }
@@ -117,37 +116,31 @@ void OpenGlVertexArray::AddBuffer(const Ref<VertexBuffer>& newBuffer)
         ++attributeIndex;
     }
 
-    newVAO.buffer->Unbind();
+    buffer->Unbind();
     glBindVertexArray(0);
-
-    arrays.push_back(newVAO);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void OpenGlVertexArray::Bind()
 {
-    //glBindVertexArray(id);
+    glBindVertexArray(id);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void OpenGlVertexArray::Unbind()
 {
-    //glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void OpenGlVertexArray::Draw(const RenderMode::Enum mode)
 {
-    for (VAO& vao : arrays)
+    if (buffer != nullptr)
     {
-        if (vao.buffer != nullptr)
-        {
-            glBindVertexArray(vao.id);
-            glDrawArrays(RenderMode::ToOpenGl(mode), 0, vao.buffer->GetCount());
-        }
+        glDrawArrays(RenderMode::ToOpenGl(mode), 0, buffer->GetCount());
     }
 }
 
@@ -157,12 +150,9 @@ void OpenGlVertexArray::OnDestroy()
 {
     GetGameThread()->PushThreadTask([this]() -> void
     {
-        for (VAO& vao : arrays)
-        {
-            glDeleteVertexArrays(1, &vao.id);
-            vao.buffer->OnDestroy();
-            vao.buffer = nullptr;
-        }
+        glDeleteVertexArrays(1, &id);
+        buffer->OnDestroy();
+        buffer = nullptr;
     });
 }
 

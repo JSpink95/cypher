@@ -12,6 +12,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Mesh.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Utility/ObjMeshLoader.h"
 #include "Render/Utility/DebugMeshVertexGenerator.h"
 
@@ -78,7 +82,7 @@ void MeshLibrary::Initialise()
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<VertexArray> MeshLibrary::RegisterMesh(const std::string& id, Ref<VertexArray> mesh)
+Ref<Mesh> MeshLibrary::RegisterMesh(const std::string& id, Ref<Mesh> mesh)
 {
     if (Ref<MeshLibrary> library = GetMeshLibrary())
     {
@@ -100,7 +104,7 @@ void MeshLibrary::GetMeshNames(std::vector<std::string>& output)
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<VertexArray> MeshLibrary::GetMesh(const std::string& id)
+Ref<Mesh> MeshLibrary::GetMesh(const std::string& id)
 {
     if (Ref<MeshLibrary> library = GetMeshLibrary())
     {
@@ -115,8 +119,8 @@ Ref<VertexArray> MeshLibrary::GetMesh(const std::string& id)
 void MeshLibrary::InitialiseImpl()
 {
     // load engine objects here...
-    RegisterMeshImpl("engine:\\mesh\\wireframe-sphere", DebugMeshVertexGenerator::CreateWireframeSphere(1.0f));
-    RegisterMeshImpl("engine:\\mesh\\screen-quad", MeshGenerator::CreateScreenQuad());
+    RegisterMeshImpl("engine:\\mesh\\wireframe-sphere", std::make_shared<Mesh>("wireframe-sphere", DebugMeshVertexGenerator::CreateWireframeSphere(1.0f)));
+    RegisterMeshImpl("engine:\\mesh\\screen-quad", std::make_shared<Mesh>("screen-quad", MeshGenerator::CreateScreenQuad()));
 
     // now load asset meshes
     PathResult meshAssetPath = FileVolumeManager::GetRealPathFromVirtualPath("assets:\\MeshAssets.xml");
@@ -139,10 +143,8 @@ void MeshLibrary::InitialiseImpl()
                 printf("Loading mesh('%s')\n", filepath);
 #endif
 
-                // #todo - add support for more than obj meshes
-
-                Ref<VertexArray> vertexList = ObjMeshLoader::LoadObjFromFile(filepath, { hasNormals, hasUvs, scale });
-                RegisterMeshImpl(filepath, vertexList);
+                Ref<Mesh> mesh = std::make_shared<Mesh>(filepath);
+                RegisterMeshImpl(filepath, mesh);
             }
         }
     }
@@ -150,7 +152,7 @@ void MeshLibrary::InitialiseImpl()
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<VertexArray> MeshLibrary::RegisterMeshImpl(const std::string& id, Ref<VertexArray> mesh)
+Ref<Mesh> MeshLibrary::RegisterMeshImpl(const std::string& id, Ref<Mesh> mesh)
 {
     meshes.emplace(id, mesh);
     return mesh;
@@ -160,16 +162,18 @@ Ref<VertexArray> MeshLibrary::RegisterMeshImpl(const std::string& id, Ref<Vertex
 
 void MeshLibrary::GetMeshNamesImpl(std::vector<std::string>& output)
 {
-    std::transform(meshes.begin(), meshes.end(), std::back_inserter(output), [](const std::pair<std::string, Ref<VertexArray>>& it) -> std::string { return it.first; });
+    std::transform(meshes.begin(), meshes.end(), std::back_inserter(output), [](const std::pair<std::string, Ref<Mesh>>& it) -> std::string { return it.first; });
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<VertexArray> MeshLibrary::GetMeshImpl(const std::string& id)
+Ref<Mesh> MeshLibrary::GetMeshImpl(const std::string& id)
 {
     auto it = meshes.find(id);
     if (it != meshes.end())
+    {
         return it->second;
+    }
 
     return nullptr;
 }

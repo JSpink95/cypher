@@ -12,6 +12,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Mesh.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Renderer.h"
 #include "Render/Platform/Material.h"
 #include "Render/Platform/ApiManager.h"
@@ -86,7 +90,7 @@ void RenderPassSSL::OnPerform()
 {
     Super::OnPerform();
 
-    Ref<VertexArray> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad");
+    Ref<Mesh> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad");
     Ref<RenderPassBase> litPass = RenderPassManager::GetPass(RenderPassLit::Id);
     Ref<RenderPassShadow> shadowPass = RenderPassManager::GetPassAsType<RenderPassShadow>(RenderPassShadow::Id);
 
@@ -105,7 +109,7 @@ void RenderPassSSL::OnPerform()
         ssl->SetParameterValue<MaterialParameterTexture2D>("uObjectNormal", litPass->GetAttachment(GBuffer::CB_Normal)->ToTexture());
         ssl->SetParameterValue<MaterialParameterTexture2D>("uDirectionalShadowMap", shadowPass->GetAttachment(GBuffer::CB_DepthStencil)->ToTexture());
 
-        Renderer::Submit(ssl, screen);
+        screen->Render(ssl, fmat4(1.0f));
     }
 }
 

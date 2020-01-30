@@ -281,7 +281,7 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    //window->SetWindowPosition(int2(1920, 200));
+    window->SetWindowPosition(int2(-1920, 200));
 
     gizmoObject = CreateObject<GameObject>(ObjectId::Create("Gizmo"));
     gizmoObject->transform->position = float3(0.0f, 0.0f, 0.0f);
@@ -315,6 +315,7 @@ void ParticleEditorApplication::OnPostCreate()
 	lightObject->transform->position = float3(0.0f, 6.0f, 0.0f);
 
 	Ref<LightComponent> light = lightObject->CreateComponent<LightComponent>("Light");
+    GameThread::AddObject(lightObject);
 
     gridObject = CreateObject<GameObject>(ObjectId::Create("Grid"));
     RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddObjectToPass(gridObject.get(), false);
@@ -328,15 +329,12 @@ void ParticleEditorApplication::OnPostCreate()
     RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddObjectToPass(barrelObject.get(), false);
     GameThread::AddObject(barrelObject);
 
-    barrelObject->transform->position.y = 0.5f;
-
     Ref<RotatingObjectComponent> rotator = barrelObject->CreateComponent<RotatingObjectComponent>("Rotator");
-    rotator->rotationDegreesPerSec = 180.0f;
+    rotator->rotationDegreesPerSec = 10.0f;
 
     Ref<StaticMeshComponent> barrelMesh = barrelObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     barrelMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-error.xml"));
-    barrelMesh->SetMesh("assets:\\models\\test-multi-object.obj");
-    barrelMesh->scale = float3(0.5f);
+    barrelMesh->SetMesh("assets:\\models\\character_rig.obj");
 
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);
@@ -358,8 +356,8 @@ void ParticleEditorApplication::OnImGuiRender()
     ImGui::SetNextWindowPos(ImVec2(4, 8));
     if (ImGui::Begin("Active Particle System", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
     {
-        RTTI::DisplayObjectProperties("EditorController", editorController.get());
-        RTTI::DisplayObjectProperties("Gun", barrelObject.get());
+        RTTI::DisplayObjectProperties("Light", lightObject.get());
+        RTTI::DisplayObjectProperties("Character", barrelObject.get());
         RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
 
         ImGui::End();

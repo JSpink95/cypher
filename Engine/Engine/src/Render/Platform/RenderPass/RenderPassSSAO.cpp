@@ -13,6 +13,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Mesh.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Utility/MeshLibrary.h"
 #include "Render/Utility/MaterialLibrary.h"
 
@@ -140,9 +144,9 @@ void RenderPassSSAO::OnPerform()
 {
     Super::OnPerform();
 
-    if (Ref<VertexArray> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad"))
+    if (Ref<Mesh> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad"))
     {
-        Renderer::Submit(ssao, screen);
+        screen->Render(ssao, fmat4(1.0f));
     }
 }
 

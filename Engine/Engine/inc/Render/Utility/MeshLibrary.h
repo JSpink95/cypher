@@ -12,7 +12,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-class VertexArray;
+class Mesh;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -21,22 +21,22 @@ class MeshLibrary : public Singleton<MeshLibrary>
 public:
     static void Initialise();
 
-    static Ref<VertexArray> RegisterMesh(const std::string& id, Ref<VertexArray> mesh);
+    static Ref<Mesh> RegisterMesh(const std::string& id, Ref<Mesh> mesh);
 
     static void GetMeshNames(std::vector<std::string>& output);
-    static Ref<VertexArray> GetMesh(const std::string& id);
+    static Ref<Mesh> GetMesh(const std::string& id);
 
 private:
     void InitialiseImpl();
 
-    Ref<VertexArray> RegisterMeshImpl(const std::string& id, Ref<VertexArray> mesh);
+    Ref<Mesh> RegisterMeshImpl(const std::string& id, Ref<Mesh> mesh);
 
     void GetMeshNamesImpl(std::vector<std::string>& output);
-    Ref<VertexArray> GetMeshImpl(const std::string& id);
+    Ref<Mesh> GetMeshImpl(const std::string& id);
 
 private:
-    using mesh_map_iterator = std::unordered_map<std::string, Ref<VertexArray>>::iterator;
-    std::unordered_map<std::string, Ref<VertexArray>> meshes;
+    using mesh_map_iterator = HashMap<std::string, Ref<Mesh>>::iterator;
+    HashMap<std::string, Ref<Mesh>> meshes;
 };
 
 //////////////////////////////////////////////////////////////////////////

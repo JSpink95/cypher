@@ -74,11 +74,10 @@ struct ObjVertex_Pos3Nor3Tex2
 
 //////////////////////////////////////////////////////////////////////////
 
-struct MtlFileResult
+struct ObjMeshObject
 {
-    vec4 ambient;
-    vec4 diffuse;
-    vec4 specular;
+    std::string id;
+    Ref<VertexArray> vao;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,15 +85,7 @@ struct MtlFileResult
 class ObjMeshLoader
 {
 public:
-    static Ref<VertexArray> LoadObjFromFile(const std::string& filepath, const LoadMeshParams& params = { true, true, 1.0f });
-};
-
-//////////////////////////////////////////////////////////////////////////
-
-class MtlFileLoader
-{
-public:
-    static MtlFileResult LoadMtlFromFile(const std::string& filepath);
+    static std::vector<ObjMeshObject> LoadObjFromFile(const std::string& filepath, const LoadMeshParams& params = { true, true, 1.0f });
 };
 
 //////////////////////////////////////////////////////////////////////////

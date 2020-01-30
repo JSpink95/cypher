@@ -14,6 +14,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Mesh.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Material.h"
 #include "Render/Platform/VertexArray.h"
 
@@ -238,20 +242,21 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
-    template<> bool DisplayEditBox<StaticMesh>(void* owner, PropertyBase* prop, const std::string& id, StaticMesh& editable)
+    template<> bool DisplayEditBox<Ref<Mesh>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Mesh>& editable)
     {
         // display a list of meshes...
 
         std::vector<std::string> meshes;
         MeshLibrary::GetMeshNames(meshes);
 
-        s32 index = std::distance(meshes.begin(), std::find(meshes.begin(), meshes.end(), editable.name));
+        const std::string name = editable ? editable->GetFilePath() : "";
+
+        s32 index = std::distance(meshes.begin(), std::find(meshes.begin(), meshes.end(), name));
         const bool changed = ImGui::Combo(id.c_str(), &index, ImGui::VectorStringGetter, &meshes, meshes.size());
 
         if (changed)
         {
-            editable.name = meshes.at(index);
-            editable.vertexList = MeshLibrary::GetMesh(editable.name);
+            editable = MeshLibrary::GetMesh(meshes.at(index));
         }
 
         return changed;

@@ -12,18 +12,9 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+class Mesh;
 class Material;
-class VertexArray;
 class TransformComponent;
-
-//////////////////////////////////////////////////////////////////////////
-
-class StaticMesh
-{
-public:
-    std::string name;
-    Ref<VertexArray> vertexList;
-};
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -40,7 +31,7 @@ public:
 
 public:
     Ref<Material> material = nullptr;
-    StaticMesh mesh;
+    Ref<Mesh> mesh;
 
 public:
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;

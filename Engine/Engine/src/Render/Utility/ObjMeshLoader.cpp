@@ -218,13 +218,13 @@ Ref<VertexBuffer> CreateBufferFromFaceData(const ObjectGroup& object, const Load
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, const LoadMeshParams& params/* = { true, true, 1.0f }*/)
+std::vector<ObjMeshObject> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, const LoadMeshParams& params/* = { true, true, 1.0f }*/)
 {
     const std::string convertedFilePath = FileVolumeManager::GetRealPathFromVirtualPath(filepath).fullpath;
     std::ifstream file(convertedFilePath.c_str());
     if (file.fail())
     {
-        return nullptr;
+        return {};
     }
 
     auto convertStringsToFloat2 = [](const std::vector<std::string>& strings) -> float2
@@ -370,23 +370,18 @@ Ref<VertexArray> ObjMeshLoader::LoadObjFromFile(const std::string& filepath, con
 
     file.close();
 
-    Ref<VertexArray> mesh = GetApiManager()->CreateVertexArray();
+    std::vector<ObjMeshObject> result;
 
     for (auto& it : objects)
     {
         ObjectGroup& object = it.second;
+
+        Ref<VertexArray> submesh = GetApiManager()->CreateVertexArray();
         Ref<VertexBuffer> buffer = CreateBufferFromFaceData(object, params);
-        mesh->AddBuffer(buffer);
+        submesh->AddBuffer(buffer);
+
+        result.push_back({ it.first, submesh });
     }
-
-    return mesh;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-MtlFileResult MtlFileLoader::LoadMtlFromFile(const std::string& filepath)
-{
-    MtlFileResult result;
 
     return result;
 }
