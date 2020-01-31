@@ -48,7 +48,16 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-// #todo - check if this actually works, if not make a brute force float parse
+struct MetaTags
+{
+public:
+    static inline const std::string Clamp = "Clamp";
+    static inline const std::string Color = "Color";
+
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 inline std::stringstream& operator>>(std::stringstream& ss, std::vector<f32>& output)
 {
     f32 value = 0.0f;
@@ -56,33 +65,6 @@ inline std::stringstream& operator>>(std::stringstream& ss, std::vector<f32>& ou
     output.push_back(value);
 
     return ss;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-namespace ImGui
-{
-    bool VectorStringGetter(void* data, s32 index, const char** outText)
-    {
-        std::vector<std::string>& strings = *static_cast<std::vector<std::string>*>(data);
-        if (index >= strings.size())
-        {
-            return false;
-        }
-
-        *outText = strings.at(index).c_str();
-        return true;
-    }
-
-    bool VectorStringList(const std::string& label, std::vector<std::string>& strings, s32& selected)
-    {
-        return ImGui::ListBox(label.c_str(), &selected, VectorStringGetter, &strings, strings.size());
-    }
-
-    bool VectorStringComboBox(const std::string& label, std::vector<std::string>& strings, s32& selected)
-    {
-        return ImGui::Combo(label.c_str(), &selected, VectorStringGetter, &strings, strings.size());
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -142,6 +124,96 @@ namespace RTTI
 
 //////////////////////////////////////////////////////////////////////////
 
+class MetaParser
+{
+public:
+    static void Parse(MetaData& data, const std::string& meta);
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+void MetaParser::Parse(MetaData& data, const std::string& meta)
+{
+    std::string name;
+    for (u32 idx = 0; idx < meta.length(); ++idx)
+    {
+        const char current = meta.at(idx);
+        if (current == '=')
+        {
+            idx += 1;
+            std::string value;
+            while (idx < meta.length() && meta.at(idx) != ' ')
+            {
+                value += meta.at(idx++);
+            }
+
+            data.meta.emplace(name, value);
+            name = "";
+        }
+        else
+        {
+            name += meta.at(idx);
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void MetaData::LoadMetaData(const std::string& string)
+{
+    MetaParser::Parse(*this, string);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool MetaData::HasMetaData(const std::string& id) const
+{
+    return meta.find(id) != meta.end();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+float2 MetaData::GetAsFloat2(const std::string& id) const
+{
+    auto it = meta.find(id);
+    if (it != meta.end())
+    {
+        std::string value = it->second.substr(1, it->second.length() - 2);
+        return RTTI::ToFloat2(value);
+    }
+
+    return float2(-1.0f);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+namespace ImGui
+{
+    bool VectorStringGetter(void* data, s32 index, const char** outText)
+    {
+        std::vector<std::string>& strings = *static_cast<std::vector<std::string>*>(data);
+        if (index >= strings.size())
+        {
+            return false;
+        }
+
+        *outText = strings.at(index).c_str();
+        return true;
+    }
+
+    bool VectorStringList(const std::string& label, std::vector<std::string>& strings, s32& selected)
+    {
+        return ImGui::ListBox(label.c_str(), &selected, VectorStringGetter, &strings, strings.size());
+    }
+
+    bool VectorStringComboBox(const std::string& label, std::vector<std::string>& strings, s32& selected)
+    {
+        return ImGui::Combo(label.c_str(), &selected, VectorStringGetter, &strings, strings.size());
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 namespace RTTI
 {
     //////////////////////////////////////////////////////////////////////////
@@ -187,21 +259,58 @@ namespace RTTI
 
     template<> bool DisplayEditBox<f32>(void* owner, PropertyBase* prop, const std::string& id, f32& editable)
     {
-        return ImGui::InputFloat(id.c_str(), &editable);
+        if (prop->meta.HasMetaData(MetaTags::Clamp))
+        {
+            float2 minmax = prop->meta.GetAsFloat2(MetaTags::Clamp);
+            return ImGui::SliderFloat(id.c_str(), &editable, minmax.x, minmax.y);
+        }
+        else
+        {
+            return ImGui::InputFloat(id.c_str(), &editable);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////
 
     template<> bool DisplayEditBox<float2>(void* owner, PropertyBase* prop, const std::string& id, float2& editable)
     {
-        return ImGui::InputFloat2(id.c_str(), &editable.x, 3);
+        if (prop->meta.HasMetaData(MetaTags::Clamp))
+        {
+            float2 minmax = prop->meta.GetAsFloat2(MetaTags::Clamp);
+            return ImGui::SliderFloat2(id.c_str(), &editable.x, minmax.x, minmax.y);
+        }
+        else
+        {
+            return ImGui::InputFloat2(id.c_str(), &editable.x, 3);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////
 
     template<> bool DisplayEditBox<float3>(void* owner, PropertyBase* prop, const std::string& id, float3& editable)
     {
-        return ImGui::InputFloat3(id.c_str(), &editable.x, 3);
+        if (prop->meta.HasMetaData(MetaTags::Color))
+        {
+            return ImGui::ColorEdit3(id.c_str(), &editable.r);
+        }
+        else
+        {
+            return ImGui::InputFloat3(id.c_str(), &editable.x, 3);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool DisplayEditBox<float4>(void* owner, PropertyBase* prop, const std::string& id, float4& editable)
+    {
+        if (prop->meta.HasMetaData(MetaTags::Color))
+        {
+            return ImGui::ColorEdit4(id.c_str(), &editable.r);
+        }
+        else
+        {
+            return ImGui::InputFloat3(id.c_str(), &editable.x, 3);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////

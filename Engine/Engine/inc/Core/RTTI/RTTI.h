@@ -19,12 +19,18 @@ static AutoTypeRegisterWithBase<Class, Base> RTTI_##Class;
 
 //////////////////////////////////////////////////////////////////////////
 
-#define RTTI_PROPERTY(Class, PropertyType, PropertyName)                                                                    \
+#define RTTI_PROPERTY_META(Class, PropertyType, PropertyName, Meta)                                                         \
 static AutoPropertyRegister<Class, PropertyType> RTTI_##Class##_##PropertyName(                                             \
     offsetof(Class, PropertyName),                                                                                          \
     #PropertyName,                                                                                                          \
-    #PropertyType                                                                                                           \
-);                                                                                                                          
+    #PropertyType,                                                                                                          \
+    #Meta                                                                                                                   \
+); 
+
+//////////////////////////////////////////////////////////////////////////
+
+#define RTTI_PROPERTY(Class, PropertyType, PropertyName, ...)                                                               \
+RTTI_PROPERTY_META(Class, PropertyType, PropertyName, __VA_ARGS__)
 
 //////////////////////////////////////////////////////////////////////////
 

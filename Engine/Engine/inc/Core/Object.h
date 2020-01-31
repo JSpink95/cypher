@@ -140,7 +140,7 @@ inline Ref<TComponent> Object::CreateComponent(const std::string& id)
 
 namespace RTTI
 {
-    Ref<Object> LoadFromXML(const std::string& filepath);
+    Ref<Object> LoadObjectFromXML(const std::string& filepath);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -38,6 +38,8 @@ Object::~Object()
 
 void Object::OnConstruct()
 {
+    for (auto component : components)
+        component.second->OnConstruct();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,9 +90,42 @@ void Object::SetTickEnabled(bool const enabled)
 
 namespace RTTI
 {
-    Ref<Object> LoadFromXML(const std::string& filepath)
+    std::tuple<ComponentId, Ref<Component>> CreateComponentFromXML(const ObjectId& owner, pugi::xml_node node)
     {
-        return nullptr;
+        return { ComponentId::Create(owner, "invalid"), nullptr };
+    }
+
+    Ref<Object> LoadObjectFromXML(const std::string& filepath)
+    {
+        pugi::xml_document file;
+        file.load_file(filepath.c_str());
+
+        pugi::xml_node root = file.root();
+
+        ObjectId id = ObjectId::Create(root.attribute("id").as_string());
+
+        Ref<Object> object = std::make_shared<Object>();
+        object->SetId(id);
+
+        if (object == nullptr)
+        {
+            printf("Failed to create object! %s.\n", id.GetStringId());
+            return nullptr;
+        }
+
+        for (pugi::xml_node node : root)
+        {
+            if (node.name() == "component")
+            {
+                const std::string classname = node.attribute("type").as_string("invalid");
+                auto[componentId, component] = CreateComponentFromXML(id, node);
+
+                object->components.emplace(componentId, component);
+            }
+        }
+
+        object->OnConstruct();
+        return object;
     }
 }
 

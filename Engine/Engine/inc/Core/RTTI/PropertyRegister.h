@@ -54,14 +54,34 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////
 
+class MetaData
+{
+public:
+    friend class MetaParser;
+
+public:
+    void LoadMetaData(const std::string& string);
+
+public:
+    bool HasMetaData(const std::string& id) const;
+    float2 GetAsFloat2(const std::string& id) const;
+
+private:
+    std::unordered_map<std::string, std::string> meta;
+};
+
+////////////////////////////////////////////////////////////////////////////
+
 class PropertyBase
 {
 public:
-    PropertyBase(const size_t inOffset, const std::string& inPropertyName, const std::string inTypeName)
+    PropertyBase(const size_t inOffset, const std::string& inPropertyName, const std::string inTypeName, const std::string& inMetaString)
         : offset(inOffset)
         , propertyName(inPropertyName)
         , typeName(inTypeName)
-    {}
+    {
+        meta.LoadMetaData(inMetaString);
+    }
 
     virtual ~PropertyBase() {}
 
@@ -85,6 +105,7 @@ public:
     const size_t offset;
     const std::string propertyName;
     const std::string typeName;
+    MetaData meta;
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -96,7 +117,7 @@ public:
 
 public:
     Property_ListBase(const size_t inOffset, const std::string& inPropertyName, const std::string& inValueTypeName)
-        : PropertyBase(inOffset, inPropertyName, inValueTypeName)
+        : PropertyBase(inOffset, inPropertyName, inValueTypeName, "")
         , valueTypeName(inValueTypeName)
     {}
 
@@ -127,7 +148,7 @@ public:
 
 public:
     Property_MapBase(const size_t inOffset, const std::string& inPropertyName, const std::string& inKeyTypeName, const std::string& inValueTypeName)
-        : PropertyBase(inOffset, inPropertyName, inValueTypeName)
+        : PropertyBase(inOffset, inPropertyName, inValueTypeName, "")
         , keyTypeName(inKeyTypeName)
         , valueTypeName(inValueTypeName)
     {}
@@ -163,8 +184,8 @@ template<typename T>
 class Property : public PropertyBase
 {
 public:
-    Property(const size_t offset, const std::string& inPropertyName, const std::string& inTypeName)
-        : PropertyBase(offset, inPropertyName, inTypeName)
+    Property(const size_t offset, const std::string& inPropertyName, const std::string& inTypeName, const std::string& meta)
+        : PropertyBase(offset, inPropertyName, inTypeName, meta)
     {}
 
     virtual ~Property() {}
@@ -278,8 +299,8 @@ template<typename TOwnerType, typename TPropertyType>
 class AutoPropertyRegister
 {
 public:
-    AutoPropertyRegister(const size_t offset, const std::string& name, const std::string& typeName)
-        : type(offset, name, typeName)
+    AutoPropertyRegister(const size_t offset, const std::string& name, const std::string& typeName, const std::string& meta)
+        : type(offset, name, typeName, meta)
     {
         TypeRegister::GetRegisteredType<TOwnerType>()->AddProperty(&type);
     }

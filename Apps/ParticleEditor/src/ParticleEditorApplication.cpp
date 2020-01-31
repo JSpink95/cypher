@@ -243,7 +243,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN_WITH_BASE(RotatingObjectComponent, Component)
-    RTTI_PROPERTY(RotatingObjectComponent, f32, rotationDegreesPerSec)
+    RTTI_PROPERTY(RotatingObjectComponent, f32, rotationDegreesPerSec, Clamp=(0.0,360.0))
     RTTI_PROPERTY(RotatingObjectComponent, ComponentRef<TransformComponent>, attachedTransform)
 RTTI_END()
 
