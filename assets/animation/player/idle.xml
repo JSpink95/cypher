@@ -1,0 +1,7 @@
+<animation>
+  <keyframe time="0.16666666666667">
+    <joint id="root">
+      <transform position="0,0,0" rotation="0,0,0"/>
+    </joint>
+  </keyframe>
+</animation>
