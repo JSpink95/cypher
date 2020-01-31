@@ -19,7 +19,6 @@ project "ParticleEditor"
         project_external_root.."pugixml\\inc\\",
         project_external_root.."bullet\\src\\",
         project_external_root.."imgui\\src\\",
-        project_external_root.."irrklang\\inc\\",
         
         project_engine_root.."Engine\\inc\\",
 
@@ -28,8 +27,10 @@ project "ParticleEditor"
     }
     
     links {
-        "glm", "stb", "spdlog", "Engine", "pugixml", "bullet", "imgui", "irrklanglib"
+        "glm", "stb", "spdlog", "Engine", "pugixml", "bullet", "imgui"
     }
+    
+    performfile(project_scripts_root.."IrrKlangIncludes.lua", current_dir)  -- setup irrklang includes & libs
 
     filter "platforms:Dx11"
         dofile(project_scripts_root.."Dx11Includes.lua")    -- setup dx11 includes & libs

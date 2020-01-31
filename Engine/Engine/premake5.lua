@@ -17,15 +17,16 @@ project "Engine"
         project_external_root.."pugixml\\inc\\",
         project_external_root.."bullet\\src\\",
         project_external_root.."imgui\\src\\",
-        project_external_root.."irrklang\\inc\\",
 
         current_dir.."inc\\",
         current_dir.."src\\",
     }
 
     links {
-        "glm", "stb", "spdlog", "pugixml", "bullet", "imgui", "irrklanglib"
+        "glm", "stb", "spdlog", "pugixml", "bullet", "imgui"
     }
+    
+    performfile(project_scripts_root.."IrrklangIncludes.lua", current_dir)  -- setup irrklang includes & libs
 
     filter "platforms:Dx11"
         dofile(project_scripts_root.."Dx11Includes.lua")    -- setup dx11 includes & libs

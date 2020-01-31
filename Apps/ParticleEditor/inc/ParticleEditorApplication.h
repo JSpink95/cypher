@@ -40,6 +40,7 @@ private:
 private:
     std::vector<Ref<GameObject>> editableParticleSystems;
     std::unordered_map<ObjectId, Ref<Object>> allWorldObjects;
+    f32 audioBeepTimer = 0.0f;
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -8,8 +8,15 @@
 #include "Core/Application.h"
 #include "Core/ConsoleLogger.h"
 #include "Core/ObjectManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/Events/Event.h"
 #include "Core/Events/WindowEvent.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Core/Utility/TimeUtils.h"
 #include "Core/Utility/RandomUtils.h"
 #include "Core/Utility/FileVolumeManager.h"
 
@@ -18,6 +25,9 @@
 #include "Core/Thread/GameThread.h"
 #include "Core/Thread/PhysicsThread.h"
 #include "Core/Thread/RenderThread.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/Input/Input.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -26,7 +36,13 @@
 #include "Render/Platform/ApiManager.h"
 #include "Render/Platform/Renderer.h"
 #include "Render/Platform/Texture2D.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/RenderPass/RenderPassManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Effects/LightManager.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -34,6 +50,10 @@
 #include "Render/Utility/TextureLibrary.h"
 #include "Render/Utility/MaterialLibrary.h"
 #include "Render/Utility/MeshLibrary.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Audio/Audio.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -56,6 +76,7 @@ Application::Application()
 {
     instance = this;
     global_random::initialise();
+    Time::Create();
 
     FileVolumeManager::Create();
     ConsoleLogger::Init();
@@ -63,6 +84,7 @@ Application::Application()
     Input::Create();
     InputManager::Create();
 
+    Audio::Create();
     ApiManager::Create();
     TextureLibrary::Create();
     MaterialLibrary::Create();
@@ -83,6 +105,7 @@ Application::~Application()
     MaterialLibrary::Delete();
     TextureLibrary::Delete();
     ApiManager::Delete();
+    Audio::Delete();
     InputManager::Delete();
     Input::Delete();
     Random::Delete();
