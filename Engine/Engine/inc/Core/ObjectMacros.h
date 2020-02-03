@@ -33,6 +33,10 @@ public: virtual inline const std::string& GetTypeName()                         
 {                                                                               \
     return ClassName;                                                           \
 }                                                                               \
+public: virtual inline const u32& GetByteSize()                                 \
+{                                                                               \
+    return sizeof(Class);                                                       \
+}
 
 ////////////////////////////////////////////////////////////////////////////
 

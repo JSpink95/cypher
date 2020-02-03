@@ -308,6 +308,7 @@ void ParticleEditorApplication::OnPostCreate()
     }
 
 	editorController = CreateObject<GameObject>(ObjectId::Create("EditorController"));
+    editorController->SetTickEnabled(true);
 
     Ref<OrbitalCameraComponent> orbitalCamera = editorController->CreateComponent<OrbitalCameraComponent>("OrbitalCamera");
     orbitalCamera->SetAsMainCamera();
@@ -320,7 +321,6 @@ void ParticleEditorApplication::OnPostCreate()
     orbitLocationGizmoMesh->scale = float3(0.2f);
 
     {
-        GameThread::AddObject(editorController);
         //RenderPassManager::GetPassAsType<RenderPassDebug>(RenderPassDebug::Id)->AddObject(editorController);
     }
 
@@ -328,7 +328,7 @@ void ParticleEditorApplication::OnPostCreate()
 	lightObject->transform->position = float3(0.0f, 6.0f, 0.0f);
 
 	Ref<LightComponent> light = lightObject->CreateComponent<LightComponent>("Light");
-    GameThread::AddObject(lightObject);
+    lightObject->SetTickEnabled(true);
 
     gridObject = CreateObject<GameObject>(ObjectId::Create("Grid"));
     RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddObjectToPass(gridObject.get(), false);
@@ -337,6 +337,8 @@ void ParticleEditorApplication::OnPostCreate()
     gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
     gridMesh->SetMesh("assets:\\models\\plane.obj");
     gridMesh->scale = float3(4.0f, 1.0f, 4.0f);
+
+    RTTI::SaveObjectToBinary(gridObject, "assets:\\test.asset");
 
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);
@@ -387,11 +389,13 @@ void ParticleEditorApplication::OnImGuiRender()
 
 void ParticleEditorApplication::AddNewDefaultEffect(const std::string& id, bool makeActive/* = false*/, const float3& atLocation/* = float3(0.0f)*/)
 {
-    Ref<GameObject> effect = CreateDefaultParticleEffect(id, editableParticleSystems.size());
-    effect->transform->position = atLocation;
-    editableParticleSystems.push_back(effect);
+    Ref<Object> effect = CreateDefaultParticleEffect(id, editableParticleSystems.size());
+    effect->SetTickEnabled(true);
 
-    GameThread::AddObject(effect);
+    Ref<TransformComponent> transform = effect->CreateComponent<TransformComponent>("RootTransform");
+    transform->position = atLocation;
+
+    editableParticleSystems.push_back(effect);
     RenderPassManager::GetPassAsType<RenderPassParticle>(RenderPassParticle::Id)->AddObjectToPass(effect.get());
 
     if (makeActive)

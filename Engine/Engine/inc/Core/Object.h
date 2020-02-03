@@ -23,6 +23,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Thread/GameThread.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/RenderPass/RenderPassManager.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -32,7 +36,20 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+class Object;
 class Material;
+
+//////////////////////////////////////////////////////////////////////////
+
+class ObjectTickFunction : public TickFunction
+{
+    DECLARE_DERIVED(ObjectTickFunction, TickFunction)
+public:
+    virtual void ExecuteTick(const f32 dt) override;
+
+public:
+    Object* object = nullptr;
+};
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -42,6 +59,8 @@ class Object: public RTTIObject
 public:
     Object();
     virtual ~Object();
+
+    void Tick(const f32 dt);
 
     virtual void OnConstruct();
     virtual void OnDestruct();
@@ -53,7 +72,7 @@ public:
     virtual void Deserialise(const std::ifstream& input) {}
 
 public:
-    void SetTickEnabled(bool const enabled);
+    void SetTickEnabled(const bool enabled);
 
 public:
 
@@ -123,6 +142,7 @@ public:
 
 private:
     ObjectId id;
+    ObjectTickFunction tickFunction;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -140,8 +160,12 @@ inline Ref<TComponent> Object::CreateComponent(const std::string& id)
 
 namespace RTTI
 {
+    // xml serialisation
     Ref<Object> LoadObjectFromXML(const std::string& filepath);
     void SaveObjectToXML(Ref<Object> object, const std::string& filepath);
+
+    // binary serialisation
+    void SaveObjectToBinary(Ref<Object> object, const std::string& filepath);
 }
 
 //////////////////////////////////////////////////////////////////////////

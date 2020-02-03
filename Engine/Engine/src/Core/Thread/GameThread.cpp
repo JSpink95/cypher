@@ -28,73 +28,42 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-bool GameThread::IsObjectRegistered(WeakRef<Object> object)
-{
-	if (Ref<GameThread> thread = GetGameThread())
-	{
-		return thread->IsObjectRegisteredImpl(object);
-	}
-
-	return false;
-}
+RTTI_BEGIN_WITH_BASE(TickFunction, RTTIObject)
+RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-void GameThread::AddObject(WeakRef<Object> object)
+void GameThread::RegisterTickFunction(TickFunction* tick)
 {
-	if (Ref<GameThread> thread = GetGameThread())
-	{
-		thread->AddObjectImpl(object);
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void GameThread::RemoveObject(WeakRef<Object> object)
-{
-	if (Ref<GameThread> thread = GetGameThread())
-	{
-		thread->RemoveObjectImpl(object);
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void GameThread::AddObjectImpl(WeakRef<Object> object)
-{
-    if (!object.expired())
+    if (Ref<GameThread> gt = GetGameThread())
     {
-        Ref<Object> obj = object.lock();
-        ObjectId id = obj->GetId();
-
-        if (registeredObjects.find(id) == registeredObjects.end())
-        {
-            registeredObjects.emplace(id, object);
-        }
+        gt->RegisterTickFunctionImpl(tick);
     }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-void GameThread::RemoveObjectImpl(WeakRef<Object> object)
+void GameThread::DeregisterTickFunction(TickFunction* tick)
 {
-    if (!object.expired())
+    if (Ref<GameThread> gt = GetGameThread())
     {
-        Ref<Object> obj = object.lock();
-        registeredObjects.erase(obj->GetId());
+        gt->DeregisterTickFunctionImpl(tick);
     }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-bool GameThread::IsObjectRegisteredImpl(WeakRef<Object> object)
+void GameThread::RegisterTickFunctionImpl(TickFunction* tick)
 {
-	if (Ref<Object> obj = object.lock())
-	{
-		return registeredObjects.find(obj->GetId()) != registeredObjects.end();
-	}
+    ticks.push_back(tick);
+}
 
-	return false;
+//////////////////////////////////////////////////////////////////////////
+
+void GameThread::DeregisterTickFunctionImpl(TickFunction* tick)
+{
+    // could be slow...
+    ticks.erase(std::remove(ticks.begin(), ticks.end(), tick), ticks.end());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -106,8 +75,6 @@ void GameThread::ThreadLoop()
     using duration = std::chrono::duration<f32>;
 
     Thread::SetName("* Game Thread");
-
-    static constexpr f32 timeDilation = 0.1f;
 
     GetApplication()->RenderCreate();
 
@@ -125,13 +92,12 @@ void GameThread::ThreadLoop()
         // update
         GetApplication()->OnPreUpdate(dt);
 
-        for (auto object : registeredObjects)
+        for (TickFunction* tick : ticks)
         {
-            WeakRef<Object> obj = object.second;
-            if (!obj.expired())
-            {
-                obj.lock()->OnUpdate(dt);
-            }
+            if (!tick->enabled)
+                continue;
+
+            tick->ExecuteTick(dt);
         }
 
         GetApplication()->OnPostUpdate();
@@ -143,6 +109,7 @@ void GameThread::ThreadLoop()
 
         GetApplication()->OnPostRender();
 
+        // do ImGui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();

@@ -18,11 +18,31 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Thread/GameThread.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/RenderPass/RenderPassBase.h"
 
 //////////////////////////////////////////////////////////////////////////
 
 #include "pugixml.hpp"
+
+//////////////////////////////////////////////////////////////////////////
+
+class Component;
+
+//////////////////////////////////////////////////////////////////////////
+
+class ComponentTickFunction : public TickFunction
+{
+    DECLARE_DERIVED(ComponentTickFunction, TickFunction)
+public:
+    virtual void ExecuteTick(const f32 dt) override;
+
+public:
+    Component* component;
+};
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -35,8 +55,9 @@ public:
     Component();
     virtual ~Component();
 
-    virtual void OnConstruct() {}
-    virtual void OnDestruct() {}
+    virtual void OnConstruct();
+    virtual void OnDestruct();
+    virtual void OnTick(const f32 dt);
     virtual void OnUpdate(const f32 dt) {}
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride = nullptr) {}
 
@@ -58,6 +79,7 @@ public:
 
 private:
     ComponentId id;
+    ComponentTickFunction tickFunction;
 };
 
 //////////////////////////////////////////////////////////////////////////

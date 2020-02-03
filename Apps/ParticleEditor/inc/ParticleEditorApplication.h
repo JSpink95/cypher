@@ -34,10 +34,10 @@ private:
     Ref<GameObject> editorController;
 	Ref<GameObject> lightObject;
     Ref<GameObject> gridObject;
-    Ref<GameObject> activeParticleSystem;
+    Ref<Object> activeParticleSystem;
 
 private:
-    std::vector<Ref<GameObject>> editableParticleSystems;
+    std::vector<Ref<Object>> editableParticleSystems;
     std::unordered_map<ObjectId, Ref<Object>> allWorldObjects;
     f32 audioBeepTimer = 0.0f;
 };

@@ -21,9 +21,34 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include <fstream>
+
+//////////////////////////////////////////////////////////////////////////
+
+#define BINARY_SERIALISATION_VERSION 1u
+
+//////////////////////////////////////////////////////////////////////////
+
+RTTI_BEGIN_WITH_BASE(ObjectTickFunction, TickFunction)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
 RTTI_BEGIN_WITH_BASE(Object, RTTIObject)
     RTTI_PROPERTY_MAP(Object, std::unordered_map, ComponentId, Ref<Component>, components)
 RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
+void ObjectTickFunction::ExecuteTick(const f32 dt)
+{
+    Super::ExecuteTick(dt);
+
+    if (object != nullptr)
+    {
+        object->Tick(dt);
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -42,6 +67,9 @@ Object::~Object()
 
 void Object::OnConstruct()
 {
+    tickFunction.object = this;
+    GameThread::RegisterTickFunction(&tickFunction);
+
     for (auto component : components)
         component.second->OnConstruct();
 }
@@ -50,8 +78,17 @@ void Object::OnConstruct()
 
 void Object::OnDestruct()
 {
+    GameThread::DeregisterTickFunction(&tickFunction);
+
     for (auto component : components)
         component.second->OnDestruct();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void Object::Tick(const f32 dt)
+{
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -78,16 +115,9 @@ void Object::OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride/
 
 //////////////////////////////////////////////////////////////////////////
 
-void Object::SetTickEnabled(bool const enabled)
+void Object::SetTickEnabled(const bool enabled)
 {
-    //if (enabled)
-    //{
-    //    GetGameThread()->AddObject(self);
-    //}
-    //else
-    //{
-    //    GetGameThread()->RemoveObject(self);
-    //}
+    tickFunction.enabled = enabled;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -216,6 +246,61 @@ namespace RTTI
         });
 
         file.save_file(realpath.c_str());
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    // 32 bits
+    struct BinaryHeader
+    {
+        u32 version;
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+
+    // 92 bits
+    struct BinaryComponentHeader
+    {
+        u32 version, byteSize;
+        char classname[64];
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<typename T> void GenericBinaryWriteToFile(std::ofstream& stream, T* value)
+    {
+        stream.write(reinterpret_cast<const char*>(value), sizeof(T));
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    void SaveObjectToBinary(Ref<Object> object, const std::string& filepath)
+    {
+        const std::string realpath = FileVolumeManager::GetRealPathFromVirtualPath(filepath).fullpath;
+
+        BinaryHeader header;
+        header.version = BINARY_SERIALISATION_VERSION;
+
+        std::ofstream file(realpath.c_str(), std::ios::binary);
+        if (file.is_open())
+        {
+            GenericBinaryWriteToFile<BinaryHeader>(file, &header);
+
+            object->ForEachComponent([&](const ComponentId& id, Ref<Component> component)
+            {
+                BinaryComponentHeader componentHeader;
+                componentHeader.version = BINARY_SERIALISATION_VERSION;
+                componentHeader.byteSize = component->GetByteSize();
+                std::memcpy(componentHeader.classname, component->GetTypeName().c_str(), glm::min(64u, component->GetTypeName().length()));
+
+                GenericBinaryWriteToFile<BinaryComponentHeader>(file, &componentHeader);
+
+                const char* bytes = reinterpret_cast<const char*>(component.get());
+                file.write(bytes, component->GetByteSize());
+            });
+
+            file.close();
+        }
     }
 }
 
