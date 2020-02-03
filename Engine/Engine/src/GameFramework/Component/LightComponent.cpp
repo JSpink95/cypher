@@ -51,9 +51,9 @@ void LightComponent::OnDestruct()
 
 //////////////////////////////////////////////////////////////////////////
 
-void LightComponent::OnUpdate(const f32 dt)
+void LightComponent::OnTick(const f32 dt)
 {
-    Super::OnUpdate(dt);
+    Super::OnTick(dt);
 
     light->SetRadius(radius);
     light->SetColor(vec4(color, 1.0f));

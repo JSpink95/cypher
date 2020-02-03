@@ -72,7 +72,7 @@ public:
     // 
 
     virtual void OnConstruct() override;
-    virtual void OnUpdate(const f32 dt) override;
+    virtual void OnTick(const f32 dt) override;
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;
 
     // request a new particle to be added in the next update iteration

@@ -60,13 +60,11 @@ public:
     Object();
     virtual ~Object();
 
-    void Tick(const f32 dt);
-
     virtual void OnConstruct();
     virtual void OnDestruct();
-    virtual void OnUpdate(const f32 dt);                                // called from the game thread
-    virtual void OnPhysicsUpdate(const f32 dt);                         // called from the physics thread
-    virtual void OnRender(RenderPassType::Enum pass, Ref<Material> overrideMaterial = nullptr);    // called from the render thread
+    virtual void OnTick(const f32 dt);
+    virtual void OnPhysicsUpdate(const f32 dt);                                                     // called from the physics thread
+    virtual void OnRender(RenderPassType::Enum pass, Ref<Material> overrideMaterial = nullptr);     // called from the render thread
 
     virtual void Serialise(std::ofstream& output) {}
     virtual void Deserialise(const std::ifstream& input) {}

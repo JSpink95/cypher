@@ -35,9 +35,9 @@ void ProjectileMovementComponent::OnConstruct()
 
 //////////////////////////////////////////////////////////////////////////
 
-void ProjectileMovementComponent::OnUpdate(const f32 dt)
+void ProjectileMovementComponent::OnTick(const f32 dt)
 {
-    Super::OnUpdate(dt);
+    Super::OnTick(dt);
 
     if (attachedTransform)
     {

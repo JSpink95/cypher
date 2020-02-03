@@ -58,7 +58,6 @@ public:
     virtual void OnConstruct();
     virtual void OnDestruct();
     virtual void OnTick(const f32 dt);
-    virtual void OnUpdate(const f32 dt) {}
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride = nullptr) {}
 
 public:

@@ -26,8 +26,7 @@ public:
 public:
     virtual void OnConstruct() override;
     virtual void OnDestruct() override;
-
-    virtual void OnUpdate(const f32 dt) override;
+    virtual void OnTick(const f32 dt) override;
 
     inline Ref<LightObject> GetLightInstance() { return light; }
 

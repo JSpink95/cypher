@@ -45,7 +45,6 @@
 #include <iterator>
 #include <sstream>
 #include <string>
-//#include <experimental/string>
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -54,7 +53,6 @@ struct MetaTags
 public:
     static inline const std::string Clamp = "Clamp";
     static inline const std::string Color = "Color";
-
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -283,7 +281,7 @@ namespace RTTI
         if (prop->meta.HasMetaData(MetaTags::Clamp))
         {
             float2 minmax = prop->meta.GetAsFloat2(MetaTags::Clamp);
-            return ImGui::SliderFloat(id.c_str(), &editable, minmax.x, minmax.y);
+            return ImGui::DragFloat(id.c_str(), &editable, 1.0f, minmax.x, minmax.y);
         }
         else
         {
@@ -298,7 +296,7 @@ namespace RTTI
         if (prop->meta.HasMetaData(MetaTags::Clamp))
         {
             float2 minmax = prop->meta.GetAsFloat2(MetaTags::Clamp);
-            return ImGui::SliderFloat2(id.c_str(), &editable.x, minmax.x, minmax.y);
+            return ImGui::DragFloat2(id.c_str(), &editable.x, 1.0f, minmax.x, minmax.y);
         }
         else
         {
@@ -314,6 +312,11 @@ namespace RTTI
         {
             return ImGui::ColorEdit3(id.c_str(), &editable.r);
         }
+        else if (prop->meta.HasMetaData(MetaTags::Clamp))
+        {
+            float2 minmax = prop->meta.GetAsFloat2(MetaTags::Clamp);
+            return ImGui::DragFloat3(id.c_str(), &editable.x, 1.0f, minmax.x, minmax.y);
+        }
         else
         {
             return ImGui::InputFloat3(id.c_str(), &editable.x, 3);
@@ -327,6 +330,11 @@ namespace RTTI
         if (prop->meta.HasMetaData(MetaTags::Color))
         {
             return ImGui::ColorEdit4(id.c_str(), &editable.r);
+        }
+        else if (prop->meta.HasMetaData(MetaTags::Clamp))
+        {
+            float2 minmax = prop->meta.GetAsFloat2(MetaTags::Clamp);
+            return ImGui::DragFloat4(id.c_str(), &editable.x, 1.0f, minmax.x, minmax.y);
         }
         else
         {

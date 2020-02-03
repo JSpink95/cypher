@@ -41,9 +41,9 @@ void PhysicsObject::OnDestruct()
 
 //////////////////////////////////////////////////////////////////////////
 
-void PhysicsObject::OnUpdate(const f32 dt)
+void PhysicsObject::OnTick(const f32 dt)
 {
-    Super::OnUpdate(dt);
+    Super::OnTick(dt);
 
     if (body != nullptr)
     {

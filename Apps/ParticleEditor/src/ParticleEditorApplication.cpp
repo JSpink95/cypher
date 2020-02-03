@@ -132,9 +132,9 @@ public:
         attachedCameraComponent.OnConstruct(owner);
     }
 
-    virtual void OnUpdate(const f32 dt)
+    virtual void OnTick(const f32 dt) override
     {
-        Super::OnUpdate(dt);
+        Super::OnTick(dt);
 
         input.bMouseDown = Input::IsButtonDown(MouseButton::Right);
         input.bMiddleMouseDown = Input::IsButtonDown(MouseButton::Middle);
@@ -225,9 +225,9 @@ public:
         attachedTransform.OnConstruct(owner);
     }
 
-    virtual void OnUpdate(const f32 dt) override
+    virtual void OnTick(const f32 dt) override
     {
-        Super::OnUpdate(dt);
+        Super::OnTick(dt);
 
         if (attachedTransform)
         {

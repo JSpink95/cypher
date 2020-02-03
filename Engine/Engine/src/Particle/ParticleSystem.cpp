@@ -81,9 +81,9 @@ void ParticleSystemComponent::OnConstruct()
 
 //////////////////////////////////////////////////////////////////////////
 
-void ParticleSystemComponent::OnUpdate(const f32 dt)
+void ParticleSystemComponent::OnTick(const f32 dt)
 {
-    Super::OnUpdate(dt);
+    Super::OnTick(dt);
 
     timeSinceLastEmission += dt;
     if (timeSinceLastEmission >= emissionRate)

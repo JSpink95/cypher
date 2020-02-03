@@ -28,7 +28,7 @@ class RigidBodyComponent : public Component
     DECLARE_COMPONENT(RigidBodyComponent, Component)
 public:
     virtual void OnConstruct() override;
-    virtual void OnUpdate(const f32 dt) override;
+    virtual void OnTick(const f32 dt) override;
 
     void Initialise(const f32 mass_deprecated);
 

@@ -22,7 +22,7 @@ class ProjectileMovementComponent : public Component
     DECLARE_COMPONENT(ProjectileMovementComponent, Component)
 public:
     virtual void OnConstruct() override;
-    virtual void OnUpdate(const f32 dt) override;
+    virtual void OnTick(const f32 dt) override;
 
     void Initialise(const float3& newDirection, const f32 newSpeed);
 

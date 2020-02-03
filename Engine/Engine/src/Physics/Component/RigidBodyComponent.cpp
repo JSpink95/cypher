@@ -45,9 +45,9 @@ void RigidBodyComponent::OnConstruct()
 
 //////////////////////////////////////////////////////////////////////////
 
-void RigidBodyComponent::OnUpdate(const f32 dt)
+void RigidBodyComponent::OnTick(const f32 dt)
 {
-    Super::OnUpdate(dt);
+    Super::OnTick(dt);
 
     if (attachedTransform)
     {

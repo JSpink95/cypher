@@ -46,7 +46,7 @@ void ObjectTickFunction::ExecuteTick(const f32 dt)
 
     if (object != nullptr)
     {
-        object->Tick(dt);
+        object->OnTick(dt);
     }
 }
 
@@ -86,17 +86,9 @@ void Object::OnDestruct()
 
 //////////////////////////////////////////////////////////////////////////
 
-void Object::Tick(const f32 dt)
+void Object::OnTick(const f32 dt)
 {
 
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void Object::OnUpdate(const f32 dt)
-{
-    for (auto component : components)
-        component.second->OnUpdate(dt);
 }
 
 //////////////////////////////////////////////////////////////////////////

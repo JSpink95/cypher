@@ -27,7 +27,7 @@ public:
     virtual void OnConstruct() override;
     virtual void OnDestruct() override;
 
-    virtual void OnUpdate(const f32 dt) override;
+    virtual void OnTick(const f32 dt) override;
     virtual void OnPhysicsUpdate(const f32 dt) override;
 
     void Initialise(f32 mass, const float3& position, const float3& rotation, Ref<BaseCollisionShape> col);
