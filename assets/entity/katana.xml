@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<object id="katana">
+	<component type="TransformComponent" name="RootTransform">
+		<property name="position" value="0,0,0" />
+		<property name="rotation" value="0,0,0" />
+		<property name="scale" value="1,1,1" />
+	</component>
+	<component type="StaticMeshComponent" name="KatanaMesh">
+		<property name="material" value="assets:\materials\dev-material.xml" />
+		<property name="mesh" value="assets:\models\katana.obj" />
+		<property name="position" value="0,0,0" />
+		<property name="rotation" value="0,0,0" />
+		<property name="scale" value="0.2,0.2,0.2" />
+	</component>
+</object>

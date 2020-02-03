@@ -31,6 +31,12 @@ Component::~Component()
 
 //////////////////////////////////////////////////////////////////////////
 
+const std::string Component::GetInstanceName() const
+{
+    std::string fullname = id.GetStringId();
+    return fullname.substr(fullname.find_first_of(':') + 1);
+}
+
 void Component::SetId(const std::string& newStringId)
 {
     id = ComponentId::Create(owner->GetId(), newStringId);

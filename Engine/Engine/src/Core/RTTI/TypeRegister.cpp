@@ -20,9 +20,46 @@ void TypeBase::AddProperty(PropertyBase* newProperty)
     }
 }
 
-TypeBase* TypeBase::GetBaseType()
+//////////////////////////////////////////////////////////////////////////
+
+PropertyBase* TypeBase::FindProperty(const std::string& id)
+{
+    auto it = properties.find(id);
+    if (it == properties.end())
+    {
+        if (TypeBase* base = GetBaseType())
+        {
+            return base->FindProperty(id);
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+    else
+    {
+        return it->second;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+TypeBase* TypeBase::GetBaseType() const
 {
     return TypeRegister::GetRegisteredType(baseTypeName);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool TypeBase::IsTypeOf(const std::string& className) const
+{
+    if (typeName == className)
+        return true;
+
+    if (TypeBase* baseType = GetBaseType())
+        return baseType->IsTypeOf(className);
+
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////

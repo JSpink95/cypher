@@ -338,17 +338,6 @@ void ParticleEditorApplication::OnPostCreate()
     gridMesh->SetMesh("assets:\\models\\plane.obj");
     gridMesh->scale = float3(4.0f, 1.0f, 4.0f);
 
-    barrelObject = CreateObject<GameObject>(ObjectId::Create("Barrel"));
-    RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddObjectToPass(barrelObject.get(), false);
-    GameThread::AddObject(barrelObject);
-
-    Ref<RotatingObjectComponent> rotator = barrelObject->CreateComponent<RotatingObjectComponent>("Rotator");
-    rotator->rotationDegreesPerSec = 10.0f;
-
-    Ref<StaticMeshComponent> barrelMesh = barrelObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-    barrelMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\mesh-lit-tex-error.xml"));
-    barrelMesh->SetMesh("assets:\\models\\character_rig.obj");
-
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);
 }
@@ -365,7 +354,7 @@ void ParticleEditorApplication::OnPostUpdate()
     if (audioBeepTimer >= 1.0f)
     {
         audioBeepTimer = 0.0f;
-        Audio::PlayAudio("assets:\\audio\\8BitSoundPack\\Money.wav");
+        //Audio::PlayAudio("assets:\\audio\\8BitSoundPack\\Money.wav");
     }
 }
 
@@ -376,11 +365,18 @@ void ParticleEditorApplication::OnImGuiRender()
     Application::OnImGuiRender();
 
     ImGui::SetNextWindowPos(ImVec2(4, 8));
-    if (ImGui::Begin("Active Particle System", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
+    if (ImGui::Begin("Objects", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
     {
-        RTTI::DisplayObjectProperties("Light", lightObject.get());
-        RTTI::DisplayObjectProperties("Character", barrelObject.get());
-        RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
+        if (lightObject != nullptr)
+        {
+            RTTI::DisplayObjectProperties("Light", lightObject.get());
+            ImGui::Separator();
+        }
+
+        if (activeParticleSystem)
+        {
+            RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
+        }
 
         ImGui::End();
     }

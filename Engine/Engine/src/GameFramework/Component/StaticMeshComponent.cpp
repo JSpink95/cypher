@@ -43,9 +43,9 @@ void StaticMeshComponent::OnRender(RenderPassType::Enum pass, Ref<Material> mate
 {
     Super::OnRender(pass, materialOverride);
 
-    fmat4 transform = CalculateTransformMatrix();
-    if (mesh != nullptr)
+    if (mesh != nullptr && material != nullptr)
     {
+        fmat4 transform = CalculateTransformMatrix();
         mesh->Render(material, transform);
     }
 }

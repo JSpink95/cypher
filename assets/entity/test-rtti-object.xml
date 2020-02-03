@@ -1,0 +1,9 @@
+<object id="test-rtti-object">
+  <component name="RootTransform" type="TransformComponent">
+    <property name="position" type="float3" value="0,0,0"/>
+  </component>
+  <component name="MeleeWeaponMesh" type="StaticMeshComponent">
+    <property name="material" type="Ref&lt;Material&gt;" value="assets:\materials\dev-material.xml"/>
+    <property name="mesh" type="Ref&lt;Mesh&gt;" value="assets:\models\katana.obj"/>
+  </component>
+</object>

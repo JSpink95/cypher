@@ -34,7 +34,6 @@ private:
     Ref<GameObject> editorController;
 	Ref<GameObject> lightObject;
     Ref<GameObject> gridObject;
-    Ref<GameObject> barrelObject;
     Ref<GameObject> activeParticleSystem;
 
 private:

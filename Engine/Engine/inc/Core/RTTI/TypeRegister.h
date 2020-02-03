@@ -50,7 +50,10 @@ public:
 
 public:
     void AddProperty(PropertyBase* newProperty);
-    TypeBase* GetBaseType();
+    PropertyBase* FindProperty(const std::string& id);
+
+    TypeBase* GetBaseType() const;
+    bool IsTypeOf(const std::string& className) const;
 
 public:
 

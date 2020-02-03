@@ -53,6 +53,7 @@ public:
         return id;
     }
 
+    const std::string GetInstanceName() const;
     void SetId(const std::string& newStringId);
 
 private:

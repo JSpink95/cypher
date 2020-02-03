@@ -33,7 +33,13 @@ namespace RTTI
     template<typename T>
     bool DisplayEditBox(void* owner, PropertyBase* prop, const std::string& id, T& value) { return false; }
 
-    // forward declare concrete implementations
+    template<typename T>
+    std::string ToString(const T& value) { return "not implemented"; }
+
+    template<typename T>
+    bool SetValue(const std::string& value, T& editable) { return false; }
+
+    // forward declare concrete implementations - DisplayEditBox
     template<> bool DisplayEditBox<bool>(void* owner, PropertyBase* prop, const std::string& id, bool& editable);
     template<> bool DisplayEditBox<s32>(void* owner, PropertyBase* prop, const std::string& id, s32& editable);
     template<> bool DisplayEditBox<f32>(void* owner, PropertyBase* prop, const std::string& id, f32& editable);
@@ -42,6 +48,26 @@ namespace RTTI
     template<> bool DisplayEditBox<std::string>(void* owner, PropertyBase* prop, const std::string& id, std::string& editable);
     template<> bool DisplayEditBox<Ref<Material>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Material>& editable);
     template<> bool DisplayEditBox<Ref<Mesh>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Mesh>& editable);
+
+    // forward declare concrete implementations - ToString
+    template<> std::string ToString<bool>(const bool& value);
+    template<> std::string ToString<s32>(const s32& value);
+    template<> std::string ToString<f32>(const f32& value);
+    template<> std::string ToString<float2>(const float2& value);
+    template<> std::string ToString<float3>(const float3& value);
+    template<> std::string ToString<std::string>(const std::string& value);
+    template<> std::string ToString<Ref<Material>>(const Ref<Material>& value);
+    template<> std::string ToString<Ref<Mesh>>(const Ref<Mesh>& value);
+
+    // forward declare concrete implementations - SetValue
+    template<> bool SetValue<bool>(const std::string& value, bool& editable);
+    template<> bool SetValue<s32>(const std::string& value, s32& editable);
+    template<> bool SetValue<f32>(const std::string& value, f32& editable);
+    template<> bool SetValue<float2>(const std::string& value, float2& editable);
+    template<> bool SetValue<float3>(const std::string& value, float3& editable);
+    template<> bool SetValue<std::string>(const std::string& value, std::string& editable);
+    template<> bool SetValue<Ref<Material>>(const std::string& value, Ref<Material>& editable);
+    template<> bool SetValue<Ref<Mesh>>(const std::string& value, Ref<Mesh>& editable);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -99,6 +125,8 @@ public:
     RTTIObject* AsRTTIObject(void* base);
 
 public:
+    virtual std::string ToString(void* base) = 0;
+    virtual void SetValue(void* base, const std::string& value) = 0;
     virtual bool DisplayEditBox(void* base) = 0;
 
 public:
@@ -191,6 +219,19 @@ public:
     virtual ~Property() {}
 
 public:
+
+    virtual std::string ToString(void* base) override
+    {
+        T& editable = *(T*)(reinterpret_cast<char*>(base) + offset);
+        return RTTI::ToString<T>(editable);
+    }
+
+    virtual void SetValue(void* base, const std::string& value)
+    {
+        T& editable = *(T*)(reinterpret_cast<char*>(base) + offset);
+        RTTI::SetValue<T>(value, editable);
+    }
+
     virtual bool DisplayEditBox(void* base) override
     {
         return RTTI::DisplayEditBox<T>(base, this, propertyName, *(T*)AsVoidPointer(base));
@@ -234,6 +275,17 @@ public:
     virtual bool IsRefType() const override
     {
         return RTTI::IsRefType(valueTypeName);
+    }
+
+    virtual std::string ToString(void* base) override
+    {
+        return "todo";
+    }
+
+    virtual void SetValue(void* base, const std::string& value)
+    {
+        //T& editable = *(T*)(reinterpret_cast<char*>(base) + offset);
+        //RTTI::SetValue<T>(value, editable);
     }
 
     virtual bool DisplayEditBox(void* base) override
@@ -284,6 +336,17 @@ public:
     virtual bool IsRefType() const override
     {
         return RTTI::IsRefType(valueTypeName);
+    }
+
+    virtual std::string ToString(void* base) override
+    {
+        return "todo";
+    }
+
+    virtual void SetValue(void* base, const std::string& value)
+    {
+        //T& editable = *(T*)(reinterpret_cast<char*>(base) + offset);
+        //RTTI::SetValue<T>(value, editable);
     }
 
     virtual bool DisplayEditBox(void* base) override

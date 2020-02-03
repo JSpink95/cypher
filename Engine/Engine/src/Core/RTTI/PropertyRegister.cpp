@@ -45,6 +45,7 @@
 #include <iterator>
 #include <sstream>
 #include <string>
+//#include <experimental/string>
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -74,9 +75,29 @@ namespace RTTI
     std::vector<f32> GetFloatList(const std::string& value)
     {
         std::vector<f32> result;
-        std::stringstream ss(value);
+        //std::stringstream ss(value);
 
-        while (ss >> result);
+        //while (ss >> result);
+
+        std::string number;
+        for (s32 idx = 0; idx < value.length(); ++idx)
+        {
+            const char digit = value.at(idx);
+            if (digit == ',')
+            {
+                result.push_back(std::stof(number));
+                number = "";
+            }
+            else
+            {
+                number += digit;
+            }
+        }
+
+        if (number.length() != 0)
+        {
+            result.push_back(std::stof(number));
+        }
 
         return result;
     }
@@ -369,6 +390,126 @@ namespace RTTI
         }
 
         return changed;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<bool>(const bool& value)
+    {
+        return value ? "true" : "false";
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<s32>(const s32& value)
+    {
+        return std::to_string(value);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<f32>(const f32& value)
+    {
+        return fmt::format("{0}", value);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<float2>(const float2& value)
+    {
+        return fmt::format("{0},{1}", value.x, value.y);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<float3>(const float3& value)
+    {
+        return fmt::format("{0},{1},{2}", value.x, value.y, value.z);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<std::string>(const std::string& value)
+    {
+        return value;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<Ref<Material>>(const Ref<Material>& value)
+    {
+        return value->GetPath();
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<Ref<Mesh>>(const Ref<Mesh>& value)
+    {
+        return value->GetFilePath();
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<bool>(const std::string& value, bool& editable)
+    {
+        editable = RTTI::ToBool(value);
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<s32>(const std::string& value, s32& editable)
+    {
+        editable = RTTI::ToInt32(value);
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<f32>(const std::string& value, f32& editable)
+    {
+        editable = RTTI::ToFloat(value);
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<float2>(const std::string& value, float2& editable)
+    {
+        editable = RTTI::ToFloat2(value);
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<float3>(const std::string& value, float3& editable)
+    {
+        editable = RTTI::ToFloat3(value);
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<std::string>(const std::string& value, std::string& editable)
+    {
+        editable = value;
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<Ref<Material>>(const std::string& value, Ref<Material>& editable)
+    {
+        editable = MaterialLibrary::GetMaterial(value);
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<Ref<Mesh>>(const std::string& value, Ref<Mesh>& editable)
+    {
+        editable = MeshLibrary::GetMesh(value);
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////

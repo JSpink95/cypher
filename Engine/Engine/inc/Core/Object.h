@@ -141,6 +141,7 @@ inline Ref<TComponent> Object::CreateComponent(const std::string& id)
 namespace RTTI
 {
     Ref<Object> LoadObjectFromXML(const std::string& filepath);
+    void SaveObjectToXML(Ref<Object> object, const std::string& filepath);
 }
 
 //////////////////////////////////////////////////////////////////////////
