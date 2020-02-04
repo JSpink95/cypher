@@ -458,6 +458,22 @@ namespace RTTI
 
     //////////////////////////////////////////////////////////////////////////
 
+    template<> std::string ToString<ObjectId>(const ObjectId& value)
+    {
+        return value.GetStringId();
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> std::string ToString<ComponentId>(const ComponentId& value)
+    {
+        std::string result = value.GetStringId();
+        result = result.substr(result.find_first_of(':') + 1);
+        return result;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
     template<> bool SetValue<bool>(const std::string& value, bool& editable)
     {
         editable = RTTI::ToBool(value);

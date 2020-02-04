@@ -76,9 +76,11 @@ public:
     const std::string GetInstanceName() const;
     void SetId(const std::string& newStringId);
 
+public:
+    ComponentTickFunction tickFunction;
+
 private:
     ComponentId id;
-    ComponentTickFunction tickFunction;
 };
 
 //////////////////////////////////////////////////////////////////////////

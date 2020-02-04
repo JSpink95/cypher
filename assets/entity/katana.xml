@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<object id="katana">
+<object id="katana" type="Object">
 	<component type="TransformComponent" name="RootTransform">
 		<property name="position" value="0,0,0" />
 		<property name="rotation" value="0,0,0" />

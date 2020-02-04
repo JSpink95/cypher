@@ -126,6 +126,7 @@ public:
 
 public:
     GenericComponentHashMap components;
+    ObjectTickFunction tickFunction;
 
 public:
     inline const ObjectId& GetId() const
@@ -140,7 +141,6 @@ public:
 
 private:
     ObjectId id;
-    ObjectTickFunction tickFunction;
 };
 
 //////////////////////////////////////////////////////////////////////////

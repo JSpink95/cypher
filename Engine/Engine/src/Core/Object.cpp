@@ -36,6 +36,7 @@ RTTI_END()
 
 RTTI_BEGIN_WITH_BASE(Object, RTTIObject)
     RTTI_PROPERTY_MAP(Object, std::unordered_map, ComponentId, Ref<Component>, components)
+    RTTI_PROPERTY(Object, ObjectTickFunction, tickFunction)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////

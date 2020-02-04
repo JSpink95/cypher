@@ -9,55 +9,29 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/Types.h"
-#include "Core/Singleton.h"
 
 //////////////////////////////////////////////////////////////////////////
 
-#include "pugixml.hpp"
-
-//////////////////////////////////////////////////////////////////////////
-
-#include <functional>
-
-//////////////////////////////////////////////////////////////////////////
-
+class RTTIObject;
 class Object;
-class Component;
 
 //////////////////////////////////////////////////////////////////////////
 
-using ComponentDeserialiseFunction = std::function<Ref<Component>(Ref<Object>, const std::string&, pugi::xml_node)>;
-
-//////////////////////////////////////////////////////////////////////////
-
-class Serialiser: public Singleton<Serialiser>
+class Serialise
 {
 public:
+    static void RTTIObjectToXML(Ref<RTTIObject> object, const std::string& outputFilepath);
+};
 
-    static inline void RegisterComponentDeserialiseFunction(const std::string& classId, ComponentDeserialiseFunction function)
-    {
-        if (Ref<Serialiser> serialiser = Get())
-        {
-            serialiser->RegisterComponentDeserialiseFunctionImpl(classId, function);
-        }
-    }
+//////////////////////////////////////////////////////////////////////////
 
-    static inline Ref<Object> LoadObjectFromBlueprint(const std::string& filepath)
-    {
-        if (Ref<Serialiser> serialiser = Get())
-        {
-            return serialiser->LoadObjectFromBlueprintImpl(filepath);
-        }
+class Deserialise
+{
+public:
+    static Ref<RTTIObject> RTTIObjectFromXML(const std::string& filepath);
 
-        return nullptr;
-    }
-
-private:
-    void RegisterComponentDeserialiseFunctionImpl(const std::string& classId, ComponentDeserialiseFunction function);
-    Ref<Object> LoadObjectFromBlueprintImpl(const std::string& filepath);
-
-private:
-    std::unordered_map<std::string, ComponentDeserialiseFunction> deserialisationFunctions;
+public:
+    static Ref<Object> ObjectFromXML(const std::string& filepath);
 };
 
 //////////////////////////////////////////////////////////////////////////

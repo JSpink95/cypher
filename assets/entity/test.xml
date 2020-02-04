@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<object type="Object">
+	<property name="components" type="map" count="2">
+		<item key="ParticleSystem" type="ParticleSystemComponent">
+			<property name="emissionStage" type="ParticleEmissionStage">
+				<property name="processes" type="list" count="4">
+					<item index="0" type="ParticlePointEmitter">
+						<property name="point" value="0,0,0" />
+					</item>
+					<item index="1" type="ParticleSetLifetimeRandom">
+						<property name="minLifetime" value="0.5" />
+						<property name="maxLifetime" value="1" />
+					</item>
+					<item index="2" type="ParticleSetSizeRandom">
+						<property name="minSize" value="0.1" />
+						<property name="maxSize" value="0.2" />
+					</item>
+					<item index="3" type="ParticleSetVelocityRandom">
+						<property name="strength" value="5,10" />
+						<property name="minDirections" value="-0.3,1,-0.3" />
+						<property name="maxDirections" value="0.3,1,0.3" />
+					</item>
+				</property>
+			</property>
+			<property name="material" value="assets:\materials\particle-default.xml" />
+			<property name="localSpaceParticles" value="false" />
+			<property name="emissionRate" value="0.005" />
+			<property name="maxAliveParticles" value="1024" />
+			<property name="updateStage" type="ParticleUpdateStage">
+				<property name="processes" type="list" count="1">
+					<item index="0" type="ParticleGravity">
+						<property name="gravity" value="0,-9.81,0" />
+					</item>
+				</property>
+			</property>
+			<property name="position" value="0,0,0" />
+			<property name="rotation" value="0,0,0" />
+			<property name="scale" value="1,1,1" />
+			<property name="tickFunction" type="ComponentTickFunction">
+				<property name="enabled" value="true" />
+			</property>
+		</item>
+		<item key="RootTransform" type="TransformComponent">
+			<property name="position" value="0,0,0" />
+			<property name="rotation" value="0,0,0" />
+			<property name="scale" value="1,1,1" />
+			<property name="tickFunction" type="ComponentTickFunction">
+				<property name="enabled" value="false" />
+			</property>
+		</item>
+	</property>
+	<property name="tickFunction" type="ObjectTickFunction">
+		<property name="enabled" value="false" />
+	</property>
+</object>

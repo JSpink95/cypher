@@ -76,14 +76,14 @@ RTTI_END()
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN_WITH_BASE(ParticleSetLifetimeRandom, ParticleEmissionProcess)
-    RTTI_PROPERTY(ParticleSetLifetimeRandom, float2, minLifetime)
-    RTTI_PROPERTY(ParticleSetLifetimeRandom, float2, maxLifetime)
+    RTTI_PROPERTY(ParticleSetLifetimeRandom, f32, minLifetime)
+    RTTI_PROPERTY(ParticleSetLifetimeRandom, f32, maxLifetime)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
 RTTI_BEGIN_WITH_BASE(ParticleSetSize, ParticleEmissionProcess)
-    RTTI_PROPERTY(ParticleSetSize, f32, size)
+    RTTI_PROPERTY(ParticleSetSize, float2, size)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////

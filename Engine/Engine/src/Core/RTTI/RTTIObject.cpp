@@ -37,7 +37,7 @@ namespace RTTI
 
             if (ImGui::TreeNode(prop->propertyName.c_str()))
             {
-                auto predicate = [&](void* value) -> void
+                auto predicate = [&](const s32 idx, void* value) -> void
                 {
                     if (valueIsRTTI)
                     {

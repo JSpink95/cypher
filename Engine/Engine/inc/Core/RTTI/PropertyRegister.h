@@ -9,6 +9,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/RTTI/TypeRegister.h"
+#include "Core/TypeId.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -58,6 +59,8 @@ namespace RTTI
     template<> std::string ToString<std::string>(const std::string& value);
     template<> std::string ToString<Ref<Material>>(const Ref<Material>& value);
     template<> std::string ToString<Ref<Mesh>>(const Ref<Mesh>& value);
+    template<> std::string ToString<ObjectId>(const ObjectId& value);
+    template<> std::string ToString<ComponentId>(const ComponentId& value);
 
     // forward declare concrete implementations - SetValue
     template<> bool SetValue<bool>(const std::string& value, bool& editable);
@@ -141,7 +144,7 @@ public:
 class Property_ListBase : public PropertyBase
 {
 public:
-    using ListIteratorFunction = std::function<void(void*)>;
+    using ListIteratorFunction = std::function<void(const s32, void*)>;
 
 public:
     Property_ListBase(const size_t inOffset, const std::string& inPropertyName, const std::string& inValueTypeName)
@@ -162,6 +165,7 @@ public:
 public:
     virtual size_t Count(void* base) const = 0;
     virtual void ForEachItem(void* base, ListIteratorFunction predicate) = 0;
+    virtual std::string ValueToString(void* base, const s32 index) = 0;
 
 public:
     const std::string valueTypeName;
@@ -200,6 +204,8 @@ public:
 public:
     virtual size_t Count(void* base) const = 0;
     virtual void ForEachItem(void* base, MapIteratorFunction predicate) = 0;
+    virtual std::string KeyToString(void* base, const void* k) = 0;
+    virtual std::string ValueToString(void* base, const void* k) = 0;
 
 public:
     const std::string keyTypeName;
@@ -267,8 +273,17 @@ public:
         for (size_t index = 0; index < list->size(); ++index)
         {
             TValue* value = &list->at(index);
-            predicate((void*)value);
+            predicate(index, (void*)value);
         }
+    }
+    
+    virtual std::string ValueToString(void* base, const s32 index) override
+    {
+        list_type* list = (list_type*)AsVoidPointer(base);
+        if (index < 0 || index >= list->size())
+            return "out of bounds";
+
+        return RTTI::ToString(list->at(index));
     }
 
 public:
@@ -330,6 +345,28 @@ public:
             TValue* value = &it->second;
             predicate((const void*)key, (void*)value);
         }
+    }
+
+    virtual std::string KeyToString(void* base, const void* k) override
+    {
+        map_type* map = (map_type*)AsVoidPointer(base);
+        const TKey* key = (const TKey*)k;
+
+        return RTTI::ToString<TKey>(*key);
+    }
+
+    virtual std::string ValueToString(void* base, const void* k) override
+    {
+        map_type* map = (map_type*)AsVoidPointer(base);
+        const TKey* key = (const TKey*)k;
+
+        auto it = map->find(*key);
+        if (it != map->end())
+        {
+            return RTTI::ToString(it->second);
+        }
+
+        return "";
     }
 
 public:

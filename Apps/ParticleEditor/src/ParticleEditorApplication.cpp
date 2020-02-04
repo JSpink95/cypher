@@ -25,6 +25,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Serialise/Serialiser.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Window.h"
 #include "Render/Utility/MeshLibrary.h"
 #include "Render/Utility/MaterialLibrary.h"
@@ -249,13 +253,14 @@ RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
-Ref<GameObject> CreateDefaultParticleEffect(const std::string& id, u32 number)
+Ref<Object> CreateDefaultParticleEffect(const std::string& id, u32 number)
 {
-    Ref<GameObject> effect = CreateObject<GameObject>(ObjectId::Create(id + "-" + std::to_string(number)));
+    Ref<Object> effect = CreateObject<Object>(ObjectId::Create(id + "-" + std::to_string(number)));
 
     Ref<ParticleSystemComponent> system = effect->CreateComponent<ParticleSystemComponent>("ParticleSystem");
     system->SetEmissionRate(0.005f);
     system->SetMaxParticlesAlive(1024);
+    system->tickFunction.enabled = true;
     
     Ref<ParticlePointEmitter> emitter = system->GetEmissionStage()->PushOutput<ParticlePointEmitter>();
     emitter->point = float3(0.0f);
@@ -294,7 +299,7 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    window->SetWindowPosition(int2(-1920, 200));
+    //window->SetWindowPosition(int2(-1920, 200));
 
     gizmoObject = CreateObject<GameObject>(ObjectId::Create("Gizmo"));
     gizmoObject->transform->position = float3(0.0f, 0.0f, 0.0f);
@@ -308,13 +313,12 @@ void ParticleEditorApplication::OnPostCreate()
     }
 
 	editorController = CreateObject<GameObject>(ObjectId::Create("EditorController"));
-    editorController->SetTickEnabled(true);
 
     Ref<OrbitalCameraComponent> orbitalCamera = editorController->CreateComponent<OrbitalCameraComponent>("OrbitalCamera");
     orbitalCamera->SetAsMainCamera();
 
     Ref<EditorControllerComponent> controller = editorController->CreateComponent<EditorControllerComponent>("EditorController");
-
+    
     Ref<StaticMeshComponent> orbitLocationGizmoMesh = editorController->CreateComponent<StaticMeshComponent>("GizmoMesh");
     orbitLocationGizmoMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\wireframe.xml"));
     orbitLocationGizmoMesh->SetMesh("engine:\\mesh\\wireframe-sphere");
@@ -342,6 +346,9 @@ void ParticleEditorApplication::OnPostCreate()
 
     // create an initial particle system
     AddNewDefaultEffect("particle-system", true);
+
+    Serialise::RTTIObjectToXML(activeParticleSystem, "assets:\\entity\\test.xml");
+    //Ref<Object> object = Deserialise::ObjectFromXML("assets:\\entity\\katana.xml");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -390,7 +397,6 @@ void ParticleEditorApplication::OnImGuiRender()
 void ParticleEditorApplication::AddNewDefaultEffect(const std::string& id, bool makeActive/* = false*/, const float3& atLocation/* = float3(0.0f)*/)
 {
     Ref<Object> effect = CreateDefaultParticleEffect(id, editableParticleSystems.size());
-    effect->SetTickEnabled(true);
 
     Ref<TransformComponent> transform = effect->CreateComponent<TransformComponent>("RootTransform");
     transform->position = atLocation;
