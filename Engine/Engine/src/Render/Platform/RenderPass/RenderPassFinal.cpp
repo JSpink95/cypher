@@ -60,7 +60,6 @@ struct ImageOutput
 //////////////////////////////////////////////////////////////////////////
 
 RenderPassFinal::RenderPassFinal()
-    : RenderPassBase(RenderPassFinal::Id)
 {
 
 }

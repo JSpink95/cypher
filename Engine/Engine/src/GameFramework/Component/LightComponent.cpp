@@ -19,7 +19,7 @@
 
 RTTI_BEGIN_WITH_BASE(LightComponent, TransformComponent)
     RTTI_PROPERTY(LightComponent, f32, radius)
-    RTTI_PROPERTY(LightComponent, float3, color)
+    RTTI_PROPERTY(LightComponent, float3, color, Color=true)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////

@@ -104,3 +104,16 @@ TypeBase* TypeRegister::GetRegisteredTypeImpl(const std::string& typeName)
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+void TypeRegister::GetRegisteredTypesOfBaseImpl(const std::string& baseTypeName, std::vector<TypeBase*>& outTypes)
+{
+    for (auto& it : types)
+    {
+        if (it.second && it.second->IsTypeOf(baseTypeName))
+        {
+            outTypes.push_back(it.second);
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////

@@ -70,6 +70,7 @@ public:
     virtual void Deserialise(const std::ifstream& input) {}
 
 public:
+    void AddComponent(Ref<Component> component);
     void SetTickEnabled(const bool enabled);
 
 public:

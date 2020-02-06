@@ -367,7 +367,8 @@ namespace RTTI
         std::vector<std::string> materials;
         MaterialLibrary::GetMaterialNames(materials);
 
-        s32 index = std::distance(materials.begin(), std::find(materials.begin(), materials.end(), editable->GetPath()));
+        const std::string path = editable ? editable->GetPath() : "";
+        s32 index = std::distance(materials.begin(), std::find(materials.begin(), materials.end(), path));
         const bool changed = ImGui::Combo(id.c_str(), &index, ImGui::VectorStringGetter, &materials, materials.size());
 
         if (changed)
@@ -388,7 +389,6 @@ namespace RTTI
         MeshLibrary::GetMeshNames(meshes);
 
         const std::string name = editable ? editable->GetFilePath() : "";
-
         s32 index = std::distance(meshes.begin(), std::find(meshes.begin(), meshes.end(), name));
         const bool changed = ImGui::Combo(id.c_str(), &index, ImGui::VectorStringGetter, &meshes, meshes.size());
 

@@ -108,6 +108,13 @@ void Object::OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride/
 
 //////////////////////////////////////////////////////////////////////////
 
+void Object::AddComponent(Ref<Component> component)
+{
+    components.emplace(component->GetId(), component);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void Object::SetTickEnabled(const bool enabled)
 {
     tickFunction.enabled = enabled;

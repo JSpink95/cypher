@@ -51,7 +51,6 @@ struct SsaoInput
 //////////////////////////////////////////////////////////////////////////
 
 RenderPassSSAO::RenderPassSSAO()
-    : RenderPassBase(RenderPassSSAO::Id)
 {
 
 }

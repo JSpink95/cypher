@@ -29,7 +29,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 RenderPassParticle::RenderPassParticle()
-    : RenderPassBase(RenderPassParticle::Id)
 {
 
 }

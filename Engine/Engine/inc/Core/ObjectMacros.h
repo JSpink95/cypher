@@ -36,7 +36,9 @@ public: virtual inline const std::string& GetTypeName()                         
 public: virtual inline const u32& GetByteSize()                                 \
 {                                                                               \
     return sizeof(Class);                                                       \
-}
+}                                                                               \
+private: static inline Ref<Class> iaresource = std::make_shared<Class>();
+//private: Class(){}                                                              \
 
 ////////////////////////////////////////////////////////////////////////////
 

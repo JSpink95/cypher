@@ -145,10 +145,24 @@ public:
         return nullptr;
     }
 
+    static inline void GetRegisteredTypesOfBase(const std::string& baseTypeName, std::vector<TypeBase*>& types)
+    {
+        if (Ref<TypeRegister> tr = TypeRegister::Get())
+        {
+            return tr->GetRegisteredTypesOfBaseImpl(baseTypeName, types);
+        }
+    }
+
     template<typename T>
     static inline Type<T>* GetRegisteredType()
     {
         return dynamic_cast<Type<T>*>(GetRegisteredType(Type<T>::TypeName));
+    }
+
+    template<typename T>
+    static inline void GetRegisteredTypesOfBase(std::vector<TypeBase*>& types)
+    {
+        GetRegisteredTypesOfBase(Type<T>::TypeName, types);
     }
 
 private:
@@ -156,6 +170,7 @@ private:
     bool IsRegisteredTypeImpl(const std::string& typeName);
     bool IsRegisteredTypeOfImpl(const std::string& typeName, ClassId classId);
     TypeBase* GetRegisteredTypeImpl(const std::string& typeName);
+    void GetRegisteredTypesOfBaseImpl(const std::string& baseTypeName, std::vector<TypeBase*>& types);
 
 private:
     std::unordered_map<std::string, TypeBase*> types;

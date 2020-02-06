@@ -43,6 +43,12 @@ void RenderPassManager::InitialiseImpl()
     passes.emplace(RenderPassFinal::Id, std::make_shared<RenderPassFinal>());
 
     SortPasses();
+
+    for (auto& it : passes)
+    {
+        it.second->OnRenderCreate();
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////

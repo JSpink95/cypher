@@ -34,7 +34,6 @@ static const f32 ShadowProjectionSize = 20.0f;
 //////////////////////////////////////////////////////////////////////////
 
 RenderPassShadow::RenderPassShadow()
-    : RenderPassBase(RenderPassShadow::Id)
 {
 
 }
