@@ -41,7 +41,7 @@ public:
     virtual void ExecuteTick(const f32 dt) override;
 
 public:
-    Component* component;
+    Component* component = nullptr;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,8 @@ public:
 public:
     inline Object* GetOwner() const { return owner; }
     inline void SetOwner(Object* newOwner) { owner = newOwner; }
+
+    void SetTickEnabled(const bool enabled);
 
 protected:
     Object* owner = nullptr;

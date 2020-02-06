@@ -318,7 +318,8 @@ void ParticleEditorApplication::OnPostCreate()
     orbitalCamera->SetAsMainCamera();
 
     Ref<EditorControllerComponent> controller = editorController->CreateComponent<EditorControllerComponent>("EditorController");
-    
+    controller->SetTickEnabled(true);
+
     Ref<StaticMeshComponent> orbitLocationGizmoMesh = editorController->CreateComponent<StaticMeshComponent>("GizmoMesh");
     orbitLocationGizmoMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\wireframe.xml"));
     orbitLocationGizmoMesh->SetMesh("engine:\\mesh\\wireframe-sphere");
@@ -345,10 +346,17 @@ void ParticleEditorApplication::OnPostCreate()
     RTTI::SaveObjectToBinary(gridObject, "assets:\\test.asset");
 
     // create an initial particle system
-    AddNewDefaultEffect("particle-system", true);
+    //AddNewDefaultEffect("particle-system", true);
 
-    Serialise::RTTIObjectToXML(activeParticleSystem, "assets:\\entity\\test.xml");
-    //Ref<Object> object = Deserialise::ObjectFromXML("assets:\\entity\\katana.xml");
+    activeParticleSystem = Deserialise::ObjectFromXML("assets:\\entity\\test.xml");
+
+    editableParticleSystems.push_back(activeParticleSystem);
+    RenderPassManager::GetPassAsType<RenderPassParticle>(RenderPassParticle::Id)->AddObjectToPass(activeParticleSystem.get());
+
+    //std::unordered_map<ComponentId, Ref<Component>> components;
+
+    //Serialise::RTTIObjectToXML(activeParticleSystem, "assets:\\entity\\test.xml");
+    //Ref<Object> loaded = Deserialise::ObjectFromXML("assets:\\entity\\test.xml");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -396,7 +404,7 @@ void ParticleEditorApplication::OnImGuiRender()
 
 void ParticleEditorApplication::AddNewDefaultEffect(const std::string& id, bool makeActive/* = false*/, const float3& atLocation/* = float3(0.0f)*/)
 {
-    Ref<Object> effect = CreateDefaultParticleEffect(id, editableParticleSystems.size());
+    Ref<Object> effect = Deserialise::ObjectFromXML("assets:\\entity\\test.xml");
 
     Ref<TransformComponent> transform = effect->CreateComponent<TransformComponent>("RootTransform");
     transform->position = atLocation;

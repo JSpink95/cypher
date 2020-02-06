@@ -78,7 +78,7 @@ namespace RTTI
         //while (ss >> result);
 
         std::string number;
-        for (s32 idx = 0; idx < value.length(); ++idx)
+        for (size_t idx = 0; idx < value.length(); ++idx)
         {
             const char digit = value.at(idx);
             if (digit == ',')
@@ -211,12 +211,12 @@ namespace ImGui
     bool VectorStringGetter(void* data, s32 index, const char** outText)
     {
         std::vector<std::string>& strings = *static_cast<std::vector<std::string>*>(data);
-        if (index >= strings.size())
+        if (index >= (s32)strings.size())
         {
             return false;
         }
 
-        *outText = strings.at(index).c_str();
+        *outText = strings.at((size_t)index).c_str();
         return true;
     }
 
@@ -537,6 +537,22 @@ namespace RTTI
     }
 
     //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<ObjectId>(const std::string& value, ObjectId& editable)
+    {
+        editable = ObjectId::Create(value);
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> bool SetValue<ComponentId>(const std::string& value, ComponentId& editable)
+    {
+        editable = ComponentId::Create(value);
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -572,7 +588,7 @@ bool PropertyBase::IsRefType() const
 void* PropertyBase::AsVoidPointer(void* base)
 {
     char* bytes = (reinterpret_cast<char*>(base) + offset);
-    return (void*)bytes;
+    return reinterpret_cast<void*>(bytes);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -580,7 +596,7 @@ void* PropertyBase::AsVoidPointer(void* base)
 const void* PropertyBase::AsVoidPointer(void* base) const
 {
     const char* bytes = (reinterpret_cast<const char*>(base) + offset);
-    return (const void*)bytes;
+    return reinterpret_cast<const void*>(bytes);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -595,7 +611,7 @@ TypeBase* PropertyBase::GetType()
 RTTIObject* PropertyBase::AsRTTIObject(void* base)
 {
     char* bytes = (reinterpret_cast<char*>(base) + offset);
-    return (RTTIObject*)bytes;
+    return reinterpret_cast<RTTIObject*>(bytes);
 }
 
 //////////////////////////////////////////////////////////////////////////

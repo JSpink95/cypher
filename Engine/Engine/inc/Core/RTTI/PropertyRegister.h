@@ -71,6 +71,8 @@ namespace RTTI
     template<> bool SetValue<std::string>(const std::string& value, std::string& editable);
     template<> bool SetValue<Ref<Material>>(const std::string& value, Ref<Material>& editable);
     template<> bool SetValue<Ref<Mesh>>(const std::string& value, Ref<Mesh>& editable);
+    template<> bool SetValue<ObjectId>(const std::string& value, ObjectId& editable);
+    template<> bool SetValue<ComponentId>(const std::string& value, ComponentId& editable);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -118,17 +120,31 @@ public:
     virtual bool IsRTTIObjectProperty() const;
     virtual bool IsListProperty() const;
     virtual bool IsMapProperty() const;
-
     virtual bool IsRefType() const;
 
+public:
     void* AsVoidPointer(void* base);
     const void* AsVoidPointer(void* base) const;
-
-    TypeBase* GetType();
     RTTIObject* AsRTTIObject(void* base);
+
+    template<typename T> inline T* AsType(void* base)
+    {
+        char* bytes = reinterpret_cast<char*>(base) + offset;
+        return reinterpret_cast<T*>(bytes);
+    }
+
+    template<typename T> inline const T* AsType(void* base) const
+    {
+        char* bytes = reinterpret_cast<char*>(base) + offset;
+        return reinterpret_cast<const T*>(bytes);
+    }
+
+public:
+    TypeBase* GetType();
 
 public:
     virtual std::string ToString(void* base) = 0;
+    virtual void SetValue(void* base, void* data) = 0;
     virtual void SetValue(void* base, const std::string& value) = 0;
     virtual bool DisplayEditBox(void* base) = 0;
 
@@ -164,8 +180,22 @@ public:
 
 public:
     virtual size_t Count(void* base) const = 0;
+    virtual void AddValue(void* base, void* data) = 0;
+    virtual void AddValue(void* base, const std::string& value) = 0;
     virtual void ForEachItem(void* base, ListIteratorFunction predicate) = 0;
     virtual std::string ValueToString(void* base, const s32 index) = 0;
+
+public:
+
+    virtual inline void SetValue(void* base, void* data) override final
+    {
+        printf("[Property_ListBase::SetValue(void*,void*)] - Not implemented.\n");
+    }
+
+    virtual inline void SetValue(void* base, const std::string& value) override final
+    {
+        printf("[Property_ListBase::SetValue(void*,const std::string&)] - Not implemented.\n");
+    }
 
 public:
     const std::string valueTypeName;
@@ -202,10 +232,26 @@ public:
     TypeBase* GetValueType();
 
 public:
+    virtual const void* CreateKeyFromString(void* base, const std::string& key) = 0;
+    virtual void EmplaceValue(void* base, const void* key, void* value) = 0;
+    virtual void EmplaceValueFromString(void* base, const void* key, const std::string& value) = 0;
+
     virtual size_t Count(void* base) const = 0;
     virtual void ForEachItem(void* base, MapIteratorFunction predicate) = 0;
     virtual std::string KeyToString(void* base, const void* k) = 0;
     virtual std::string ValueToString(void* base, const void* k) = 0;
+
+public:
+
+    virtual inline void SetValue(void* base, void* data) override final
+    {
+        printf("[Property_MapBase::SetValue(void*,void*)] - Not implemented.\n");
+    }
+
+    virtual inline void SetValue(void* base, const std::string& value) override final
+    {
+        printf("[Property_MapBase::SetValue(void*,const std::string&)] - Not implemented.\n");
+    }
 
 public:
     const std::string keyTypeName;
@@ -228,19 +274,26 @@ public:
 
     virtual std::string ToString(void* base) override
     {
-        T& editable = *(T*)(reinterpret_cast<char*>(base) + offset);
+        T& editable = *AsType<T>(base);
         return RTTI::ToString<T>(editable);
     }
 
-    virtual void SetValue(void* base, const std::string& value)
+    virtual void SetValue(void* base, void* data) override
     {
-        T& editable = *(T*)(reinterpret_cast<char*>(base) + offset);
+        T& editable = *AsType<T>(base);
+        editable = *reinterpret_cast<T*>(data);
+    }
+
+    virtual void SetValue(void* base, const std::string& value) override
+    {
+        T& editable = *AsType<T>(base);
         RTTI::SetValue<T>(value, editable);
     }
 
     virtual bool DisplayEditBox(void* base) override
     {
-        return RTTI::DisplayEditBox<T>(base, this, propertyName, *(T*)AsVoidPointer(base));
+        T& editable = *AsType<T>(base);
+        return RTTI::DisplayEditBox<T>(base, this, propertyName, editable);
     }
 };
 
@@ -263,13 +316,28 @@ public:
 
     virtual size_t Count(void* base) const override
     {
-        const list_type* list = (const list_type*)AsVoidPointer(base);
+        const list_type* list = AsType<list_type>(base);
         return list->size();
+    }
+
+    virtual void AddValue(void* base, void* data) override
+    {
+        list_type* list = AsType<list_type>(base);
+        list->push_back(*reinterpret_cast<TValue*>(data));
+    }
+
+    virtual void AddValue(void* base, const std::string& value) override
+    {
+        TValue v;
+        RTTI::SetValue<TValue>(value, v);
+
+        list_type* list = AsType<list_type>(base);
+        list->push_back(v);
     }
 
     virtual void ForEachItem(void* base, ListIteratorFunction predicate) override
     {
-        list_type* list = (list_type*)AsVoidPointer(base);
+        list_type* list = AsType<list_type>(base);
         for (size_t index = 0; index < list->size(); ++index)
         {
             TValue* value = &list->at(index);
@@ -279,7 +347,7 @@ public:
     
     virtual std::string ValueToString(void* base, const s32 index) override
     {
-        list_type* list = (list_type*)AsVoidPointer(base);
+        list_type* list = AsType<list_type>(base);
         if (index < 0 || index >= list->size())
             return "out of bounds";
 
@@ -297,16 +365,12 @@ public:
         return "todo";
     }
 
-    virtual void SetValue(void* base, const std::string& value)
-    {
-        //T& editable = *(T*)(reinterpret_cast<char*>(base) + offset);
-        //RTTI::SetValue<T>(value, editable);
-    }
-
     virtual bool DisplayEditBox(void* base) override
     {
         const bool valueTypeIsRef = RTTI::IsRefType(valueTypeName);
         const bool isRTTIObjectType = TypeRegister::IsRegisteredType(RTTI::TrimRefModifier(valueTypeName));
+
+        // #todo - implement list edit
 
         return false;
     }
@@ -330,35 +394,73 @@ public:
     virtual ~Property_Map() {}
 
 public:
+    virtual const void* CreateKeyFromString(void* base, const std::string& key) override
+    {
+        map_type* map = AsType<map_type>(base);
+
+        TKey newKey;
+        RTTI::SetValue<TKey>(key, newKey);
+
+        auto it = map->emplace(newKey, TValue()).first;
+        return reinterpret_cast<const void*>(&it->first);
+    }
+
+    virtual void EmplaceValue(void* base, const void* key, void* value) override
+    {
+        map_type* map = AsType<map_type>(base);
+        const TKey* k = reinterpret_cast<const TKey*>(key);
+
+        auto it = map->find(*k);
+        if (it != map->end())
+        {
+            it->second = *reinterpret_cast<TValue*>(value);
+        }
+    }
+    
+    virtual void EmplaceValueFromString(void* base, const void* key, const std::string& value)
+    {
+        map_type* map = AsType<map_type>(base);
+        const TKey* k = reinterpret_cast<const TKey*>(key);
+
+        auto it = map->find(*k);
+        if (it != map->end())
+        {
+            TValue v;
+            RTTI::SetValue<TValue>(value, v);
+
+            it->second = v;
+        }
+    }
+
     virtual size_t Count(void* base) const override
     {
-        map_type* map = (map_type*)AsVoidPointer(base);
+        const map_type* map = AsType<map_type>(base);
         return map->size();
     }
 
     virtual void ForEachItem(void* base, MapIteratorFunction predicate) override
     {
-        map_type* map = (map_type*)AsVoidPointer(base);
+        map_type* map = AsType<map_type>(base);
         for (auto it = map->begin(); it != map->end(); ++it)
         {
             const TKey* key = &it->first;
             TValue* value = &it->second;
-            predicate((const void*)key, (void*)value);
+            predicate(reinterpret_cast<const void*>(key), reinterpret_cast<void*>(value));
         }
     }
 
     virtual std::string KeyToString(void* base, const void* k) override
     {
-        map_type* map = (map_type*)AsVoidPointer(base);
-        const TKey* key = (const TKey*)k;
+        map_type* map = AsType<map_type>(base);
+        const TKey* key = reinterpret_cast<const TKey*>(k);
 
         return RTTI::ToString<TKey>(*key);
     }
 
     virtual std::string ValueToString(void* base, const void* k) override
     {
-        map_type* map = (map_type*)AsVoidPointer(base);
-        const TKey* key = (const TKey*)k;
+        map_type* map = AsType<map_type>(base);
+        const TKey* key = reinterpret_cast<const TKey*>(k);
 
         auto it = map->find(*key);
         if (it != map->end())
@@ -378,12 +480,6 @@ public:
     virtual std::string ToString(void* base) override
     {
         return "todo";
-    }
-
-    virtual void SetValue(void* base, const std::string& value)
-    {
-        //T& editable = *(T*)(reinterpret_cast<char*>(base) + offset);
-        //RTTI::SetValue<T>(value, editable);
     }
 
     virtual bool DisplayEditBox(void* base) override

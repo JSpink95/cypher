@@ -63,10 +63,21 @@ public:
         return ComponentId(ownerId, id);
     }
 
+    static inline ComponentId Create(const std::string& id)
+    {
+        return ComponentId(id);
+    }
+
 public:
     ComponentId() {}
 
 private:
+    ComponentId(const std::string& id)
+        : HashedString(id)
+    {
+
+    }
+
     ComponentId(const ObjectId& ownerId, const std::string& id)
         : HashedString(ownerId.GetStringId() + ":" + id)
     {

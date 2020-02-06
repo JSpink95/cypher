@@ -129,6 +129,13 @@ RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
+ParticleEmissionStage::ParticleEmissionStage()
+{
+    processes = {};
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void ParticleEmissionStage::AddOutput(Ref<ParticleProcess> process)
 {
     if (Ref<ParticleEmissionProcess> emissionProcess = std::dynamic_pointer_cast<ParticleEmissionProcess>(process))
@@ -148,6 +155,13 @@ void ParticleEmissionStage::Initialise(Particle& particle)
             process->Initialise(particle);
         }
     }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+ParticleUpdateStage::ParticleUpdateStage()
+{
+    processes = {};
 }
 
 //////////////////////////////////////////////////////////////////////////

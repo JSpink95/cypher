@@ -71,6 +71,13 @@ void Component::OnTick(const f32 dt)
 
 //////////////////////////////////////////////////////////////////////////
 
+void Component::SetTickEnabled(const bool enabled)
+{
+    tickFunction.enabled = enabled;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 const std::string Component::GetInstanceName() const
 {
     std::string fullname = id.GetStringId();

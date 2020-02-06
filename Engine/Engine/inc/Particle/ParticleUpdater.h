@@ -87,9 +87,10 @@ class ParticleEmissionStage: public ParticleStage
 {
     DECLARE_DERIVED(ParticleEmissionStage, ParticleStage)
 public:
-    void Initialise(Particle& particle);
+    ParticleEmissionStage();
 
 public:
+    void Initialise(Particle& particle);
     virtual void AddOutput(Ref<ParticleProcess> process) override;
 
 public:
@@ -102,9 +103,10 @@ class ParticleUpdateStage: public ParticleStage
 {
     DECLARE_DERIVED(ParticleUpdateStage, ParticleStage)
 public:
-    void Update(const f32 dt, Particle& particle);
+    ParticleUpdateStage();
 
 public:
+    void Update(const f32 dt, Particle& particle);
     virtual void AddOutput(Ref<ParticleProcess> process) override;
 
 public:

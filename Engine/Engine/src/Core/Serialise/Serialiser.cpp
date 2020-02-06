@@ -249,6 +249,7 @@ void Deserialise_RTTIObjectFromXmlNode(TypeBase* type, RTTIObject* base, pugi::x
         {
             const std::string name = node.attribute("name").as_string();
             PropertyBase* prop = type->FindProperty(name);
+
             if (prop == nullptr)
             {
 #ifdef DEBUG
@@ -258,33 +259,123 @@ void Deserialise_RTTIObjectFromXmlNode(TypeBase* type, RTTIObject* base, pugi::x
                 continue;
             }
 
-            if (prop->IsRTTIObjectProperty())
+            if (prop->IsMapProperty())
             {
-                TypeBase* propertyType = prop->GetType();
-                if (prop->IsRefType())
+                Property_MapBase* propMap = (Property_MapBase*)prop;
+
+                const bool isValueRttiObject = propMap->IsValueRTTIObjectType();
+                const bool isValueRefType = propMap->IsValueRefType();
+
+                for (pugi::xml_node item : node)
                 {
-                    RTTIObject* object = ((Ref<RTTIObject>*)prop->AsVoidPointer(base))->get();
-                    Deserialise_RTTIObjectFromXmlNode(propertyType, object, node);
-                }
-                else
-                {
-                    RTTIObject* object = prop->AsRTTIObject(base);
-                    Deserialise_RTTIObjectFromXmlNode(propertyType, object, node);
-                }
-            }
-            else if (prop->IsMapProperty())
-            {
+                    const std::string key = item.attribute("key").as_string();
+                    const std::string itemTypeName = item.attribute("type").as_string();
+
+                    TypeBase* itemType = TypeRegister::GetRegisteredType(itemTypeName);
+                    if (itemType == nullptr)
+                    {
 #ifdef DEBUG
-                Console::SetTextColor(Console::BrightWhite);
-                Console::Write("[%s] map property not supported yet %s!\n", FUNCTION_TRACE, name.c_str());
+                        Console::SetTextColor(Console::Red);
+                        Console::Write("[%s] type doesn't exist %s!\n", FUNCTION_TRACE, itemTypeName.c_str());
 #endif
+                        continue;
+                    }
+
+                    const void* createdKey = propMap->CreateKeyFromString(base, key);
+
+                    if (isValueRttiObject)
+                    {
+                        RTTIObject* object = (RTTIObject*)itemType->New();
+                        Deserialise_RTTIObjectFromXmlNode(itemType, object, item);
+
+                        if (isValueRefType)
+                        {
+                            Ref<RTTIObject> managedObject;
+                            managedObject.reset(object);
+
+                            propMap->EmplaceValue(base, createdKey, &managedObject);
+                        }
+                        else
+                        {
+                            propMap->EmplaceValue(base, createdKey, object);
+                        }
+                    }
+                    else
+                    {
+                        const std::string value = item.attribute("value").as_string();
+                        propMap->EmplaceValueFromString(base, createdKey, value);
+                    }
+
+                }
             }
             else if (prop->IsListProperty())
             {
+                Property_ListBase* propList = (Property_ListBase*)prop;
+                const bool isValueRttiObject = propList->IsValueRTTIObjectType();
+                const bool isValueRefType = propList->IsValueRefType();
+
+                for (pugi::xml_node item : node)
+                {
+                    const std::string itemTypeName = item.attribute("type").as_string();
+
+                    TypeBase* itemType = TypeRegister::GetRegisteredType(itemTypeName);
+                    if (itemType == nullptr)
+                    {
 #ifdef DEBUG
-                Console::SetTextColor(Console::BrightWhite);
+                        Console::SetTextColor(Console::Red);
+                        Console::Write("[%s] type doesn't exist %s!\n", FUNCTION_TRACE, itemTypeName.c_str());
+#endif
+                        continue;
+                    }
+
+
+                    if (isValueRttiObject)
+                    {
+                        RTTIObject* object = (RTTIObject*)itemType->New();
+                        Deserialise_RTTIObjectFromXmlNode(itemType, object, item);
+
+                        if (isValueRefType)
+                        {
+                            Ref<RTTIObject> managedObject;
+                            managedObject.reset(object);
+
+                            propList->AddValue(base, &managedObject);
+                        }
+                        else
+                        {
+                            propList->AddValue(base, object);
+                        }
+                    }
+                    else
+                    {
+                        const std::string value = item.attribute("value").as_string();
+                        propList->AddValue(base, value);
+                    }
+                }
+#ifdef DEBUG
+                Console::SetTextColor(Console::LightYellow);
                 Console::Write("[%s] list property not supported yet %s!\n", FUNCTION_TRACE, name.c_str());
 #endif
+            }
+            else if (prop->IsRTTIObjectProperty())
+            {
+                const std::string finalType = node.attribute("type").as_string("primitive");
+                TypeBase* propertyType = finalType != "primitive" ? TypeRegister::GetRegisteredType(finalType) : prop->GetType();
+
+                RTTIObject* object = (RTTIObject*)propertyType->New();
+                Deserialise_RTTIObjectFromXmlNode(propertyType, object, node);
+
+                if (prop->IsRefType())
+                {
+                    Ref<RTTIObject> managedObject;
+                    managedObject.reset(object);
+
+                    prop->SetValue(base, &managedObject);
+                }
+                else
+                {
+                    prop->SetValue(base, object);
+                }
             }
             else
             {
@@ -346,7 +437,11 @@ Ref<RTTIObject> Deserialise::RTTIObjectFromXML(const std::string& filepath)
 
 Ref<Object> Deserialise::ObjectFromXML(const std::string& filepath)
 {
-    return std::dynamic_pointer_cast<Object>(RTTIObjectFromXML(filepath));
+    Ref<Object> object = std::dynamic_pointer_cast<Object>(RTTIObjectFromXML(filepath));
+
+    object->OnConstruct();
+
+    return object;
 }
 
 //////////////////////////////////////////////////////////////////////////

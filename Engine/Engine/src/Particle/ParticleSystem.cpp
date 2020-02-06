@@ -64,6 +64,9 @@ struct UniformBufferParticleExtra
 ParticleSystemComponent::ParticleSystemComponent()
 {
     parentTransform.componentName = "RootTransform";
+
+    updateStage = std::make_shared<ParticleUpdateStage>();
+    emissionStage = std::make_shared<ParticleEmissionStage>();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -73,10 +76,6 @@ void ParticleSystemComponent::OnConstruct()
     Super::OnConstruct();
 
     GetGameThread()->PushThreadTask(this, &ParticleSystemComponent::RenderTask_InitialiseParticleMesh);
-
-    updateStage = std::make_shared<ParticleUpdateStage>();
-    emissionStage = std::make_shared<ParticleEmissionStage>();
-    material = MaterialLibrary::GetMaterial("assets:\\materials\\particle-default.xml");    // load the default material
 }
 
 //////////////////////////////////////////////////////////////////////////
