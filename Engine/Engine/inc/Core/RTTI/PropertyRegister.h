@@ -8,11 +8,20 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include "Core/RTTI/TypeRegister.h"
 #include "Core/TypeId.h"
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/RTTI/TypeRegister.h"
+#include "Core/RTTI/RTTIEditorHelpers.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "imgui.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
 #include <functional>
 
 //////////////////////////////////////////////////////////////////////////
@@ -32,23 +41,16 @@ namespace RTTI
     std::string TrimRefModifier(const std::string& typeName);
 
     template<typename T>
-    bool DisplayEditBox(void* owner, PropertyBase* prop, const std::string& id, T& value) { return false; }
+    std::string ToString(const T& value)
+    {
+        return "not implemented";
+    }
 
     template<typename T>
-    std::string ToString(const T& value) { return "not implemented"; }
-
-    template<typename T>
-    bool SetValue(const std::string& value, T& editable) { return false; }
-
-    // forward declare concrete implementations - DisplayEditBox
-    template<> bool DisplayEditBox<bool>(void* owner, PropertyBase* prop, const std::string& id, bool& editable);
-    template<> bool DisplayEditBox<s32>(void* owner, PropertyBase* prop, const std::string& id, s32& editable);
-    template<> bool DisplayEditBox<f32>(void* owner, PropertyBase* prop, const std::string& id, f32& editable);
-    template<> bool DisplayEditBox<float2>(void* owner, PropertyBase* prop, const std::string& id, float2& editable);
-    template<> bool DisplayEditBox<float3>(void* owner, PropertyBase* prop, const std::string& id, float3& editable);
-    template<> bool DisplayEditBox<std::string>(void* owner, PropertyBase* prop, const std::string& id, std::string& editable);
-    template<> bool DisplayEditBox<Ref<Material>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Material>& editable);
-    template<> bool DisplayEditBox<Ref<Mesh>>(void* owner, PropertyBase* prop, const std::string& id, Ref<Mesh>& editable);
+    bool SetValue(const std::string& value, T& editable)
+    {
+        return false;
+    }
 
     // forward declare concrete implementations - ToString
     template<> std::string ToString<bool>(const bool& value);
@@ -146,7 +148,7 @@ public:
     virtual std::string ToString(void* base) = 0;
     virtual void SetValue(void* base, void* data) = 0;
     virtual void SetValue(void* base, const std::string& value) = 0;
-    virtual bool DisplayEditBox(void* base) = 0;
+    virtual void DisplayEdit(void* base) = 0;
 
 public:
     const size_t offset;
@@ -290,10 +292,21 @@ public:
         RTTI::SetValue<T>(value, editable);
     }
 
-    virtual bool DisplayEditBox(void* base) override
+    virtual void DisplayEdit(void* base) override
     {
-        T& editable = *AsType<T>(base);
-        return RTTI::DisplayEditBox<T>(base, this, propertyName, editable);
+        if (IsRTTIObjectProperty() && IsRefType())
+        {
+            Ref<RTTIObject>* object = AsType<Ref<RTTIObject>>(base);
+            if (object != nullptr)
+            {
+                RTTI::DisplayEdit<Ref<RTTIObject>>(propertyName, *object);
+            }
+        }
+        else
+        {
+            T& editable = *AsType<T>(base);
+            RTTI::DisplayEdit<T>(propertyName, editable);
+        }
     }
 };
 
@@ -365,15 +378,17 @@ public:
         return "todo";
     }
 
-    virtual bool DisplayEditBox(void* base) override
+    virtual void DisplayEdit(void* base) override
     {
         const bool valueTypeIsRef = RTTI::IsRefType(valueTypeName);
         const bool isRTTIObjectType = TypeRegister::IsRegisteredType(RTTI::TrimRefModifier(valueTypeName));
 
-        // #todo - implement list edit
-
-        return false;
+        list_type* list = AsType<list_type>(base);
+        RTTI::DisplayListEdit<TList, TValue>(propertyName.c_str(), *list, selected);
     }
+
+private:
+    s32 selected = -1;
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -482,10 +497,9 @@ public:
         return "todo";
     }
 
-    virtual bool DisplayEditBox(void* base) override
+    virtual void DisplayEdit(void* base) override
     {
-        const bool isRTTIObjectType = TypeRegister::IsRegisteredType(valueTypeName);
-        return false;
+
     }
 };
 

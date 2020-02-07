@@ -30,7 +30,8 @@ void EntityEditorApplication::OnPostCreate()
 {
     Application::OnPostCreate();
 
-    window->SetWindowPosition(int2(1920, 200));
+    window->Recentre();
+    //window->SetWindowPosition(int2(1920, 200));
 
     entity = CreateObject<Object>(ObjectId::Create("entity"));
 
@@ -119,7 +120,7 @@ void EntityEditorApplication::OnImGuiRender()
                     {
                         for (TypeBase::property_iterator it = type->property_begin(); it != type->property_end(); ++it)
                         {
-                            it->second->DisplayEditBox(component.get());
+                            it->second->DisplayEdit(component.get());
                         }
 
                         ImGui::TreePop();
