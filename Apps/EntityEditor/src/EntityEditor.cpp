@@ -14,11 +14,21 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/RTTI/RTTIEditorHelpers.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/Window.h"
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Platform/RenderPass/RenderPassManager.h"
+#include "Render/Platform/RenderPass/RenderPassParticle.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "GameFramework/Component/TransformComponent.h"
+#include "GameFramework/Component/PerspectiveCameraComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -33,9 +43,20 @@ void EntityEditorApplication::OnPostCreate()
     window->Recentre();
     //window->SetWindowPosition(int2(1920, 200));
 
+    controller = CreateObject<Object>(ObjectId::Create("controller"));
+
+    Ref<TransformComponent> controllerTransform = controller->CreateComponent<TransformComponent>("RootTransform");
+    controllerTransform->position = float3(8.0f);
+
+    Ref<PerspectiveCameraComponent> controllerCamera = controller->CreateComponent<PerspectiveCameraComponent>("Camera");
+    controllerCamera->SetTarget(float3(0.0f));
+    controllerCamera->SetAsMainCamera();
+
     entity = CreateObject<Object>(ObjectId::Create("entity"));
 
     Ref<TransformComponent> transform = entity->CreateComponent<TransformComponent>("RootTransform");
+
+    RenderPassManager::GetPassAsType<RenderPassParticle>(RenderPassParticle::Id)->AddObjectToPass(controller.get());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -109,13 +130,15 @@ void EntityEditorApplication::OnImGuiRender()
 
         ImGui::Separator();
 
+        //RTTI::DisplayEdit<Ref<RTTIObject>>("Entity", std::dynamic_pointer_cast<RTTIObject>(entity));
+
         entity->ForEachComponent([](const ComponentId& id, Ref<Component> component) -> void
         {
             if (ImGui::TreeNode(id.GetStringId().c_str()))
             {
                 TypeBase* type = TypeRegister::GetRegisteredType(component->GetTypeName());
                 do {
-                    const bool typeHasProperties = true;
+                    const bool typeHasProperties = type->GetPropertyCount();
                     if (typeHasProperties && ImGui::TreeNode(type->GetTypeName().c_str()))
                     {
                         for (TypeBase::property_iterator it = type->property_begin(); it != type->property_end(); ++it)

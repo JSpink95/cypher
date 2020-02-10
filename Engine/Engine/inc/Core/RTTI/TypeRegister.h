@@ -51,6 +51,7 @@ public:
 public:
     void AddProperty(PropertyBase* newProperty);
     PropertyBase* FindProperty(const std::string& id);
+    size_t GetPropertyCount() const;
 
     TypeBase* GetBaseType() const;
     bool IsTypeOf(const std::string& className) const;

@@ -23,6 +23,7 @@ public:
     virtual void OnImGuiRender() override;
 
 private:
+    Ref<Object> controller;
     Ref<Object> entity;
 };
 

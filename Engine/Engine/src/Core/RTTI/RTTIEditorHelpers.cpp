@@ -184,14 +184,17 @@ namespace RTTI
             TypeBase* type = TypeRegister::GetRegisteredType(editable->GetTypeName());
             while (type != nullptr)
             {
-                if (ImGui::TreeNode(type->GetTypeName().c_str()))
+                if (type->GetPropertyCount() > 0)
                 {
-                    for (TypeBase::property_iterator it = type->property_begin(); it != type->property_end(); ++it)
+                    if (ImGui::TreeNode(type->GetTypeName().c_str()))
                     {
-                        it->second->DisplayEdit(editable.get());
-                    }
+                        for (TypeBase::property_iterator it = type->property_begin(); it != type->property_end(); ++it)
+                        {
+                            it->second->DisplayEdit(editable.get());
+                        }
 
-                    ImGui::TreePop();
+                        ImGui::TreePop();
+                    }
                 }
 
                 type = type->GetBaseType();

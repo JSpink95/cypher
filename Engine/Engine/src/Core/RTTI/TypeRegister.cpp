@@ -44,6 +44,13 @@ PropertyBase* TypeBase::FindProperty(const std::string& id)
 
 //////////////////////////////////////////////////////////////////////////
 
+size_t TypeBase::GetPropertyCount() const
+{
+    return properties.size();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 TypeBase* TypeBase::GetBaseType() const
 {
     return TypeRegister::GetRegisteredType(baseTypeName);
