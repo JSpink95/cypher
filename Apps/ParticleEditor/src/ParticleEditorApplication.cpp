@@ -336,7 +336,6 @@ void ParticleEditorApplication::OnPostCreate()
     lightObject->SetTickEnabled(true);
 
     gridObject = CreateObject<GameObject>(ObjectId::Create("Grid"));
-    RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddObjectToPass(gridObject.get(), false);
 
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
@@ -351,7 +350,6 @@ void ParticleEditorApplication::OnPostCreate()
     activeParticleSystem = Deserialise::ObjectFromXML("assets:\\entity\\test.xml");
 
     editableParticleSystems.push_back(activeParticleSystem);
-    RenderPassManager::GetPassAsType<RenderPassParticle>(RenderPassParticle::Id)->AddObjectToPass(activeParticleSystem.get());
 
     //std::unordered_map<ComponentId, Ref<Component>> components;
 
@@ -410,7 +408,6 @@ void ParticleEditorApplication::AddNewDefaultEffect(const std::string& id, bool 
     transform->position = atLocation;
 
     editableParticleSystems.push_back(effect);
-    RenderPassManager::GetPassAsType<RenderPassParticle>(RenderPassParticle::Id)->AddObjectToPass(effect.get());
 
     if (makeActive)
     {

@@ -84,9 +84,12 @@ void RenderPassParticle::OnPerform()
 {
     Super::OnPerform();
 
-    for (auto& it : objects)
+    for (RenderFunction* function : renderFunctions)
     {
-        it.second->OnRender(RenderPassType::Particle);
+        if (function && function->enabled)
+        {
+            function->ExecuteRender(RenderPassType::Particle, nullptr);
+        }
     }
 }
 
@@ -103,16 +106,16 @@ void RenderPassParticle::OnFinish()
 
 //////////////////////////////////////////////////////////////////////////
 
-void RenderPassParticle::AddObjectToPass(Object* object)
+void RenderPassParticle::AddRenderFunction(RenderFunction* function)
 {
-    objects.emplace(object->GetId(), object);
+    renderFunctions.push_back(function);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-void RenderPassParticle::RemoveObjectFromPass(Object* object)
+void RenderPassParticle::RemoveRenderFunction(RenderFunction* function)
 {
-    objects.erase(object->GetId());
+    renderFunctions.erase(std::remove(renderFunctions.begin(), renderFunctions.end(), function), renderFunctions.end());
 }
 
 //////////////////////////////////////////////////////////////////////////

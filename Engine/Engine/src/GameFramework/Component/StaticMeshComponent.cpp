@@ -25,6 +25,11 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Platform/RenderPass/RenderPassManager.h"
+#include "Render/Platform/RenderPass/RenderPassLit.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 RTTI_BEGIN_WITH_BASE(StaticMeshComponent, TransformComponent)
     RTTI_PROPERTY(StaticMeshComponent, Ref<Material>, material)
     RTTI_PROPERTY(StaticMeshComponent, Ref<Mesh>, mesh)
@@ -35,6 +40,16 @@ RTTI_END()
 StaticMeshComponent::StaticMeshComponent()
 {
     parentTransform.componentName = "RootTransform";
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void StaticMeshComponent::OnConstruct()
+{
+    Super::OnConstruct();
+
+    renderFunction.enabled = true;
+    RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddRenderFunction(&renderFunction, false);
 }
 
 //////////////////////////////////////////////////////////////////////////

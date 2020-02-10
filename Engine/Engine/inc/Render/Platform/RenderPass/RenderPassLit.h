@@ -42,13 +42,13 @@ public:
     virtual void OnFinish() override;
 
 public:
-    void AddObjectToPass(Object* object, bool transparent = false);
-    void RemoveObjectFromPass(Object* object);
+    void AddRenderFunction(RenderFunction* function, bool transparent = false);
+    void RemoveRenderFunction(RenderFunction* function, bool transparent = false);
 
 private:
     Ref<Framebuffer> framebuffer;
-    std::unordered_map<ObjectId, Object*> opaqueObjects;
-    std::unordered_map<ObjectId, Object*> transparentObjects;
+    std::vector<RenderFunction*> opaqueRenderFunctions;
+    std::vector<RenderFunction*> transparentRenderFunctions;
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -61,16 +61,16 @@ private:
     virtual void OnFinish() override;
 
 public:
-    void AddObjectToPass(Object* object);
-    void RemoveObjectFromPass(Object* object);
-    
+    void AddRenderFunction(RenderFunction* function);
+    void RemoveRenderFunction(RenderFunction* function);
+
 public:
     void AddDirectionalLight(const std::string& id, const float3& direction, const f32 distance);
     void GetShadowBufferData(ShadowBufferData& output);
 
 private:
     Ref<Framebuffer> framebuffer;
-    std::unordered_map<ObjectId, Object*> objects;
+    std::vector<RenderFunction*> renderFunctions;
     std::unordered_map<std::string, float3> lights;
 };
 

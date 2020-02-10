@@ -41,7 +41,7 @@ void EntityEditorApplication::OnPostCreate()
     Application::OnPostCreate();
 
     window->Recentre();
-    //window->SetWindowPosition(int2(1920, 200));
+    //window->SetWindowPosition(int2(-1920, 200));
 
     controller = CreateObject<Object>(ObjectId::Create("controller"));
 
@@ -55,8 +55,6 @@ void EntityEditorApplication::OnPostCreate()
     entity = CreateObject<Object>(ObjectId::Create("entity"));
 
     Ref<TransformComponent> transform = entity->CreateComponent<TransformComponent>("RootTransform");
-
-    RenderPassManager::GetPassAsType<RenderPassParticle>(RenderPassParticle::Id)->AddObjectToPass(controller.get());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -123,6 +121,7 @@ void EntityEditorApplication::OnImGuiRender()
             managed.reset(component);
 
             entity->AddComponent(managed);
+            managed->OnConstruct();
 
             delete[] componentIdBuffer;
             componentIdBuffer = new char[32]{ '\0' };

@@ -36,6 +36,18 @@ void ComponentTickFunction::ExecuteTick(const f32 dt)
 
 //////////////////////////////////////////////////////////////////////////
 
+void ComponentRenderFunction::ExecuteRender(RenderPassType::Enum pass, Ref<Material> matOverride/* = nullptr*/)
+{
+    Super::ExecuteRender(pass);
+
+    if (component != nullptr)
+    {
+        component->OnRender(pass, matOverride);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 Component::Component()
 {
 }
@@ -53,6 +65,9 @@ void Component::OnConstruct()
 {
     tickFunction.component = this;
     GameThread::RegisterTickFunction(&tickFunction);
+
+    renderFunction.component = this;
+    // each type of component can be subscribed as needed
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -65,6 +80,13 @@ void Component::OnDestruct()
 //////////////////////////////////////////////////////////////////////////
 
 void Component::OnTick(const f32 dt)
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void Component::OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride/* = nullptr*/)
 {
 
 }

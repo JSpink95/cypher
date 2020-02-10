@@ -94,9 +94,12 @@ void RenderPassShadow::OnPerform()
 
         Renderer::SetViewProjectionMatrix(lightView, lightProjection);
 
-        for (auto& it : objects)
+        for (RenderFunction* function : renderFunctions)
         {
-            it.second->OnRender(RenderPassType::Shadow);
+            if (function && function->enabled)
+            {
+                function->ExecuteRender(RenderPassType::Shadow, nullptr);
+            }
         }
     }
 }
@@ -119,16 +122,16 @@ void RenderPassShadow::OnFinish()
 
 //////////////////////////////////////////////////////////////////////////
 
-void RenderPassShadow::AddObjectToPass(Object* object)
+void RenderPassShadow::AddRenderFunction(RenderFunction* function)
 {
-    objects.emplace(object->GetId(), object);
+    renderFunctions.push_back(function);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-void RenderPassShadow::RemoveObjectFromPass(Object* object)
+void RenderPassShadow::RemoveRenderFunction(RenderFunction* function)
 {
-    objects.erase(object->GetId());
+    renderFunctions.erase(std::remove(renderFunctions.begin(), renderFunctions.end(), function), renderFunctions.end());
 }
 
 //////////////////////////////////////////////////////////////////////////

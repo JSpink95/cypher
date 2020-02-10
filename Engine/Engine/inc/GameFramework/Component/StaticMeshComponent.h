@@ -26,15 +26,16 @@ public:
     virtual ~StaticMeshComponent() {}
 
 public:
+    virtual void OnConstruct() override;
+    virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;
+
+public:
     inline void SetMaterial(Ref<Material> newMaterial) { material = newMaterial; }
     void SetMesh(const std::string& name);
 
 public:
     Ref<Material> material = nullptr;
     Ref<Mesh> mesh;
-
-public:
-    virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;
 
 public:
     static Ref<Component> Create(Ref<Object> object, pugi::xml_node node);

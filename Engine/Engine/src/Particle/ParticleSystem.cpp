@@ -25,7 +25,11 @@
 #include "Render/Platform/ApiManager.h"
 #include "Render/Platform/VertexArray.h"
 #include "Render/Platform/Renderer.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Render/Platform/RenderPass/RenderPassBase.h"
+#include "Render/Platform/RenderPass/RenderPassParticle.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -74,6 +78,11 @@ ParticleSystemComponent::ParticleSystemComponent()
 void ParticleSystemComponent::OnConstruct()
 {
     Super::OnConstruct();
+
+    tickFunction.enabled = true;
+    renderFunction.enabled = true;
+
+    RenderPassManager::GetPassAsType<RenderPassParticle>(RenderPassParticle::Id)->AddRenderFunction(&renderFunction);
 
     GetGameThread()->PushThreadTask(this, &ParticleSystemComponent::RenderTask_InitialiseParticleMesh);
 }

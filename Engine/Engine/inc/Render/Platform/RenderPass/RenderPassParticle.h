@@ -35,12 +35,12 @@ private:
     virtual void OnFinish() override;
 
 public:
-    void AddObjectToPass(Object* object);
-    void RemoveObjectFromPass(Object* object);
+    void AddRenderFunction(RenderFunction* function);
+    void RemoveRenderFunction(RenderFunction* function);
 
 private:
     Ref<Framebuffer> framebuffer;
-    std::unordered_map<ObjectId, Object*> objects;
+    std::vector<RenderFunction*> renderFunctions;
 };
 
 //////////////////////////////////////////////////////////////////////////

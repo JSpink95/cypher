@@ -49,6 +49,18 @@ namespace RenderPassType
 
 //////////////////////////////////////////////////////////////////////////
 
+class RenderFunction: public RTTIObject
+{
+    DECLARE_DERIVED(RenderFunction, RTTIObject)
+public:
+    virtual void ExecuteRender(RenderPassType::Enum pass, Ref<Material> matOverride = nullptr) {}
+
+public:
+    bool enabled = false;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class RenderPassBase: public RTTIObject
 {
     DECLARE_DERIVED(RenderPassBase, RTTIObject)

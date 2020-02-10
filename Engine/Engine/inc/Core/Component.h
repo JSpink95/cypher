@@ -46,6 +46,18 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+class ComponentRenderFunction : public RenderFunction
+{
+    DECLARE_DERIVED(ComponentRenderFunction, RenderFunction)
+public:
+    virtual void ExecuteRender(RenderPassType::Enum pass, Ref<Material> matOverride = nullptr) override;
+
+public:
+    Component* component = nullptr;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class Component
     : public RTTIObject
     , public IPropertyChangedListener
@@ -58,7 +70,7 @@ public:
     virtual void OnConstruct();
     virtual void OnDestruct();
     virtual void OnTick(const f32 dt);
-    virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride = nullptr) {}
+    virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride = nullptr);
 
 public:
     inline Object* GetOwner() const { return owner; }
@@ -80,6 +92,7 @@ public:
 
 public:
     ComponentTickFunction tickFunction;
+    ComponentRenderFunction renderFunction;
 
 private:
     ComponentId id;

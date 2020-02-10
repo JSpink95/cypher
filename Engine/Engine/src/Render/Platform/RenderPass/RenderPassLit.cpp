@@ -73,15 +73,21 @@ void RenderPassLit::OnPerform()
 {
     Super::OnPerform();
 
-    for (auto& it : opaqueObjects)
+    for (RenderFunction* function : opaqueRenderFunctions)
     {
-        it.second->OnRender(RenderPassType::Lit);
+        if (function && function->enabled)
+        {
+            function->ExecuteRender(RenderPassType::Lit, nullptr);
+        }
     }
 
     // #todo - sort transparent objects by distance to camera
-    for (auto& it : transparentObjects)
+    for (RenderFunction* function : transparentRenderFunctions)
     {
-        it.second->OnRender(RenderPassType::Lit);
+        if (function && function->enabled)
+        {
+            function->ExecuteRender(RenderPassType::Lit, nullptr);
+        }
     }
 }
 
@@ -96,38 +102,29 @@ void RenderPassLit::OnFinish()
 
 //////////////////////////////////////////////////////////////////////////
 
-void RenderPassLit::AddObjectToPass(Object* object, bool transparent/* = false*/)
+void RenderPassLit::AddRenderFunction(RenderFunction* function, bool transparent/* = false*/)
 {
     if (transparent)
     {
-        transparentObjects.emplace(object->GetId(), object);
+        transparentRenderFunctions.push_back(function);
     }
     else
     {
-        opaqueObjects.emplace(object->GetId(), object);
+        opaqueRenderFunctions.push_back(function);
     }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-void RenderPassLit::RemoveObjectFromPass(Object* object)
+void RenderPassLit::RemoveRenderFunction(RenderFunction* function, bool transparent/* = false*/)
 {
-    auto removeIfPresent = [](const ObjectId& id, std::unordered_map<ObjectId, Object*>& objects) -> bool
+    static auto removeFromVector = [](std::vector<RenderFunction*>& vector, RenderFunction* function) -> bool
     {
-        auto it = objects.find(id);
-        if (it == objects.end())
-        {
-            return false;
-        }
-
-        objects.erase(id);
+        auto it = vector.erase(std::remove(vector.begin(), vector.end(), function), vector.end());
         return true;
     };
 
-    if (!removeIfPresent(object->GetId(), opaqueObjects))
-    {
-        removeIfPresent(object->GetId(), transparentObjects);
-    }
+    removeFromVector(transparent ? transparentRenderFunctions : opaqueRenderFunctions, function);
 }
 
 //////////////////////////////////////////////////////////////////////////

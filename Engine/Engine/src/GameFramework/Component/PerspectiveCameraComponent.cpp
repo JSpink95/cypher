@@ -72,7 +72,8 @@ void PerspectiveCameraComponent::UpdateCamera()
 {
     if (transform && camera)
     {
-        camera->SetEyeAndDirection(transform->position, target);
+        const float3 direction = (transform->position == target) ? float3(0.0f, 0.0f, 1.0f) : glm::normalize(target - transform->position);
+        camera->SetEyeAndDirection(transform->position, direction);
     }
 }
 

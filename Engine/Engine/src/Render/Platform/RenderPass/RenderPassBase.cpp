@@ -48,6 +48,12 @@ static float2 const shadowFramebufferSize = float2(1024.0f);
 
 //////////////////////////////////////////////////////////////////////////
 
+RTTI_BEGIN_WITH_BASE(RenderFunction, RTTIObject)
+    RTTI_PROPERTY(RenderFunction, bool, enabled)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
 RenderPassBase::RenderPassBase()
 {
 }

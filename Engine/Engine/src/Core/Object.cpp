@@ -102,8 +102,6 @@ void Object::OnPhysicsUpdate(const f32 dt)
 
 void Object::OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride/* = nullptr*/)
 {
-    for (auto component : components)
-        component.second->OnRender(pass, materialOverride);
 }
 
 //////////////////////////////////////////////////////////////////////////
