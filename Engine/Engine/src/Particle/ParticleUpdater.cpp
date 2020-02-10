@@ -69,6 +69,15 @@ RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
+RTTI_BEGIN_WITH_BASE(ParticleLineEmitter, ParticleEmissionProcess)
+    RTTI_PROPERTY(ParticleLineEmitter, float3, start)
+    RTTI_PROPERTY(ParticleLineEmitter, float3, end)
+    RTTI_PROPERTY(ParticleLineEmitter, bool, sequenced)
+    RTTI_PROPERTY(ParticleLineEmitter, s32, maxPoints)
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
 RTTI_BEGIN_WITH_BASE(ParticleSetLifetime, ParticleEmissionProcess)
     RTTI_PROPERTY(ParticleSetLifetime, f32, lifetime)
 RTTI_END()
@@ -206,6 +215,25 @@ void ParticleSphereEmitter::Initialise(Particle& particle)
     );
 
     particle.data.position = r * glm::normalize(d);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void ParticleLineEmitter::Initialise(Particle& particle)
+{
+    if (sequenced)
+    {
+        emittedPoints += 1;
+        emittedPoints %= maxPoints;
+
+        const f32 percent = (f32)emittedPoints / ((f32)maxPoints - 1.0f);
+        particle.data.position = start + (end - start) * percent;
+    }
+    else
+    {
+        const f32 percent = global_random::as_float(0.0f, 1.0f);
+        particle.data.position = start + (end - start) * percent;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

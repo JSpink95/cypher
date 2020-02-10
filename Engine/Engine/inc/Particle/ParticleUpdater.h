@@ -141,6 +141,25 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+class ParticleLineEmitter : public ParticleEmissionProcess
+{
+    DECLARE_DERIVED(ParticleLineEmitter, ParticleEmissionProcess)
+public:
+    virtual void Initialise(Particle& particle) override;
+
+public:
+    float3 start = float3(0.0f);
+    float3 end = float3(1.0f);
+
+    bool sequenced = false;
+    s32 maxPoints = 5;
+
+private:
+    s32 emittedPoints = 0;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class ParticleSetLifetime : public ParticleEmissionProcess
 {
     DECLARE_DERIVED(ParticleSetLifetime, ParticleEmissionProcess)

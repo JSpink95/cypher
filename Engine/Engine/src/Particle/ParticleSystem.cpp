@@ -106,6 +106,9 @@ void ParticleSystemComponent::OnTick(const f32 dt)
     for (s32 i = 0; i < maxAllowedSpawns; ++i)
     {
         Particle particle;
+        particle.age = 1.0f;
+        particle.data.size = float2(1.0f);
+
         emissionStage->Initialise(particle);
 
         // if we are not local space particles (our position doesn't follow the particle effect if it moves),
