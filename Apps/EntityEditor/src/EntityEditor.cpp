@@ -24,6 +24,7 @@
 
 #include "Render/Platform/RenderPass/RenderPassManager.h"
 #include "Render/Platform/RenderPass/RenderPassParticle.h"
+#include "Render/Platform/RenderPass/RenderPassShadow.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -33,6 +34,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "imgui.h"
+#include "widgets/TextEditor.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +43,17 @@ void EntityEditorApplication::OnPostCreate()
     Application::OnPostCreate();
 
     window->Recentre();
-    //window->SetWindowPosition(int2(-1920, 200));
+    window->SetWindowPosition(int2(-1920, 200));
+
+    editor = std::make_shared<TextEditor>();
+    editor->SetLanguageDefinition(TextEditor::LanguageDefinition::GLSL());
+
+    Ref<RenderPassShadow> shadowPass = RenderPassManager::GetPassAsType<RenderPassShadow>(RenderPassShadow::Id);
+    shadowPass->AddDirectionalLight("sun", float3(1.0f, 0.5f, 1.0f), 4.0f);
+
+    light = CreateObject<Object>(ObjectId::Create("light"));
+    //Ref<LightComponent> lightComponent = light->CreateComponent<LightComponent>("RootTransform");
+    //lightComponent->position = float3(0.0f, 16.0f, 0.0f);
 
     controller = CreateObject<Object>(ObjectId::Create("controller"));
 
@@ -87,15 +99,48 @@ void EntityEditorApplication::OnImGuiRender()
         return false;
     };
 
+    bool save = false;
+
     ImGui::BeginMainMenuBar();
     {
         if (ImGui::BeginMenu("File"))
         {
-            const bool save = ImGui::MenuItem("Save...");
+            save = ImGui::MenuItem("Save...");
             ImGui::EndMenu();
         }
     }
     ImGui::EndMainMenuBar();
+
+    // save dialog
+    {
+    
+        static const char* saveModal = "Save To File";
+    
+        if (save)
+        {
+            ImGui::OpenPopup(saveModal);
+        }
+    
+        if (ImGui::BeginPopupModal(saveModal, (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+        {
+            ImGui::AlignTextToFramePadding();
+            ImGui::Text("Entity Name:");
+            ImGui::SameLine();
+    
+            static char filenameBuffer[32] = "";
+            ImGui::InputText("##filename_edit", filenameBuffer, 32);
+    
+            const bool saveItem = ImGui::Button("Save");
+    
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel"))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+    
+            ImGui::EndPopup();
+        }
+    }
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 2.0f);
     ImGui::SetNextWindowPos(ImVec2(4, 22));
@@ -157,6 +202,8 @@ void EntityEditorApplication::OnImGuiRender()
     }
     ImGui::End();
     ImGui::PopStyleVar();
+
+    editor->Render("Test");
 }
 
 //////////////////////////////////////////////////////////////////////////

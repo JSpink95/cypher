@@ -83,8 +83,7 @@ OpenGlTexture2D::~OpenGlTexture2D()
 
 void OpenGlTexture2D::Bind(const u32 location/* = 0*/)
 {
-	glActiveTexture(GL_TEXTURE0 + location);
-	glBindTexture(GL_TEXTURE_2D, id);
+    glBindTextureUnit(location, id);
 }
 
 //////////////////////////////////////////////////////////////////////////

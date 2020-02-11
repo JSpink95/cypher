@@ -91,15 +91,27 @@ void RTTI::DisplayListEdit(const std::string& id, TList<TValue>& list, s32& sele
         
         const bool add = ImGui::Button("+##add_item");
 
+        std::vector<TList<TValue>::iterator> idsToRemove;
         for (s32 index = 0; index < list.size(); ++index)
         {
             const std::string elementId = std::to_string(index);
+            const std::string removeId = "-##id_" + elementId;
+
             Ref<RTTIObject> value = list.at(index);
 
-            if (ImGui::TreeNode(elementId.c_str()))
+            //if (ImGui::TreeNode(elementId.c_str()))
+            //{
+            //    ImGui::TreePop();
+            //}
+
+            const bool remove = ImGui::Button(removeId.c_str());
+            ImGui::SameLine();
+
+            RTTI::DisplayEdit<Ref<RTTIObject>>("", value);
+
+            if (remove)
             {
-                RTTI::DisplayEdit<Ref<RTTIObject>>("", value);
-                ImGui::TreePop();
+                idsToRemove.push_back(list.begin() + index);
             }
         }
 
@@ -111,6 +123,16 @@ void RTTI::DisplayListEdit(const std::string& id, TList<TValue>& list, s32& sele
             element.reset((TValue::element_type*)newType->New());
 
             list.push_back(element);
+        }
+
+        if (idsToRemove.size() > 0)
+        {
+            //std::sort(idsToRemove.begin(), idsToRemove.end(), std::less<s32>());
+            for (s32 idx = idsToRemove.size() - 1; idx >= 0; --idx)
+            {
+                TList<TValue>::iterator it = idsToRemove.at((u32)idx);
+                list.erase(it);
+            }
         }
 
         ImGui::TreePop();
