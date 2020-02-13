@@ -34,13 +34,11 @@ public:
 
 public:
     f32 mass = 100.0f;
+    ComponentRef<ColliderComponent> attachedCollider;
+    ComponentRef<TransformComponent> attachedTransform;
 
 private:
     btRigidBody* body = nullptr;
-
-private:
-    ComponentRef<ColliderComponent> attachedCollider;
-    ComponentRef<TransformComponent> attachedTransform;
 };
 
 //////////////////////////////////////////////////////////////////////////

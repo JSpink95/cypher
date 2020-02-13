@@ -17,6 +17,9 @@ static AutoTypeRegister<Class> RTTI_##Class;
 #define RTTI_BEGIN_WITH_BASE(Class, Base)                                                                                   \
 static AutoTypeRegisterWithBase<Class, Base> RTTI_##Class;                                                                   
 
+#define RTTI_TEMPLATE_WITH_BASE(Class, Base, TemplateClass)                                                                 \
+static AutoTypeRegisterWithBase<Class<TemplateClass>, Base> RTTI_##Class##_##TemplateClass##;
+
 //////////////////////////////////////////////////////////////////////////
 
 #define RTTI_PROPERTY_META(Class, PropertyType, PropertyName, Meta)                                                         \

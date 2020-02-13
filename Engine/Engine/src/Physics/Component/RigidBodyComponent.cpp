@@ -28,6 +28,8 @@
 
 RTTI_BEGIN_WITH_BASE(RigidBodyComponent, Component)
     RTTI_PROPERTY(RigidBodyComponent, f32, mass)
+    RTTI_PROPERTY(RigidBodyComponent, ComponentRef<ColliderComponent>, attachedCollider)
+    RTTI_PROPERTY(RigidBodyComponent, ComponentRef<TransformComponent>, attachedTransform)
 RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////

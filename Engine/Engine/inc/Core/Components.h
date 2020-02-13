@@ -14,17 +14,17 @@
 //////////////////////////////////////////////////////////////////////////
 // GameFramework
 
-#include "GameFramework/Component/LightComponent.h"
-#include "GameFramework/Component/TransformComponent.h"
-#include "GameFramework/Component/StaticMeshComponent.h"
-#include "GameFramework/Component/ProjectileMovementComponent.h"
+#include "../GameFramework/Component/LightComponent.h"
+#include "../GameFramework/Component/TransformComponent.h"
+#include "../GameFramework/Component/StaticMeshComponent.h"
+#include "../GameFramework/Component/ProjectileMovementComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // Physics
 
-#include "Physics/Component/RigidBodyComponent.h"
-#include "Physics/Component/ColliderComponent.h"
-#include "Physics/Component/BoxColliderComponent.h"
-#include "Physics/Component/SphereColliderComponent.h"
+#include "../Physics/Component/RigidBodyComponent.h"
+#include "../Physics/Component/ColliderComponent.h"
+#include "../Physics/Component/BoxColliderComponent.h"
+#include "../Physics/Component/SphereColliderComponent.h"
 
 //////////////////////////////////////////////////////////////////////////

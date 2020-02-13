@@ -20,6 +20,9 @@ class ColliderComponent : public Component
 {
     DECLARE_COMPONENT(ColliderComponent, Component)
 public:
+    virtual void OnConstruct() override;
+
+public:
     inline Ref<BaseCollisionShape> GetCollisionShape() { return collisionShape; }
 
 protected:
