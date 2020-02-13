@@ -63,5 +63,6 @@ workspace(workspace_name)
         include("Apps\\Sandbox")
         include("Apps\\ParticleEditor")
         include("Apps\\EntityEditor")
+        include("Apps\\MaterialEditor")
 
     group ""

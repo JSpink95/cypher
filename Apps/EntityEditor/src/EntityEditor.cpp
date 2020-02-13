@@ -43,7 +43,7 @@ void EntityEditorApplication::OnPostCreate()
     Application::OnPostCreate();
 
     window->Recentre();
-    window->SetWindowPosition(int2(-1920, 200));
+    //window->SetWindowPosition(int2(-1920, 200));
 
     editor = std::make_shared<TextEditor>();
     editor->SetLanguageDefinition(TextEditor::LanguageDefinition::GLSL());
