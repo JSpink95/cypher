@@ -68,7 +68,7 @@ void RenderPassSSL::OnRenderCreate()
     Super::OnRenderCreate();
 
     FramebufferData fb;
-    fb.resolution = (uint2)(float2(1280.0f, 720.0f) / 4.0f);
+    fb.resolution = RenderPassManager::GetFramebufferSize();
     fb.colorBuffers.at(SSL::ColorOutput) = { true, false };
     fb.colorBuffers.at(SSL::BloomOutput) = { true, true };
 

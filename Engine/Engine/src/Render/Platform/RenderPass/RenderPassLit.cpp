@@ -52,7 +52,7 @@ void RenderPassLit::OnRenderCreate()
     // #todo - remove hardcoded screen dimensions
 
     FramebufferData fb;
-    fb.resolution = (uint2)(float2(1280.0f, 720.0f) / 4.0f);
+    fb.resolution = RenderPassManager::GetFramebufferSize();
     fb.colorBuffers.at(Lit::ColorOutput) = { true, true };
     fb.colorBuffers.at(Lit::PositionOutput) = { true, true };
     fb.colorBuffers.at(Lit::NormalOutput) = { true, true };

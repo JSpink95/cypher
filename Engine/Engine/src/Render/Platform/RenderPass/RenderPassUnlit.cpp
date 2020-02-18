@@ -49,7 +49,7 @@ void RenderPassUnlit::OnRenderCreate()
     // #todo - remove hardcoded screen dimensions
 
     FramebufferData fb;
-    fb.resolution = (uint2)(float2(1280.0f, 720.0f) / 4.0f);
+    fb.resolution = RenderPassManager::GetFramebufferSize();
     fb.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
     fb.colorBuffers.at(GBuffer::CB_DepthStencil) = { true, true };
 

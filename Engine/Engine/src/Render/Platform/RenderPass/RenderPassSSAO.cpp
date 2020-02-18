@@ -69,7 +69,7 @@ void RenderPassSSAO::OnRenderCreate()
     Super::OnRenderCreate();
 
     FramebufferData fb;
-    fb.resolution = (uint2)(float2(1280.0f, 720.0f) / 4.0f);
+    fb.resolution = RenderPassManager::GetFramebufferSize();
     fb.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
 
     ssaoFramebuffer = GetApiManager()->CreateFramebuffer(fb);
@@ -96,7 +96,7 @@ void RenderPassSSAO::OnRenderCreate()
     }
 
     SsaoInput ssaoInput;
-    ssaoInput.noiseScale = (float2(1280.0f, 720.0f) / float2(4.0f, 4.0f)) / 4.0f;   // add extra scale down to account for framebuffer scaling
+    ssaoInput.noiseScale = (float2(RenderPassManager::GetFramebufferSize()) / float2(4.0f, 4.0f));
 
     for (u32 index = 0; index < SsaoInput::MaxKernelSize; ++index)
     {

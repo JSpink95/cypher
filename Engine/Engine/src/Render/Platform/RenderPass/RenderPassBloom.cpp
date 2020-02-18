@@ -58,7 +58,7 @@ void RenderPassBloom::OnRenderCreate()
     bloomBlendMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-bloom.xml");
 
     FramebufferData fbInit;
-    fbInit.resolution = uint2(float2(1280.0f, 720.0f) / 4.0f);
+    fbInit.resolution = RenderPassManager::GetFramebufferSize();
     fbInit.colorBuffers.at(Bloom::Output) = { true, true };
 
     framebuffers[0] = GetApiManager()->CreateFramebuffer(fbInit);

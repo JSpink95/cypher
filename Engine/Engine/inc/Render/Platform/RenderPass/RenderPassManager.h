@@ -66,6 +66,16 @@ public:
         return nullptr;
     }
 
+    static uint2 GetFramebufferSize()
+    {
+        if (Ref<RenderPassManager> rpm = Get())
+        {
+            return rpm->GetFramebufferSizeImpl();
+        }
+
+        return uint2(640, 480);
+    }
+
     template<typename TPass>
     static inline Ref<TPass> GetPassAsType(const HashedString& id)
     {
@@ -86,11 +96,13 @@ private:
     void RemovePassImpl(Ref<RenderPassBase> pass);
     void RenderImpl();
 
+    uint2 GetFramebufferSizeImpl() const;
     Ref<RenderPassBase> GetPassImpl(const HashedString& id);
 
 private:
     // not using a hash_map (unordered_map) here so that we can sort it by render priority
-    std::map<HashedString, Ref<RenderPassBase>> passes;
+    HashMap<HashedString, Ref<RenderPassBase>> passes;
+    std::vector<HashedString> renderOrder;
 };
 
 //////////////////////////////////////////////////////////////////////////

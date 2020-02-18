@@ -9,6 +9,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Platform/RenderPass/RenderPassManager.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "GameFramework/Camera/PerspectiveCamera.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -31,7 +35,7 @@ PerspectiveCameraComponent::PerspectiveCameraComponent()
     // create persepctive camera
     camera = std::make_shared<CameraPerspective>();
     camera->fovDegrees = 60.0f;
-    camera->SetScreenDimensions(float2(1280.0f, 720.0f) / 4.0f);
+    camera->SetScreenDimensions(RenderPassManager::GetFramebufferSize());
 }
 
 //////////////////////////////////////////////////////////////////////////

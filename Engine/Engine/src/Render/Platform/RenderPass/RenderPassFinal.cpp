@@ -77,7 +77,7 @@ void RenderPassFinal::OnRenderCreate()
     Super::OnRenderCreate();
 
     FramebufferData fb;
-    fb.resolution = (uint2)(float2(1280.0f, 720.0f) / 4.0f);
+    fb.resolution = RenderPassManager::GetFramebufferSize();
     fb.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
 
     litPassOverlay = GetApiManager()->CreateFramebuffer(fb);
@@ -112,7 +112,7 @@ void RenderPassFinal::OnPerform()
     if (screen != nullptr)
     {
         OverlayInput overlayInput;
-        overlayInput.framebufferSize = float2(1280.0f, 720.0f) / 4.0f;
+        overlayInput.framebufferSize = RenderPassManager::GetFramebufferSize();
         overlayInput.blendMode = vec2(1.0f, 0.0f);
         overlay->SetParameterBlock<OverlayInput>("ScreenInfo", overlayInput);
 
@@ -178,6 +178,10 @@ void RenderPassFinal::OnFinish()
     Renderer::EndScene();
 
     // no framebuffer bound, render the final output to the screen.
+
+    //uint2 dimensions = Display::GetSize();
+    //glViewport(0, 0, dimensions.x, dimensions.y);
+
 
     GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 

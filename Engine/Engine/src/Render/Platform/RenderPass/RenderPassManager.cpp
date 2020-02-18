@@ -21,11 +21,33 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Render/Platform/Window.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 struct RenderPassLessComparator
 {
-    bool operator()(Ref<RenderPassBase> a, Ref<RenderPassBase> b)
+    RenderPassLessComparator(const HashMap<HashedString, Ref<RenderPassBase>>& inData)
+        : data(inData)
+    {}
+
+private:
+    const HashMap<HashedString, Ref<RenderPassBase>>& data;
+
+public:
+
+    bool operator()(const HashedString& a, const HashedString& b)
     {
-        return a->GetPriority() < b->GetPriority();
+        auto it1 = data.find(a);
+        auto it2 = data.find(b);
+
+        if (it1 == data.end())
+            return false;
+
+        if (it2 == data.end())
+            return true;
+
+        return it1->second->GetPriority() < it2->second->GetPriority();
     }
 };
 
@@ -50,7 +72,6 @@ void RenderPassManager::InitialiseImpl()
     {
         it.second->OnRenderCreate();
     }
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -67,7 +88,11 @@ void RenderPassManager::SortPasses()
     // SSAO     - 250 <- quite important that this one is last. mainly just for ease of use.
     // Debug    - 300
 
-    //std::sort(passes.begin(), passes.end(), RenderPassLessComparator());
+    renderOrder.clear();
+    auto transformer = [](const std::pair<const HashedString, Ref<RenderPassBase>>& pass) -> HashedString { return pass.first; };
+    std::transform(passes.begin(), passes.end(), std::back_inserter(renderOrder), transformer);
+
+    std::sort(renderOrder.begin(), renderOrder.end(), RenderPassLessComparator(passes));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -102,22 +127,23 @@ void RenderPassManager::RemovePassImpl(Ref<RenderPassBase> pass)
 
 void RenderPassManager::RenderImpl()
 {
-    std::vector<Ref<RenderPassBase>> sortedPasses;
-
-    auto transformation = [](const std::pair<HashedString, Ref<RenderPassBase>>& val) -> Ref<RenderPassBase>
+    for (const HashedString& id : renderOrder)
     {
-        return val.second;
-    };
-
-    std::transform(passes.begin(), passes.end(), std::back_inserter(sortedPasses), transformation);
-    std::sort(sortedPasses.begin(), sortedPasses.end(), RenderPassLessComparator());
-
-    for (Ref<RenderPassBase> base: sortedPasses)
-    {
-        base->OnBegin();
-        base->OnPerform();
-        base->OnFinish();
+        auto it = passes.find(id);
+        if (it != passes.end())
+        {
+            it->second->OnBegin();
+            it->second->OnPerform();
+            it->second->OnFinish();
+        }
     }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+uint2 RenderPassManager::GetFramebufferSizeImpl() const
+{
+    return (uint2)(float2(Display::GetSize()) / 1.0f);
 }
 
 //////////////////////////////////////////////////////////////////////////
