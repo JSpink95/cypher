@@ -159,6 +159,23 @@ uint2 OpenGlWindow::GetWindowSize() const
 
 //////////////////////////////////////////////////////////////////////////
 
+void OpenGlWindow::GetSupportedDimensions(std::vector<uint2>& dimensions) const
+{
+    dimensions.clear();
+
+    s32 count = 0;
+    const GLFWvidmode* vidmodes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
+
+    for (s32 idx = 0; idx < count; ++idx)
+    {
+        const GLFWvidmode& vidmode = vidmodes[idx];
+
+        dimensions.push_back(uint2((u32)glm::max(vidmode.width, 1), (u32)glm::max(vidmode.height, 1)));
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 bool OpenGlWindow::IsKeyDown(const KeyboardKey::Enum key) const
 {
     static constexpr const s32 KeyToGLFW[KeyboardKey::Max] =

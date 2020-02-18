@@ -45,6 +45,7 @@ public:
     virtual void SetEventCallback(EventCallback eventCallback) = 0;
 
     virtual uint2 GetWindowSize() const = 0;
+    virtual void GetSupportedDimensions(std::vector<uint2>& dimensions) const = 0;
 
 public:
 
@@ -60,6 +61,7 @@ class Display
 {
 public:
     static uint2 GetSize();
+    static void GetSupportedDimensions(std::vector<uint2>& dimensions);
 };
 
 //////////////////////////////////////////////////////////////////////////

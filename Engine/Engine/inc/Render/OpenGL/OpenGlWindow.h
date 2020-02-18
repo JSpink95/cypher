@@ -53,6 +53,7 @@ public:
     virtual void SetEventCallback(EventCallback eventCallback) override;
 
     virtual uint2 GetWindowSize() const override;
+    virtual void GetSupportedDimensions(std::vector<uint2>& dimensions) const override;
 
     // 
     // input
