@@ -17,6 +17,10 @@ class SandboxApplication : public Application
 protected:
     virtual void OnPostCreate() override;
     virtual void OnDestroy() override;
+
+private:
+    Ref<Object> camera;
+    Ref<Object> scene;
 };
 
 //////////////////////////////////////////////////////////////////////////

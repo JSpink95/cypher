@@ -1,0 +1,13 @@
+<material id="pp-guassian-blur">
+  <program>
+    <shader type="vertex" path="assets:\shaders\vertex\pp-passthrough.vs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\pp-guassian-blur.ps"/>
+  </program>
+  <parameters>
+    <!-- Uniform Blocks -->
+    <parameter id="GuassianData" type="materialblock-custom" binding="0" memory_size="4"/>
+    
+    <!-- Textures -->
+    <parameter id="uTexture" type="texture2D" binding="0" value="engine:\textures\error"/>
+  </parameters>
+</material>

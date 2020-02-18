@@ -60,3 +60,29 @@ void OpenGlComputeShader::WaitForFinish()
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+OpenGlComputeBuffer OpenGlComputeShader::CreateBuffer(const size_t allocSize)
+{
+    glUseProgram(id);
+
+    u32 vbo;
+    glGenBuffers(1, &vbo);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, allocSize, nullptr, GL_DYNAMIC_DRAW);
+
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, vbo);
+    
+    return { vbo };
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void OpenGlComputeShader::UploadData(const OpenGlComputeBuffer& vbo, const void* data, const size_t byteSize)
+{
+    glUseProgram(id);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
+    glBufferData(GL_ARRAY_BUFFER, byteSize, data, GL_DYNAMIC_DRAW);
+}
+
+//////////////////////////////////////////////////////////////////////////

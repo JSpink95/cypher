@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
-//    File        	: RenderPassSSL.h
+//    File        	: RenderPassBloom.h
 //    Created By    : Jack Spink
-//    Created On 	: [28/01/2020]
+//    Created On 	: [17/02/2020]
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,40 +12,43 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-class SSL
+class Texture2D;
+
+//////////////////////////////////////////////////////////////////////////
+
+class Bloom
 {
 public:
-    static const GBuffer::Color ColorOutput;
-    static const GBuffer::Color BloomOutput;
+    static const GBuffer::Color Output;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
-class RenderPassSSL : public RenderPassBase
+class RenderPassBloom : public RenderPassBase
 {
-    DECLARE_DERIVED(RenderPassSSL, RenderPassBase)
+    DECLARE_DERIVED(RenderPassBloom, RenderPassBase)
 public:
-    static inline const HashedString Id = HashedString::Create("RenderPass:SSL");
+    static inline const HashedString Id = HashedString::Create("RenderPass:Bloom");
 
 public:
-    RenderPassSSL();
-
-public:
-    virtual s32 GetPriority() const { return 200; }
-    virtual RenderPassType::Enum GetType() const { return RenderPassType::SSL; }
-    virtual Ref<FramebufferAttachment> GetAttachment(GBuffer::Color attachment) override;
+    RenderPassBloom();
 
 public:
     virtual void OnRenderCreate() override;
+    virtual s32 GetPriority() const { return 225; }
+    virtual RenderPassType::Enum GetType() const { return RenderPassType::Bloom; }
+    virtual Ref<FramebufferAttachment> GetAttachment(GBuffer::Color attachment) override;
 
-private:
+public:
     virtual void OnBegin() override;
     virtual void OnPerform() override;
     virtual void OnFinish() override;
 
 private:
-    Ref<Framebuffer> framebuffer;
-    Ref<Material> ssl;
+    Ref<Material> guassianBlurMaterial;
+    Ref<Material> bloomBlendMaterial;
+    Ref<Framebuffer> framebuffers[2];
+    Ref<Framebuffer> bloom;
 };
 
 //////////////////////////////////////////////////////////////////////////

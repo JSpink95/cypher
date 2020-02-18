@@ -72,6 +72,12 @@ public:
         return std::dynamic_pointer_cast<TPass>(GetPass(id));
     }
 
+    template<typename TPass>
+    static inline Ref<TPass> GetPassAsType()
+    {
+        return std::dynamic_pointer_cast<TPass>(GetPass(TPass::Id));
+    }
+
 private:
 
     void InitialiseImpl();

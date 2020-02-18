@@ -14,6 +14,7 @@
 #include "Render/Platform/RenderPass/RenderPassShadow.h"
 #include "Render/Platform/RenderPass/RenderPassParticle.h"
 #include "Render/Platform/RenderPass/RenderPassSSL.h"
+#include "Render/Platform/RenderPass/RenderPassBloom.h"
 #include "Render/Platform/RenderPass/RenderPassSSAO.h"
 //#include "Render/Platform/RenderPass/RenderPassDebug.h"
 #include "Render/Platform/RenderPass/RenderPassFinal.h"
@@ -37,6 +38,7 @@ void RenderPassManager::InitialiseImpl()
     passes.emplace(RenderPassShadow::Id, std::make_shared<RenderPassShadow>());
     passes.emplace(RenderPassParticle::Id, std::make_shared<RenderPassParticle>());
     passes.emplace(RenderPassSSL::Id, std::make_shared<RenderPassSSL>());
+    passes.emplace(RenderPassBloom::Id, std::make_shared<RenderPassBloom>());
     passes.emplace(RenderPassSSAO::Id, std::make_shared<RenderPassSSAO>());
 
     // this should always be the last one on the pile.

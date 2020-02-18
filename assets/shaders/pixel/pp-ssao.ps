@@ -23,7 +23,7 @@ uniform sampler2D uNoise;
 layout(location = 0) out vec4 oColor;
 
 float zNear = 0.1;
-float zFar = 1000.0;
+float zFar = 100.0;
 
 float LinearizeDepth(float depthSample)
 {
@@ -43,7 +43,7 @@ void main()
 	vec3 bitangent = cross(normal, tangent);
 	mat3 TBN       = mat3(tangent, bitangent, normal);
 
-	const float radius = 1.2;
+	const float radius = 1.5;
 	const float bias = 0.0005;
 
 	float occlusion = 0.0;

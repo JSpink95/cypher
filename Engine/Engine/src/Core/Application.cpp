@@ -80,7 +80,6 @@ Application::Application()
 
     FileVolumeManager::Create();
     ConsoleLogger::Init();
-    Random::Create();
     Input::Create();
     InputManager::Create();
 
@@ -108,7 +107,6 @@ Application::~Application()
     Audio::Delete();
     InputManager::Delete();
     Input::Delete();
-    Random::Delete();
     FileVolumeManager::Delete();
 }
 

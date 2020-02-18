@@ -122,8 +122,10 @@ void GameThread::ThreadLoop()
 
         GetApplication()->OnPresent();
 
+        while (std::chrono::duration_cast<duration>(clock::now() - frameStart).count() < 0.016666666666667f);
+
         // briefly sleep so as not to run _too_ fast
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     // if we have thread tasks

@@ -35,8 +35,9 @@ private:
     virtual void OnFinish() override;
 
 private:
-    Ref<Framebuffer> framebuffer;
-    Ref<Material> ssao;
+    Ref<Framebuffer> ssaoFramebuffer;
+    Ref<Framebuffer> blurFramebuffer;;
+    Ref<Material> ssao, blur;
 };
 
 //////////////////////////////////////////////////////////////////////////

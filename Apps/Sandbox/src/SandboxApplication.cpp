@@ -13,53 +13,113 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "Core/Object.h"
+#include "Core/ObjectManager.h"
 #include "Core/Component.h"
 #include "Core/ComponentRef.h"
 
 //////////////////////////////////////////////////////////////////////////
 
-#include "GameFramework/Camera/PerspectiveCamera.h"
-#include "GameFramework/Component/TransformComponent.h"
+#include "Core/Utility/RandomUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
 
-class FpsCameraController: public Component
+#include "Render/Mesh.h"
+#include "Render/Platform/Window.h"
+#include "Render/Platform/Buffer.h"
+#include "Render/Platform/Material.h"
+#include "Render/Platform/VertexArray.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "Render/Utility/MaterialLibrary.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+#include "GameFramework/Camera/PerspectiveCamera.h"
+#include "GameFramework/Component/TransformComponent.h"
+#include "GameFramework/Component/StaticMeshComponent.h"
+#include "GameFramework/Component/PerspectiveCameraComponent.h"
+#include "GameFramework/Component/LightComponent.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+struct LevelVertex
 {
-    DECLARE_COMPONENT(FpsCameraController, Component)
-public:
-    FpsCameraController();
+    static inline VertexBufferLayout layout = {
+        { "aPosition", ShaderData::Float3 },
+        { "aNormal", ShaderData::Float3 },
+        { "aTexcoord", ShaderData::Float2 },
+        { "aTextureId", ShaderData::Float },
+    };
 
-public:
-    virtual void OnConstruct() override;
-
-public:
-    ComponentRef<TransformComponent> transform;
-    Ref<CameraPerspective> camera;
+    float3 position;
+    float3 normal;
+    float2 texcoord;
+    f32 textureId;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN_WITH_BASE(FpsCameraController, Component)
-    RTTI_PROPERTY(FpsCameraController, ComponentRef<TransformComponent>, transform)
-    RTTI_PROPERTY(FpsCameraController, Ref<CameraPerspective>, camera)
-RTTI_END()
+template<size_t width, size_t height>
+class Level
+{
+public:
+    Level(s32 seed);
+
+    inline constexpr const size_t GetIndexFromPos(const size_t x, const size_t y) const
+    {
+        return x + y * width;
+    }
+
+    inline constexpr const bool GetActiveState(const size_t x, const size_t y) const
+    {
+        if (x < 0u || y < 0u || x >= width || y >= height) return false;
+        return cells[GetIndexFromPos(x, y)];
+    }
+
+public:
+    Ref<Mesh> GenerateMesh();
+
+public:
+    bool cells[width * height];
+};
 
 //////////////////////////////////////////////////////////////////////////
 
-FpsCameraController::FpsCameraController()
+template<size_t width, size_t height>
+Level<width, height>::Level(s32 seed)
 {
-    transform.componentName = "CameraTransform";
+    std::default_random_engine engine(seed);
+
+    for (size_t x = 0u; x < width; ++x)
+    {
+        for (size_t y = 0; y < height; ++y)
+        {
+            const size_t index = x + y * width;
+            const f32 a = Random::Float();
+
+            cells[index] = (a > 60.0f);
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-void FpsCameraController::OnConstruct()
+template<size_t width, size_t height>
+Ref<Mesh> Level<width, height>::GenerateMesh()
 {
-    Super::OnConstruct();
+    std::vector<LevelVertex> vertices;
 
-    transform.OnConstruct(owner);
-    camera = std::make_shared<CameraPerspective>();
-    camera->MakeThisActive();
+    for (size_t x = 0u; x < width; ++x)
+    {
+        for (size_t y = 0; y < height; ++y)
+        {
+            float3 position = float3((f32)x, 0.0f, (f32)y);
+            float2 texcoord = float2(position.x, position.z);
+        }
+    }
+
+    return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -67,6 +127,39 @@ void FpsCameraController::OnConstruct()
 void SandboxApplication::OnPostCreate()
 {
     Application::OnPostCreate();
+
+    window->Recentre();
+    //window->SetWindowPosition(int2(-1920, 200));
+
+    camera = CreateObject<Object>(ObjectId::Create("camera"));
+
+    Ref<TransformComponent> transform = camera->CreateComponent<TransformComponent>("RootTransform");
+    transform->position = float3(0.0f, 3.0f, 2.0f);
+
+    Ref<PerspectiveCameraComponent> cam = camera->CreateComponent<PerspectiveCameraComponent>("cam");
+    cam->SetTickEnabled(true);
+    cam->SetAsMainCamera();
+    cam->SetTarget(float3(0.0f));
+
+    scene = CreateObject<Object>(ObjectId::Create("scene"));
+
+    Ref<LightComponent> light = scene->CreateComponent<LightComponent>("Light");
+    light->SetTickEnabled(true);
+    light->color = float3(0.9f, 0.8f, 1.4f);
+    light->position = float3(0.0f, 4.0f, 0.0f);
+
+    for (s32 x = -4; x <= 4; ++x)
+    {
+        for (s32 z = -4; z <= 4; ++z)
+        {
+            Ref<StaticMeshComponent> mesh = scene->CreateComponent<StaticMeshComponent>(std::to_string(x) + ":" + std::to_string(z));
+            mesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
+            mesh->SetMesh("assets:\\models\\box.obj");
+            mesh->position = float3((f32)x, Random::Float(-0.5f, 0.5f), (f32)z);
+            mesh->scale = float3(0.5f, 0.5f, 0.5f);
+        }
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////

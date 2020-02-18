@@ -1,0 +1,11 @@
+<material id="pp-bloom">
+  <program>
+    <shader type="vertex" path="assets:\shaders\vertex\pp-passthrough.vs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\pp-bloom.ps"/> 
+  </program>
+  <parameters>
+    <parameter id="BloomData" type="materialblock-custom" binding="0" memory_size="4"/>
+    <parameter id="uScene" type="texture2D" binding="0" value="engine:\textures\white"/>
+    <parameter id="uBloomBlur" type="texture2D" binding="1" value="engine:\textures\white"/>
+  </parameters>
+</material>

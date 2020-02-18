@@ -33,6 +33,7 @@ layout(std140, binding=1) uniform ShadowMatrices
 };
 
 layout(location = 0) out vec4 oColor;
+layout(location = 1) out vec4 oBloom;
 
 float CalculateShadow(vec4 lightSpaceCoord, float nl)
 {
@@ -92,6 +93,13 @@ void main()
 		diffuse += albedo.rgb * nl * color.rgb * att;
 	}
 
-	oColor = vec4((ambient * shadowValue) + diffuse, albedo.a);
-	//oColor = albedo;
+	vec4 finalLitColor = vec4((ambient * shadowValue) + diffuse, albedo.a);
+	oColor = clamp(finalLitColor, vec4(0.0), vec4(1.0));
+
+	// check whether fragment output is higher than threshold, if so output as brightness color
+    const float brightness = dot(finalLitColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        oBloom = vec4(oColor.rgb, 1.0);
+    else
+        oBloom = vec4(0.0, 0.0, 0.0, 1.0);
 }

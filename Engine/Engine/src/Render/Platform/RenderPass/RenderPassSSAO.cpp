@@ -59,7 +59,7 @@ RenderPassSSAO::RenderPassSSAO()
 
 Ref<FramebufferAttachment> RenderPassSSAO::GetAttachment(GBuffer::Color attachment)
 {
-    return framebuffer->GetColorBuffer(attachment);
+    return blurFramebuffer->GetColorBuffer(attachment);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,8 @@ void RenderPassSSAO::OnRenderCreate()
     fb.resolution = (uint2)(float2(1280.0f, 720.0f) / 4.0f);
     fb.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
 
-    framebuffer = GetApiManager()->CreateFramebuffer(fb);
+    ssaoFramebuffer = GetApiManager()->CreateFramebuffer(fb);
+    blurFramebuffer = GetApiManager()->CreateFramebuffer(fb);
 
     float3 noisePixels[4 * 4];
     for (u32 index = 0; index < 4 * 4; ++index)
@@ -123,6 +124,12 @@ void RenderPassSSAO::OnRenderCreate()
         ssao->SetParameterValue<MaterialParameterTexture2D>("uNormal", normalTexture);
         ssao->SetParameterValue<MaterialParameterTexture2D>("uNoise", noiseTexture);
     }
+
+    blur = MaterialLibrary::GetMaterial("assets:\\materials\\pp-blur.xml")->Clone();
+    if (blur != nullptr)
+    {
+        blur->SetParameterValue<MaterialParameterTexture2D>("uTexture", ssaoFramebuffer->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture());
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -131,10 +138,6 @@ void RenderPassSSAO::OnBegin()
 {
     Super::OnBegin();
 
-    Renderer::BeginScene(framebuffer);
-    
-    GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
-    GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -143,10 +146,25 @@ void RenderPassSSAO::OnPerform()
 {
     Super::OnPerform();
 
-    if (Ref<Mesh> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad"))
-    {
-        screen->Render(ssao, fmat4(1.0f));
-    }
+    Ref<Mesh> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad");
+
+    Renderer::BeginScene(ssaoFramebuffer);
+
+    GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
+    GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+    screen->Render(ssao, fmat4(1.0f));
+
+    Renderer::EndScene();
+
+    Renderer::BeginScene(blurFramebuffer);
+
+    GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
+    GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+    screen->Render(blur, fmat4(1.0f));
+
+    Renderer::EndScene();
 }
 
 //////////////////////////////////////////////////////////////////////////

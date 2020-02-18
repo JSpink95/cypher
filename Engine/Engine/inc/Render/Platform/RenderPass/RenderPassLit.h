@@ -21,6 +21,17 @@ class Framebuffer;
 
 //////////////////////////////////////////////////////////////////////////
 
+class Lit
+{
+public:
+    static const GBuffer::Color ColorOutput;
+    static const GBuffer::Color PositionOutput;
+    static const GBuffer::Color NormalOutput;
+    static const GBuffer::Color DepthOutput;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class RenderPassLit : public RenderPassBase
 {
     DECLARE_DERIVED(RenderPassLit, RenderPassBase)

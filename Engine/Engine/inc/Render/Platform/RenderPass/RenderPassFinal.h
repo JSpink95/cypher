@@ -34,7 +34,9 @@ public:
     virtual void OnFinish() override;
 
 private:
-    Ref<Framebuffer> framebuffer;
+    Ref<Framebuffer> litPassOverlay;
+    Ref<Framebuffer> unlitPassOverlay;
+    Ref<Framebuffer> particlePassOverlay;
     Ref<Material> overlay, output;
 };
 

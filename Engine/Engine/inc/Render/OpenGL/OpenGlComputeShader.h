@@ -20,6 +20,13 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+struct OpenGlComputeBuffer
+{
+    u32 id;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class OpenGlComputeShader: public ComputeShader
 {
 public:
@@ -28,6 +35,10 @@ public:
 
 	virtual void Disptach(const uint3& workGroups) override;
 	virtual void WaitForFinish() override;
+
+public:
+    OpenGlComputeBuffer CreateBuffer(const size_t allocSize);
+    void UploadData(const OpenGlComputeBuffer& vbo, const void* data, const size_t byteSize);
 
 private:
 	u32 id;

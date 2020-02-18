@@ -24,6 +24,13 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+const GBuffer::Color Lit::ColorOutput = GBuffer::CB_Albedo;
+const GBuffer::Color Lit::PositionOutput = GBuffer::CB_Position;
+const GBuffer::Color Lit::NormalOutput = GBuffer::CB_Normal;
+const GBuffer::Color Lit::DepthOutput = GBuffer::CB_DepthStencil;
+
+//////////////////////////////////////////////////////////////////////////
+
 RenderPassLit::RenderPassLit()
 {
 
@@ -46,10 +53,10 @@ void RenderPassLit::OnRenderCreate()
 
     FramebufferData fb;
     fb.resolution = (uint2)(float2(1280.0f, 720.0f) / 4.0f);
-    fb.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
-    fb.colorBuffers.at(GBuffer::CB_Position) = { true, true };
-    fb.colorBuffers.at(GBuffer::CB_Normal) = { true, true };
-    fb.colorBuffers.at(GBuffer::CB_DepthStencil) = { true, true };
+    fb.colorBuffers.at(Lit::ColorOutput) = { true, true };
+    fb.colorBuffers.at(Lit::PositionOutput) = { true, true };
+    fb.colorBuffers.at(Lit::NormalOutput) = { true, true };
+    fb.colorBuffers.at(Lit::DepthOutput) = { true, true };
 
     framebuffer = GetApiManager()->CreateFramebuffer(fb);
 }
