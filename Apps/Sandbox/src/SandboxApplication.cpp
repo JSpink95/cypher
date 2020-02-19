@@ -43,6 +43,45 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+class PlayerControllerComponent : public Component
+{
+    DECLARE_COMPONENT(PlayerControllerComponent, Component)
+public:
+
+    PlayerControllerComponent()
+    {
+        tickFunction.enabled = true;
+    }
+
+    virtual void OnConstruct() override
+    {
+        Super::OnConstruct();
+
+        transform.componentName = "RootTransform";
+        transform.OnConstruct(owner);
+    }
+
+    virtual void OnTick(const f32 dt) override
+    {
+        Super::OnTick(dt);
+
+        time += dt;
+
+        if (transform)
+        {
+            const f32 angle = glm::radians(time * 45.0f);
+            const f32 dist = 5.0f + (glm::sin(glm::radians(time * 100.0f)) * 0.5f + 0.5f) * 5.0f;
+            transform->position = float3(glm::cos(angle) * 6.0f, dist, glm::sin(angle) * 6.0f);
+        }
+    }
+
+private:
+    f32 time = 0.0f;
+    ComponentRef<TransformComponent> transform;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 struct LevelVertex
 {
     static inline VertexBufferLayout layout = {
@@ -129,12 +168,14 @@ void SandboxApplication::OnPostCreate()
     Application::OnPostCreate();
 
     window->Recentre();
-    //window->SetWindowPosition(int2(-1920, 200));
+    window->SetWindowPosition(int2(-1920, 200));
 
     camera = CreateObject<Object>(ObjectId::Create("camera"));
 
     Ref<TransformComponent> transform = camera->CreateComponent<TransformComponent>("RootTransform");
     transform->position = float3(0.0f, 3.0f, 2.0f);
+
+    Ref<PlayerControllerComponent> controller = camera->CreateComponent<PlayerControllerComponent>("Controller");
 
     Ref<PerspectiveCameraComponent> cam = camera->CreateComponent<PerspectiveCameraComponent>("cam");
     cam->SetTickEnabled(true);
@@ -145,8 +186,8 @@ void SandboxApplication::OnPostCreate()
 
     Ref<LightComponent> light = scene->CreateComponent<LightComponent>("Light");
     light->SetTickEnabled(true);
-    light->color = float3(0.9f, 0.8f, 1.4f);
-    light->position = float3(0.0f, 4.0f, 0.0f);
+    light->color = float3(1.0f * 1.0f);
+    light->position = float3(0.0f, 2.0f, 0.0f);
 
     for (s32 x = -4; x <= 4; ++x)
     {
@@ -159,6 +200,24 @@ void SandboxApplication::OnPostCreate()
             mesh->scale = float3(0.5f, 0.5f, 0.5f);
         }
     }
+
+    Ref<StaticMeshComponent> mesh = scene->CreateComponent<StaticMeshComponent>("emissive");
+
+    struct EmissiveData
+    {
+        float3 color;
+        f32 strength;
+    };
+
+    EmissiveData data = { float3(1.0f, 0.3f, 0.1f), 5.0f };
+
+    Ref<Material> emissiveMat = MaterialLibrary::GetMaterial("assets:\\materials\\mesh-emissive.xml")->Clone();
+    emissiveMat->SetParameterBlock("EmissiveData", data);
+
+    mesh->SetMaterial(emissiveMat);
+    mesh->SetMesh("assets:\\models\\capsule.obj");
+    mesh->position = float3(0.0f, 2.0f, 0.0f);
+    mesh->scale = float3(0.05f, 0.4f, 0.05f);
 
 }
 

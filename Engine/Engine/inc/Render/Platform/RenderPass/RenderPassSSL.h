@@ -16,7 +16,6 @@ class SSL
 {
 public:
     static const GBuffer::Color ColorOutput;
-    static const GBuffer::Color BloomOutput;
 };
 
 //////////////////////////////////////////////////////////////////////////

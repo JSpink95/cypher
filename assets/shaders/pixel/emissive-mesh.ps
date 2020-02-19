@@ -1,0 +1,20 @@
+#version 440 core
+
+in vec3 fPos;
+in vec3 fNor;
+
+layout(std140, binding=2) uniform EmissiveData
+{
+	vec4 emissiveColor;
+};
+
+layout(location = 0) out vec4 oAlbedo;
+layout(location = 1) out vec4 oPosition;
+layout(location = 2) out vec4 oNormal;
+
+void main()
+{
+	oAlbedo = vec4(emissiveColor.rgb * emissiveColor.a, 1.0);
+	oPosition = vec4(fPos, 1.0);
+	oNormal = vec4(fNor, 1.0);
+}

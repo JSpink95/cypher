@@ -12,6 +12,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/RTTI/RTTIObject.h"
 #include "Core/RTTI/TypeRegister.h"
 
@@ -70,7 +74,7 @@ namespace RTTI
 template<typename TValue>
 void RTTI::DisplayEdit(const std::string& id, TValue& value)
 {
-    printf("Not implemented for this type.\n");
+    LOG_WARNING("Not implemented for this type.\n");
 }
 
 //////////////////////////////////////////////////////////////////////////

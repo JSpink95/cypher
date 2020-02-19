@@ -12,6 +12,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
 #include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -24,57 +25,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include <windows.h>
-
-//////////////////////////////////////////////////////////////////////////
-
 #define FUNCTION_TRACE "Class::Function"
-
-//////////////////////////////////////////////////////////////////////////
-
-//0 = Black 8 = Gray
-//1 = Blue 9 = Light Blue
-//2 = Green a = Light Green
-//3 = Aqua b = Light Aqua
-//4 = Red c = Light Red
-//5 = Purple d = Light Purple
-//6 = Yellow e = Light Yellow
-//7 = White f = Bright White
-
-namespace Console
-{
-    enum Color: s32
-    {
-        Black = 0x0,
-        Blue = 0x1,
-        Green = 0x2,
-        Aqua = 0x3,
-        Red = 0x4,
-        Purple = 0x5,
-        Yellow = 0x6,
-        White = 0x7,
-        Gray = 0x8,
-        LightBlue = 0x9,
-        LightGreen = 0xa,
-        LightAqua = 0xb,
-        LightRed = 0xc,
-        LightPurple = 0xd,
-        LightYellow = 0xe,
-        BrightWhite = 0xf
-    };
-
-    void SetTextColor(Console::Color color)
-    {
-        HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-        SetConsoleTextAttribute(handle, (s32)color);
-    }
-
-    template<typename...Args>
-    void Write(const char* fmt, Args... args)
-    {
-        printf(fmt, args...);
-    }
-}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -82,10 +33,7 @@ void Serialise_RTTIObjectToXMLNode(TypeBase* type, RTTIObject* base, pugi::xml_n
 {
     if (type == nullptr)
     {
-#ifdef DEBUG
-        Console::SetTextColor(Console::Red);
-        Console::Write("[%s] type is null!\n", FUNCTION_TRACE);
-#endif
+        LOG_ERROR("[%s] type is null!\n", FUNCTION_TRACE);
         return;
     }
 
@@ -184,10 +132,7 @@ void Serialise_RTTIObjectToXMLNode(TypeBase* type, RTTIObject* base, pugi::xml_n
             }
             else
             {
-#ifdef DEBUG
-                Console::SetTextColor(Console::Red);
-                Console::Write("[%s] failed to find Object %s!\n", FUNCTION_TRACE, propertyname.c_str());
-#endif
+                LOG_ERROR("[%s] failed to find Object %s!\n", FUNCTION_TRACE, propertyname.c_str());
             }
 
         }
@@ -204,19 +149,13 @@ void Serialise_RTTIObjectToXMLNode(TypeBase* type, RTTIObject* base, pugi::xml_n
 
 void Serialise::RTTIObjectToXML(Ref<RTTIObject> object, const std::string& filepath)
 {
-#ifdef DEBUG
-    Console::SetTextColor(Console::BrightWhite);
-    Console::Write("[%s] preparing to serialise object to '%s'!\n", FUNCTION_TRACE, object->GetTypeName().c_str());
-#endif
+    LOG_INFO("[%s] preparing to serialise object to '%s'!\n", FUNCTION_TRACE, object->GetTypeName().c_str());
 
     const std::string objectTypeName = object->GetTypeName();
     TypeBase* type = TypeRegister::GetRegisteredType(objectTypeName);
     if (type == nullptr)
     {
-#ifdef DEBUG
-        Console::SetTextColor(Console::Red);
-        Console::Write("[%s] failed to find type %s!\n", FUNCTION_TRACE, objectTypeName.c_str());
-#endif
+        LOG_ERROR("[%s] failed to find type %s!\n", FUNCTION_TRACE, objectTypeName.c_str());
         return;
     }
 
@@ -232,10 +171,6 @@ void Serialise::RTTIObjectToXML(Ref<RTTIObject> object, const std::string& filep
 
     const std::string realpath = FileVolumeManager::GetRealPathFromVirtualPath(filepath).fullpath;
     file.save_file(realpath.c_str());
-
-#if DEBUG
-    Console::SetTextColor(Console::BrightWhite);
-#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -252,10 +187,7 @@ void Deserialise_RTTIObjectFromXmlNode(TypeBase* type, RTTIObject* base, pugi::x
 
             if (prop == nullptr)
             {
-#ifdef DEBUG
-                Console::SetTextColor(Console::Red);
-                Console::Write("[%s] failed to find property %s!\n", FUNCTION_TRACE, name.c_str());
-#endif
+                LOG_ERROR("[%s] failed to find property %s!\n", FUNCTION_TRACE, name.c_str());
                 continue;
             }
 
@@ -274,10 +206,7 @@ void Deserialise_RTTIObjectFromXmlNode(TypeBase* type, RTTIObject* base, pugi::x
                     TypeBase* itemType = TypeRegister::GetRegisteredType(itemTypeName);
                     if (itemType == nullptr)
                     {
-#ifdef DEBUG
-                        Console::SetTextColor(Console::Red);
-                        Console::Write("[%s] type doesn't exist %s!\n", FUNCTION_TRACE, itemTypeName.c_str());
-#endif
+                        LOG_ERROR("[%s] type doesn't exist %s!\n", FUNCTION_TRACE, itemTypeName.c_str());
                         continue;
                     }
 
@@ -321,10 +250,7 @@ void Deserialise_RTTIObjectFromXmlNode(TypeBase* type, RTTIObject* base, pugi::x
                     TypeBase* itemType = TypeRegister::GetRegisteredType(itemTypeName);
                     if (itemType == nullptr)
                     {
-#ifdef DEBUG
-                        Console::SetTextColor(Console::Red);
-                        Console::Write("[%s] type doesn't exist %s!\n", FUNCTION_TRACE, itemTypeName.c_str());
-#endif
+                        LOG_ERROR("[%s] type doesn't exist %s!\n", FUNCTION_TRACE, itemTypeName.c_str());
                         continue;
                     }
 
@@ -352,10 +278,8 @@ void Deserialise_RTTIObjectFromXmlNode(TypeBase* type, RTTIObject* base, pugi::x
                         propList->AddValue(base, value);
                     }
                 }
-#ifdef DEBUG
-                Console::SetTextColor(Console::LightYellow);
-                Console::Write("[%s] list property not supported yet %s!\n", FUNCTION_TRACE, name.c_str());
-#endif
+
+                LOG_WARNING("[%s] list property not supported yet %s!\n", FUNCTION_TRACE, name.c_str());
             }
             else if (prop->IsRTTIObjectProperty())
             {
@@ -392,20 +316,12 @@ Ref<RTTIObject> Deserialise::RTTIObjectFromXML(const std::string& filepath)
 {
     const std::string realpath = FileVolumeManager::GetRealPathFromVirtualPath(filepath).fullpath;
 
-#ifdef DEBUG
-
-    Console::SetTextColor(Console::Yellow);
-    Console::Write("[%s] Loading %s...\n", FUNCTION_TRACE, filepath.c_str());
-
-#endif
+    LOG_INFO("[%s] Loading %s...\n", FUNCTION_TRACE, filepath.c_str());
 
     pugi::xml_document file;
     if (!file.load_file(realpath.c_str()))
     {
-#ifdef DEBUG
-        Console::SetTextColor(Console::Red);
-        Console::Write("[%s] Failed to load %s!\n", FUNCTION_TRACE, filepath.c_str());
-#endif
+        LOG_ERROR("[%s] Failed to load %s!\n", FUNCTION_TRACE, filepath.c_str());
         return nullptr;
     }
 
@@ -416,10 +332,7 @@ Ref<RTTIObject> Deserialise::RTTIObjectFromXML(const std::string& filepath)
     TypeBase* type = TypeRegister::GetRegisteredType(typeName);
     if (type == nullptr)
     {
-#ifdef DEBUG
-        Console::SetTextColor(Console::Red);
-        Console::Write("[%s] failed to find type %s!\n", FUNCTION_TRACE, typeName.c_str());
-#endif
+        LOG_ERROR("[%s] failed to find type %s!\n", FUNCTION_TRACE, typeName.c_str());
         return nullptr;
     }
 

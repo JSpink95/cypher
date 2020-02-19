@@ -11,6 +11,7 @@
 #include "Core/Object.h"
 #include "Core/ObjectManager.h"
 #include "Core/Utility/ParseUtils.h"
+#include "Core/Utility/Console.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -188,9 +189,7 @@ bool ReadEntity(pugi::xml_node node, Ref<Object> object)
         }
         else
         {
-#if DEBUG
-            printf("Unrecognised blueprint property type %s.\n", name.c_str());
-#endif
+            LOG_WARNING("Unrecognised blueprint property type %s.\n", name.c_str());
         }
     }
 }
@@ -239,7 +238,7 @@ void LevelLoader::LoadFromFile(const std::string& filepath, Level& level)
             }
             else
             {
-                printf("Invalid nodeName '%s'.\n", nodeName.c_str());
+                LOG_ERROR("Invalid nodeName '%s'.\n", nodeName.c_str());
             }
         }
     }

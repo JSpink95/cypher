@@ -8,6 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
 #include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -112,10 +113,7 @@ void MaterialLibrary::InitialiseImpl()
             for (pugi::xml_node materialNode : root)
             {
                 const char* filepath = materialNode.attribute("filepath").as_string();
-
-#ifdef DEBUG
-                printf("Loading material('%s')\n", filepath);
-#endif
+                LOG_INFO("Loading material('%s')\n", filepath);
 
                 RegisterMaterialImpl(filepath, filepath);
             }

@@ -8,6 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
 #include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -132,10 +133,7 @@ void TextureLibrary::InitialiseImpl()
 
                 std::string id = filepath;
                 id = id.substr(0, id.find_last_of("."));
-
-#ifdef DEBUG
-                printf("Loading texture('%s')\n", id, filepath);
-#endif
+                LOG_INFO("Loading texture('%s')\n", id, filepath);
 
                 RegisterTextureImpl(id, filepath);
             }

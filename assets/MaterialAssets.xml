@@ -3,6 +3,7 @@
   <material filepath="assets:\materials\wireframe.xml"/>
   <material filepath="assets:\materials\mesh-lit.xml"/>
   <material filepath="assets:\materials\mesh-lit-tex.xml"/>
+  <material filepath="assets:\materials\mesh-emissive.xml"/>
   <material filepath="assets:\materials\pp-image-render.xml"/>
   <material filepath="assets:\materials\pp-overlay.xml"/>
   <material filepath="assets:\materials\pp-ssao.xml"/>
@@ -10,6 +11,7 @@
   <material filepath="assets:\materials\pp-ssl.xml"/>
   <material filepath="assets:\materials\pp-guassian-blur.xml"/>
   <material filepath="assets:\materials\pp-bloom.xml"/>
+  <material filepath="assets:\materials\pp-extract-bloom.xml"/>
   <material filepath="assets:\materials\shadow-pass.xml"/>
   <material filepath="assets:\materials\particle-pos-size.xml"/>
 

@@ -8,6 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
 #include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -139,9 +140,7 @@ void MeshLibrary::InitialiseImpl()
                 const bool hasNormals = meshNode.attribute("load_normals").as_bool(true);
                 const f32 scale = meshNode.attribute("scale").as_float(1.0f);
 
-#ifdef DEBUG
-                printf("Loading mesh('%s')\n", filepath);
-#endif
+                LOG_INFO("Loading mesh('%s')\n", filepath);
 
                 Ref<Mesh> mesh = std::make_shared<Mesh>(filepath);
                 RegisterMeshImpl(filepath, mesh);

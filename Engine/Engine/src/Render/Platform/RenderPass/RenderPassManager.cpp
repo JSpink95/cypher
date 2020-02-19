@@ -14,6 +14,7 @@
 #include "Render/Platform/RenderPass/RenderPassShadow.h"
 #include "Render/Platform/RenderPass/RenderPassParticle.h"
 #include "Render/Platform/RenderPass/RenderPassSSL.h"
+#include "Render/Platform/RenderPass/RenderPassCoreCombiner.h"
 #include "Render/Platform/RenderPass/RenderPassBloom.h"
 #include "Render/Platform/RenderPass/RenderPassSSAO.h"
 //#include "Render/Platform/RenderPass/RenderPassDebug.h"
@@ -60,6 +61,7 @@ void RenderPassManager::InitialiseImpl()
     passes.emplace(RenderPassShadow::Id, std::make_shared<RenderPassShadow>());
     passes.emplace(RenderPassParticle::Id, std::make_shared<RenderPassParticle>());
     passes.emplace(RenderPassSSL::Id, std::make_shared<RenderPassSSL>());
+    passes.emplace(RenderPassCoreCombiner::Id, std::make_shared<RenderPassCoreCombiner>());
     passes.emplace(RenderPassBloom::Id, std::make_shared<RenderPassBloom>());
     passes.emplace(RenderPassSSAO::Id, std::make_shared<RenderPassSSAO>());
 
@@ -80,13 +82,15 @@ void RenderPassManager::SortPasses()
 {
     // sort based on pass priority (-infinity to +infinity integer)
     // for reference the standard pass priorities are:
-    // Lit      -   0
-    // Unlit    -  50
-    // Shadow   - 100
-    // Particle - 150
-    // SSL      - 200
-    // SSAO     - 250 <- quite important that this one is last. mainly just for ease of use.
-    // Debug    - 300
+    // Lit          -   0
+    // Unlit        -  50
+    // Shadow       - 100
+    // Particle     - 150
+    // SSL          - 200
+    // CoreCombiner - 201 <- combines previous phases (SSL + Unlit + Particle)
+    // Bloom        - 225
+    // SSAO         - 250 <- quite important that this one is last. mainly just for ease of use.
+    // Debug        - 300
 
     renderOrder.clear();
     auto transformer = [](const std::pair<const HashedString, Ref<RenderPassBase>>& pass) -> HashedString { return pass.first; };
@@ -143,7 +147,7 @@ void RenderPassManager::RenderImpl()
 
 uint2 RenderPassManager::GetFramebufferSizeImpl() const
 {
-    return (uint2)(float2(Display::GetSize()) / 1.0f);
+    return (uint2)(float2(Display::GetSize()) / 2.0f);
 }
 
 //////////////////////////////////////////////////////////////////////////

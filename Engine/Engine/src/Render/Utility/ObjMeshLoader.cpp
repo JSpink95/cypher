@@ -8,6 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
 #include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -296,7 +297,7 @@ std::vector<ObjMeshObject> ObjMeshLoader::LoadObjFromFile(const std::string& fil
                 }
 
                 default:
-                    printf("%c is not a supported obj vertex type!\n", type);
+                    LOG_ERROR("%c is not a supported obj vertex type!\n", type);
                     break;
             }
         }

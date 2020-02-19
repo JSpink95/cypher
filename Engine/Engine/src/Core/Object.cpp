@@ -132,13 +132,13 @@ namespace RTTI
         TypeBase* type = TypeRegister::GetRegisteredType(classname);
         if (type == nullptr)
         {
-            printf("Type does not exist %s\n", classname.c_str());
+            LOG_ERROR("Type does not exist %s\n", classname.c_str());
             return { ComponentId::Create(owner->GetId(), "invalid"), nullptr };
         }
 
         if (!type->IsTypeOf(Component::ClassName))
         {
-            printf("Type is not typeof Component %s\n", classname.c_str());
+            LOG_ERROR("Type is not typeof Component %s\n", classname.c_str());
             return { ComponentId::Create(owner->GetId(), "invalid"), nullptr };
         }
         
@@ -183,7 +183,7 @@ namespace RTTI
 
         if (object == nullptr)
         {
-            printf("Failed to create object! %s\n", id.GetStringId().c_str());
+            LOG_ERROR("Failed to create object! %s\n", id.GetStringId().c_str());
             return nullptr;
         }
 

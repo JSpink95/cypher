@@ -78,8 +78,8 @@ void RenderPassSSAO::OnRenderCreate()
     float3 noisePixels[4 * 4];
     for (u32 index = 0; index < 4 * 4; ++index)
     {
-        noisePixels[index].x = global_random::as_float(-1.0f, 1.0f);
-        noisePixels[index].y = global_random::as_float(-1.0f, 1.0f);
+        noisePixels[index].x = Random::Float(-1.0f, 1.0f);
+        noisePixels[index].y = Random::Float(-1.0f, 1.0f);
         noisePixels[index].z = 0.0f;
     }
 
@@ -101,15 +101,15 @@ void RenderPassSSAO::OnRenderCreate()
     for (u32 index = 0; index < SsaoInput::MaxKernelSize; ++index)
     {
         vec3 sample(
-            global_random::as_float(-1.0f, 1.0f),
-            global_random::as_float(-1.0f, 1.0f),
-            global_random::as_float( 0.0f, 1.0f)
+            Random::Float(-1.0f, 1.0f),
+            Random::Float(-1.0f, 1.0f),
+            Random::Float( 0.0f, 1.0f)
         );
 
         sample = glm::normalize(sample);
-        sample *= global_random::as_float(0.0f, 1.0f);
+        sample *= Random::Float(0.0f, 1.0f);
 
-        f32 scale = (f32)index / 32.0f;
+        f32 scale = (f32)index / 31.0f;
         scale = glm::mix(0.1f, 1.0f, scale * scale);
         sample *= scale;
 

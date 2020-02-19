@@ -23,8 +23,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#include "Render/Platform/RenderPass/RenderPassSSL.h"
 #include "Render/Platform/RenderPass/RenderPassManager.h"
+#include "Render/Platform/RenderPass/RenderPassCoreCombiner.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -54,12 +54,15 @@ void RenderPassBloom::OnRenderCreate()
 {
     Super::OnRenderCreate();
 
+    extractBloomMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-extract-bloom.xml");
     guassianBlurMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-guassian-blur.xml");
     bloomBlendMaterial = MaterialLibrary::GetMaterial("assets:\\materials\\pp-bloom.xml");
 
     FramebufferData fbInit;
     fbInit.resolution = RenderPassManager::GetFramebufferSize();
     fbInit.colorBuffers.at(Bloom::Output) = { true, true };
+
+    extractBloom = GetApiManager()->CreateFramebuffer(fbInit);
 
     framebuffers[0] = GetApiManager()->CreateFramebuffer(fbInit);
     framebuffers[1] = GetApiManager()->CreateFramebuffer(fbInit);
@@ -98,48 +101,75 @@ void RenderPassBloom::OnPerform()
     Super::OnPerform();
 
     Ref<Mesh> screen = MeshLibrary::GetMesh("engine:\\mesh\\screen-quad");
-    Ref<RenderPassSSL> ssl = RenderPassManager::GetPassAsType<RenderPassSSL>(RenderPassSSL::Id);
+    Ref<RenderPassCoreCombiner> coreCombinerPass = RenderPassManager::GetPassAsType<RenderPassCoreCombiner>();
 
-    if (guassianBlurMaterial != nullptr && bloomBlendMaterial != nullptr)
+    if (screen != nullptr)
     {
-        GuassianBlurData blur = { false };
-        BloomData bloomData = { 1.0f };
-
-        const u32 blendInterations = 4u;
-        for (u32 idx = 0u; idx < blendInterations; ++idx)
+        // extract bloom
+        if (coreCombinerPass != nullptr)
         {
-            const bool firstIteration = (idx == 0u);
-
-            Renderer::BeginScene(framebuffers[blur.horizontal]);
+            Renderer::BeginScene(extractBloom);
 
             GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
             GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-            guassianBlurMaterial->SetParameterBlock("GuassianData", blur);
-            guassianBlurMaterial->SetParameterValue<MaterialParameterTexture2D>(
-                "uTexture",
-                firstIteration ? ssl->GetAttachment(SSL::BloomOutput)->ToTexture() : framebuffers[!blur.horizontal]->GetColorBuffer(Bloom::Output)->ToTexture()
-            );
+            extractBloomMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture", coreCombinerPass->GetAttachment(GBuffer::CB_Albedo)->ToTexture());
 
-            screen->Render(guassianBlurMaterial, fmat4(1.0f));
+            screen->Render(extractBloomMaterial, fmat4(1.0f));
 
             Renderer::EndScene();
-
-            blur.horizontal = !blur.horizontal;
         }
 
-        Renderer::BeginScene(bloom);
+        // guassian blur the bloom
+        Ref<Texture2D> blurredResult = nullptr;
+        if (guassianBlurMaterial != nullptr)
+        {
+            GuassianBlurData blur = { false };
 
-        GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
-        GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+            const u32 blendInterations = 10u;
+            for (u32 idx = 0u; idx < blendInterations; ++idx)
+            {
+                const bool firstIteration = (idx == 0u);
 
-        bloomBlendMaterial->SetParameterBlock("BloomData", bloomData);
-        bloomBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uBloomBlur", framebuffers[!blur.horizontal]->GetColorBuffer(Bloom::Output)->ToTexture());
-        bloomBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uScene", ssl->GetAttachment(SSL::ColorOutput)->ToTexture());
+                Renderer::BeginScene(framebuffers[blur.horizontal]);
 
-        screen->Render(bloomBlendMaterial, fmat4(1.0f));
+                GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
+                GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        Renderer::EndScene();
+                Ref<Texture2D> texture = firstIteration
+                    ? extractBloom->GetColorBuffer(GBuffer::CB_Albedo)->ToTexture()
+                    : framebuffers[!blur.horizontal]->GetColorBuffer(Bloom::Output)->ToTexture();
+
+                guassianBlurMaterial->SetParameterBlock("GuassianData", blur);
+                guassianBlurMaterial->SetParameterValue<MaterialParameterTexture2D>("uTexture", texture);
+
+                screen->Render(guassianBlurMaterial, fmat4(1.0f));
+
+                Renderer::EndScene();
+
+                blur.horizontal = !blur.horizontal;
+            }
+
+            blurredResult = framebuffers[!blur.horizontal]->GetColorBuffer(Bloom::Output)->ToTexture();
+        }
+
+        if (bloomBlendMaterial != nullptr)
+        {
+            BloomData bloomData = { 0.5f };
+
+            Renderer::BeginScene(bloom);
+
+            GlCall(glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
+            GlCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+            bloomBlendMaterial->SetParameterBlock("BloomData", bloomData);
+            bloomBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uBloomBlur", blurredResult);
+            bloomBlendMaterial->SetParameterValue<MaterialParameterTexture2D>("uScene", coreCombinerPass->GetAttachment(GBuffer::CB_Albedo)->ToTexture());
+
+            screen->Render(bloomBlendMaterial, fmat4(1.0f));
+
+            Renderer::EndScene();
+        }
     }
 }
 

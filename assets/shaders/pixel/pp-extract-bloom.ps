@@ -1,0 +1,20 @@
+#version 440 core
+
+in vec2 fTexcoord;
+
+uniform sampler2D uTexture;
+
+layout(location = 0) out vec4 oBloom;
+
+void main()
+{
+	vec3 pixel = texture(uTexture, fTexcoord).rgb;
+	
+	// check whether fragment output is higher than threshold, if so output as brightness color
+    const float brightness = dot(pixel, vec3(0.2126, 0.7152, 0.0722));
+
+    if(brightness > 1.0)
+        oBloom = vec4(pixel, 1.0);
+    else
+        oBloom = vec4(0.0, 0.0, 0.0, 1.0);
+}

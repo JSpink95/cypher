@@ -28,6 +28,11 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+const GBuffer::Color Unlit::ColorOutput = GBuffer::CB_Albedo;
+const GBuffer::Color Unlit::DepthOutput = GBuffer::CB_DepthStencil;
+
+//////////////////////////////////////////////////////////////////////////
+
 RenderPassUnlit::RenderPassUnlit()
 {
 
@@ -50,8 +55,8 @@ void RenderPassUnlit::OnRenderCreate()
 
     FramebufferData fb;
     fb.resolution = RenderPassManager::GetFramebufferSize();
-    fb.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
-    fb.colorBuffers.at(GBuffer::CB_DepthStencil) = { true, true };
+    fb.colorBuffers.at(Unlit::ColorOutput) = { true, true };
+    fb.colorBuffers.at(Unlit::DepthOutput) = { true, true };
 
     framebuffer = GetApiManager()->CreateFramebuffer(fb);
 }

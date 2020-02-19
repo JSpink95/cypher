@@ -22,11 +22,15 @@
 class Window;
 class Event;
 class WindowCloseEvent;
+class WindowResizeEvent;
 
 //////////////////////////////////////////////////////////////////////////
 
 class Application
 {
+public:
+    using WindowResizeListener = std::function<void(const uint2& newWindowSize)>;
+
 public:
     Application();
     virtual ~Application();
@@ -69,7 +73,10 @@ protected:
 
     virtual void OnEvent(Event& evt);
     virtual void OnWindowClosed(WindowCloseEvent& closeEvent);
+    virtual void OnWindowResized(WindowResizeEvent& resizeEvent);
     virtual void OnMouseMoved(MouseMovedEvent& mouseMovedEvent);
+
+    void SubscribeWindowResizeListener(WindowResizeListener listener);
 
 protected:
     Ref<Window> window;
@@ -80,6 +87,9 @@ private:
 
     bool mainThreadInitialised = false;
     bool renderThreadInitialised = false;
+
+private:
+    std::vector<WindowResizeListener> windowResizeListeners;
 
 public:
     static inline Application* GetInstance() { return instance; }

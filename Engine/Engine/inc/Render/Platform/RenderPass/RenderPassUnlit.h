@@ -12,6 +12,15 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+class Unlit
+{
+public:
+    static const GBuffer::Color ColorOutput;
+    static const GBuffer::Color DepthOutput;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class RenderPassUnlit : public RenderPassBase
 {
     DECLARE_DERIVED(RenderPassUnlit, RenderPassBase)

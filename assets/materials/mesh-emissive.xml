@@ -1,0 +1,11 @@
+<material id="mesh-lit">
+  <program>
+    <shader type="vertex" path="assets:\shaders\vertex\mesh-lit.vs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\emissive-mesh.ps"/>
+  </program>
+  <parameters>
+    <parameter id="PerFrame" type="MaterialBlock::PerFrame" binding="0"/>
+    <parameter id="PerObject" type="MaterialBlock::PerObject" binding="1"/>
+    <parameter id="EmissiveData" type="MaterialBlock::Custom" binding="2" memory_size="16"/>
+  </parameters>
+</material>

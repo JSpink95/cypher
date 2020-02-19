@@ -59,7 +59,7 @@ static inline Ref<TObject> CreateObject(const ObjectId& id)
         return newObject;
     }
     
-    printf("[ObjectManager] has not been initialised!\n");
+    LOG_ERROR("Failed to create new Object (%s)! [ObjectManager] has not been initialised!\n", id.GetStringId().c_str());
     return nullptr;
 }
 

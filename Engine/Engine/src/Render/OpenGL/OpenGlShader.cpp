@@ -13,6 +13,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
 #include "Core/Utility/FileUtils.h"
 #include "Core/Utility/FileVolumeManager.h"
 
@@ -119,7 +120,7 @@ s32 LoadAndCompileShaderFromFile(const s32 shadertype, const std::string& filepa
     std::optional<std::string> loadedsrc = File::LoadAsString(convertedFilePath);
     if (!loadedsrc)
     {
-        printf("Couldn't load shader <%s>.\n", convertedFilePath.c_str());
+        LOG_ERROR("Couldn't load shader <%s>.\n", convertedFilePath.c_str());
         return -1;
     }
 
@@ -140,7 +141,7 @@ s32 LoadAndCompileShaderFromFile(const s32 shadertype, const std::string& filepa
         std::vector<char> info(infoLength);
         glGetShaderInfoLog(shader, infoLength, nullptr, &info.at(0));
 
-        printf("%s\n", &info.at(0));
+        LOG_ERROR("%s\n", &info.at(0));
         return -1;
     }
 
@@ -180,7 +181,7 @@ OpenGlShader::OpenGlShader(const std::string& filepath)
 
             std::vector<char> info(infoLength);
             glGetProgramInfoLog(id, info.size(), nullptr, &info.at(0));
-            printf("%s\n", &info.at(0));
+            LOG_ERROR("%s\n", &info.at(0));
         }
     }
 }
@@ -217,7 +218,7 @@ OpenGlShader::OpenGlShader(const pugi::xml_node& shaderRoot)
 
         std::vector<char> info(infoLength);
         glGetProgramInfoLog(id, info.size(), nullptr, &info.at(0));
-        printf("%s\n", &info.at(0));
+        LOG_ERROR("%s\n", &info.at(0));
     }
 }
 

@@ -151,7 +151,7 @@ PhysicsWorld::RayHit PhysicsWorld::RayCast(const float3& start, const float3& di
 {
     //if (!GetPhysicsThread()->IsCurrentThread())
     //{
-    //    printf("Attempted raycast from outside of physics thread!");
+    //    LOG_ERROR("Attempted raycast from outside of physics thread!");
     //    return {};
     //}
 

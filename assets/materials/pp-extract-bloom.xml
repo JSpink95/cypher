@@ -1,0 +1,9 @@
+<material id="pp-bloom">
+  <program>
+    <shader type="vertex" path="assets:\shaders\vertex\pp-passthrough.vs"/>
+    <shader type="pixel" path="assets:\shaders\pixel\pp-extract-bloom.ps"/> 
+  </program>
+  <parameters>
+    <parameter id="uTexture" type="texture2D" binding="0" value="engine:\textures\white"/>
+  </parameters>
+</material>

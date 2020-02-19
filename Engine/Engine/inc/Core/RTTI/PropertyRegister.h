@@ -12,6 +12,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
+
+//////////////////////////////////////////////////////////////////////////
+
 #include "Core/RTTI/TypeRegister.h"
 #include "Core/RTTI/RTTIEditorHelpers.h"
 
@@ -191,12 +195,12 @@ public:
 
     virtual inline void SetValue(void* base, void* data) override final
     {
-        printf("[Property_ListBase::SetValue(void*,void*)] - Not implemented.\n");
+        LOG_WARNING("[Property_ListBase::SetValue(void*,void*)] - Not implemented.\n");
     }
 
     virtual inline void SetValue(void* base, const std::string& value) override final
     {
-        printf("[Property_ListBase::SetValue(void*,const std::string&)] - Not implemented.\n");
+        LOG_WARNING("[Property_ListBase::SetValue(void*,const std::string&)] - Not implemented.\n");
     }
 
 public:
@@ -247,12 +251,12 @@ public:
 
     virtual inline void SetValue(void* base, void* data) override final
     {
-        printf("[Property_MapBase::SetValue(void*,void*)] - Not implemented.\n");
+        LOG_WARNING("[Property_MapBase::SetValue(void*,void*)] - Not implemented.\n");
     }
 
     virtual inline void SetValue(void* base, const std::string& value) override final
     {
-        printf("[Property_MapBase::SetValue(void*,const std::string&)] - Not implemented.\n");
+        LOG_WARNING("[Property_MapBase::SetValue(void*,const std::string&)] - Not implemented.\n");
     }
 
 public:

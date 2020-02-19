@@ -45,8 +45,10 @@ public:
     virtual void OnFinish() override;
 
 private:
+    Ref<Material> extractBloomMaterial;
     Ref<Material> guassianBlurMaterial;
     Ref<Material> bloomBlendMaterial;
+    Ref<Framebuffer> extractBloom;
     Ref<Framebuffer> framebuffers[2];
     Ref<Framebuffer> bloom;
 };

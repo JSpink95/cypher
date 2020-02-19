@@ -252,6 +252,8 @@ void Application::OnEvent(Event& event)
 {
     SystemEventDispatcher dispatcher(event);
     dispatcher.Dispatch<WindowCloseEvent>(BIND_FUNCTION_OneParam(Application::OnWindowClosed));
+    dispatcher.Dispatch<WindowResizeEvent>(BIND_FUNCTION_OneParam(Application::OnWindowResized));
+
     //dispatcher.Dispatch<MouseMovedEvent>(BIND_FUNCTION_OneParam(Application::OnMouseMoved));
 }
 
@@ -264,8 +266,25 @@ void Application::OnWindowClosed(WindowCloseEvent& closeEvent)
 
 //////////////////////////////////////////////////////////////////////////
 
+void Application::OnWindowResized(WindowResizeEvent& resizeEvent)
+{
+    for (WindowResizeListener listener : windowResizeListeners)
+    {
+        listener(resizeEvent.GetResolution());
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void Application::OnMouseMoved(MouseMovedEvent& mouseMovedEvent)
 {
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void Application::SubscribeWindowResizeListener(WindowResizeListener listener)
+{
+    windowResizeListeners.push_back(listener);
 }
 
 //////////////////////////////////////////////////////////////////////////

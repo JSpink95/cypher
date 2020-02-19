@@ -43,7 +43,7 @@ namespace RenderPassType
 {
     enum Enum
     {
-        Lit, Unlit, Shadow, Particle, SSAO, SSL, Bloom, Debug, Custom, Final, Max,
+        Lit, Unlit, Shadow, Particle, SSAO, SSL, CoreCombiner, Bloom, Debug, Custom, Final, Max,
     };
 }
 

@@ -8,6 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+#include "Core/Utility/Console.h"
 #include "Core/Utility/FileVolumeManager.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -55,9 +56,16 @@ static const std::unordered_map<std::string, MaterialParameterType::Enum> Materi
 
     // blocks
     std::make_pair("materialblock-perframe", MaterialParameterType::PerFrameBlock),
+    std::make_pair("MaterialBlock::PerFrame", MaterialParameterType::PerFrameBlock),
+
     std::make_pair("materialblock-perobject", MaterialParameterType::PerObjectBlock),
+    std::make_pair("MaterialBlock::PerObject", MaterialParameterType::PerObjectBlock),
+
     std::make_pair("materialblock-time", MaterialParameterType::TimeBlock),
+    std::make_pair("MaterialBlock::Time", MaterialParameterType::TimeBlock),
+
     std::make_pair("materialblock-custom", MaterialParameterType::CustomBlock),
+    std::make_pair("MaterialBlock::Custom", MaterialParameterType::CustomBlock),
 };
 
 static const std::unordered_map<std::string, size_t> MaterialTypeMemorySize =
@@ -70,9 +78,16 @@ static const std::unordered_map<std::string, size_t> MaterialTypeMemorySize =
 
     // blocks
     std::make_pair("materialblock-perframe", sizeof(MaterialFrameProperties)),
+    std::make_pair("MaterialBlock::PerFrame", sizeof(MaterialFrameProperties)),
+
     std::make_pair("materialblock-perobject", sizeof(MaterialObjectProperties)),
+    std::make_pair("MaterialBlock::PerObject", sizeof(MaterialObjectProperties)),
+
     std::make_pair("materialblock-time", sizeof(MaterialTimeProperties)),
+    std::make_pair("MaterialBlock::Time", sizeof(MaterialTimeProperties)),
+
     std::make_pair("materialblock-custom", 0u),
+    std::make_pair("MaterialBlock::Custom", 0u),
 
     // all other parameter types are invalid for use in a memory block
 };
@@ -116,7 +131,7 @@ void ParseMaterialXmlNode_MaterialBlock(Material* material, pugi::xml_node root,
     }
     else if (memorySize == 0)
     {
-        printf("Could not located size for material type '%s'!\n", root.attribute("type").as_string());
+        LOG_ERROR("Could not locate size for material type '%s'!\n", root.attribute("type").as_string());
         return;
     }
 

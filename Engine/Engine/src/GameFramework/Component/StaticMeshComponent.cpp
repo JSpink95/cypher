@@ -27,6 +27,7 @@
 
 #include "Render/Platform/RenderPass/RenderPassManager.h"
 #include "Render/Platform/RenderPass/RenderPassLit.h"
+#include "Render/Platform/RenderPass/RenderPassUnlit.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -49,7 +50,7 @@ void StaticMeshComponent::OnConstruct()
     Super::OnConstruct();
 
     renderFunction.enabled = true;
-    RenderPassManager::GetPassAsType<RenderPassLit>(RenderPassLit::Id)->AddRenderFunction(&renderFunction, false);
+    RenderPassManager::GetPassAsType<RenderPassUnlit>(RenderPassUnlit::Id)->AddRenderFunction(&renderFunction, false);
 }
 
 //////////////////////////////////////////////////////////////////////////

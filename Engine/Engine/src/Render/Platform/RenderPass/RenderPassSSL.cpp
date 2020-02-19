@@ -45,7 +45,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 const GBuffer::Color SSL::ColorOutput = GBuffer::CB_Albedo;
-const GBuffer::Color SSL::BloomOutput = GBuffer::CB_ExtraColor0;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -69,8 +68,7 @@ void RenderPassSSL::OnRenderCreate()
 
     FramebufferData fb;
     fb.resolution = RenderPassManager::GetFramebufferSize();
-    fb.colorBuffers.at(SSL::ColorOutput) = { true, false };
-    fb.colorBuffers.at(SSL::BloomOutput) = { true, true };
+    fb.colorBuffers.at(SSL::ColorOutput) = { true, true };
 
     framebuffer = GetApiManager()->CreateFramebuffer(fb);
 
