@@ -210,4 +210,19 @@ namespace RTTI
     }
 
     //////////////////////////////////////////////////////////////////////////
+
+    template<> void DisplayEdit<ComponentId>(const std::string& id, ComponentId& editable)
+    {
+        char buffer[32];
+        const std::string id = editable.GetStringId();
+        std::memcpy(buffer, id.c_str(), id.length() < 32 ? id.length() : 32);
+
+        const bool changed = ImGui::InputText(id.c_str(), buffer, 32);
+        if (changed)
+        {
+            // edit it
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
 }

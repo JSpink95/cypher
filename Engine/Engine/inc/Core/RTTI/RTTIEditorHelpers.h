@@ -32,6 +32,7 @@
 
 class Mesh;
 class Material;
+struct ComponentId;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -53,7 +54,7 @@ namespace RTTI
     void DisplayListEdit(const std::string& id, TList<TValue>& list, s32& selected);
 
     template<template<typename, typename> typename TMap, typename TKey, typename TValue>
-    void DisplayMapEdit(const std::string& id, TMap<TKey, TValue>& map);
+    void DisplayMapEdit(const std::string& id, TMap<TKey, TValue>& map, TKey& newKeyId);
 
 //////////////////////////////////////////////////////////////////////////
 // specialised displays
@@ -68,6 +69,7 @@ template<> void DisplayEdit<Ref<Material>>(const std::string& id, Ref<Material>&
 template<> void DisplayEdit<Ref<Mesh>>(const std::string& id, Ref<Mesh>& editable);
 template<> void DisplayEdit<Ref<RTTIObject>>(const std::string& id, Ref<RTTIObject>& value);
 template<> void DisplayEdit<RTTIObject>(const std::string& id, RTTIObject& value);
+template<> void DisplayEdit<ComponentId>(const std::string& id, ComponentId& value);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -150,21 +152,41 @@ void RTTI::DisplayListEdit(const std::string& id, TList<TValue>& list, s32& sele
 //////////////////////////////////////////////////////////////////////////
 
 template<template<typename, typename> typename TMap, typename TKey, typename TValue>
-void RTTI::DisplayMapEdit(const std::string& id, TMap<TKey, TValue>& map)
+void RTTI::DisplayMapEdit(const std::string& id, TMap<TKey, TValue>& map, TKey& newKeyId)
 {
-    s32 element = 0;
-    for (auto&[key, value] : map)
+    if (ImGui::TreeNode(id.c_str()))
     {
-        const std::string keyId = std::to_string(element) + ":key";
-        const std::string valueId = std::to_string(element) + ":value";
+        std::vector<TypeBase*> types;
+        TypeRegister::GetRegisteredTypesOfBase<TValue::element_type>(types);
 
-        if (ImGui::TreeNode(keyId.c_str()))
+        std::vector<std::string> strings;
+        std::transform(types.begin(), types.end(), std::back_inserter(strings), [](TypeBase* type) -> std::string { return type->GetTypeName(); });
+
+        ImGui::Combo("##list_types", &selected, RTTI::Helper::ImGuiStringGetter, &strings, strings.size());
+
+        RTTI::DisplayEdit<TKey>(id + ":key", newKeyId);
+        ImGui::SameLine();
+
+        const bool add = ImGui::Button("+##add_item");
+
+        for (auto&[key, value] : map)
         {
-            RTTI::DisplayEdit<Ref<RTTIObject>>(valueId, std::dynamic_pointer_cast<RTTIObject>(value));
-            ImGui::TreePop();
+            const std::string keyId = RTTI::ToString<TKey>(key) + "##key";
+            const std::string valueId = keyId + "##value";
+
+            if (ImGui::TreeNode(keyId.c_str()))
+            {
+                RTTI::DisplayEdit<Ref<RTTIObject>>(valueId, std::dynamic_pointer_cast<RTTIObject>(value));
+                ImGui::TreePop();
+            }
         }
 
-        element += 1;
+        if (add)
+        {
+
+        }
+
+        ImGui::TreePop();
     }
 }
 

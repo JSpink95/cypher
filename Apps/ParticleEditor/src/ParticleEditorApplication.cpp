@@ -378,6 +378,7 @@ void ParticleEditorApplication::OnImGuiRender()
 {
     Application::OnImGuiRender();
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 2.0f);
     ImGui::SetNextWindowPos(ImVec2(4, 8));
     if (ImGui::Begin("Objects", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
     {
@@ -390,12 +391,12 @@ void ParticleEditorApplication::OnImGuiRender()
         if (activeParticleSystem)
         {
             RTTI::DisplayEdit<Ref<RTTIObject>>("ParticleSystem", std::dynamic_pointer_cast<RTTIObject>(activeParticleSystem));
-            //RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
         }
 
         ImGui::End();
     }
 
+    ImGui::PopStyleVar();
 }
 
 //////////////////////////////////////////////////////////////////////////
