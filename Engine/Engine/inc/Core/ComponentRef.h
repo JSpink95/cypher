@@ -16,8 +16,9 @@ class ComponentRefBase: public RTTIObject
 {
     DECLARE_OBJECT(ComponentRefBase, RTTIObject)
 public:
-    virtual void OnConstruct(Object* owner) {}
-    virtual void OnComponentChanged(Object* owner) {}
+    virtual void OnConstruct(Object* owner);
+    virtual void OnComponentChanged(Object* owner);
+
 public:
     std::string componentName = "";
 };

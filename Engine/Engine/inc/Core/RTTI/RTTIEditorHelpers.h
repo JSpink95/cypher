@@ -67,6 +67,7 @@ template<> void DisplayEdit<std::string>(const std::string& id, std::string& edi
 template<> void DisplayEdit<Ref<Material>>(const std::string& id, Ref<Material>& editable);
 template<> void DisplayEdit<Ref<Mesh>>(const std::string& id, Ref<Mesh>& editable);
 template<> void DisplayEdit<Ref<RTTIObject>>(const std::string& id, Ref<RTTIObject>& value);
+template<> void DisplayEdit<RTTIObject>(const std::string& id, RTTIObject& value);
 
 //////////////////////////////////////////////////////////////////////////
 

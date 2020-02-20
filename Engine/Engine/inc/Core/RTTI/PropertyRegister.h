@@ -298,12 +298,23 @@ public:
 
     virtual void DisplayEdit(void* base) override
     {
-        if (IsRTTIObjectProperty() && IsRefType())
+        const bool isRTTI = IsRTTIObjectProperty();
+        const bool isRefType = IsRefType();
+
+        if (isRTTI && isRefType)
         {
             Ref<RTTIObject>* object = AsType<Ref<RTTIObject>>(base);
             if (object != nullptr)
             {
                 RTTI::DisplayEdit<Ref<RTTIObject>>(propertyName, *object);
+            }
+        }
+        else if (isRTTI)
+        {
+            RTTIObject* object = AsType<RTTIObject>(base);
+            if (object != nullptr)
+            {
+                RTTI::DisplayEdit<RTTIObject>(propertyName, *object);
             }
         }
         else

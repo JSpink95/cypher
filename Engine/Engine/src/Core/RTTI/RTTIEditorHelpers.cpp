@@ -181,24 +181,31 @@ namespace RTTI
     {
         if (editable)
         {
-            TypeBase* type = TypeRegister::GetRegisteredType(editable->GetTypeName());
-            while (type != nullptr)
+            DisplayEdit<RTTIObject>(id, *editable);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    template<> void DisplayEdit<RTTIObject>(const std::string& id, RTTIObject& editable)
+    {
+        TypeBase* type = TypeRegister::GetRegisteredType(editable.GetTypeName());
+        while (type != nullptr)
+        {
+            if (type->GetPropertyCount() > 0)
             {
-                if (type->GetPropertyCount() > 0)
+                if (ImGui::TreeNode(type->GetTypeName().c_str()))
                 {
-                    if (ImGui::TreeNode(type->GetTypeName().c_str()))
+                    for (TypeBase::property_iterator it = type->property_begin(); it != type->property_end(); ++it)
                     {
-                        for (TypeBase::property_iterator it = type->property_begin(); it != type->property_end(); ++it)
-                        {
-                            it->second->DisplayEdit(editable.get());
-                        }
-
-                        ImGui::TreePop();
+                        it->second->DisplayEdit(&editable);
                     }
-                }
 
-                type = type->GetBaseType();
+                    ImGui::TreePop();
+                }
             }
+
+            type = type->GetBaseType();
         }
     }
 
