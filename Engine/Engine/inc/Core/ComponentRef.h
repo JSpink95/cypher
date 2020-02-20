@@ -27,6 +27,7 @@ public:
 template<typename T>
 class ComponentRef: public ComponentRefBase
 {
+    DECLARE_TEMPLATE_OBJECT(ComponentRef, T, ComponentRefBase)
 public:
 
     virtual void OnConstruct(Object* owner) override

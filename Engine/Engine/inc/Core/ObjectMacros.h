@@ -38,7 +38,29 @@ public: virtual inline const u32& GetByteSize()                                 
     return sizeof(Class);                                                       \
 }                                                                               \
 private: static inline Ref<Class> iaresource = std::make_shared<Class>();
-//private: Class(){}                                                              \
+
+////////////////////////////////////////////////////////////////////////////
+
+#define DECLARE_TEMPLATE_CLASS(Derived, Template)                                           \
+private: using ThisClass = Derived<##Template##>;                                           \
+public: static inline const std::string ClassName = (#Derived"<")+Template::ClassName+">";  \
+public: static inline ClassId ClassUID()                                                    \
+{                                                                                           \
+    return (ClassId)&ClassUID;                                                              \
+}                                                                                           \
+public: virtual inline ClassId GetClassUID()                                                \
+{                                                                                           \
+    return ClassUID();                                                                      \
+}                                                                                           \
+public: virtual inline const std::string& GetTypeName()                                     \
+{                                                                                           \
+    return ClassName;                                                                       \
+}                                                                                           \
+public: virtual inline const u32& GetByteSize()                                             \
+{                                                                                           \
+    return sizeof(ThisClass);                                                               \
+}                                                                                           \
+private: static inline Ref<ThisClass> iaresource = std::make_shared<ThisClass>();
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -61,6 +83,16 @@ public: virtual inline bool IsTypeOf(ClassId id) override                       
 
 ////////////////////////////////////////////////////////////////////////////
 
+#define DECLARE_TEMPLATE_DERIVED(Derived, Template, Base)                       \
+DECLARE_TEMPLATE_CLASS(Derived, Template)                                       \
+private: using Super = Base;                                                    \
+public: virtual inline bool IsTypeOf(ClassId id) override                       \
+{                                                                               \
+    return id == ClassUID() || Super::IsTypeOf(id);                             \
+}
+
+////////////////////////////////////////////////////////////////////////////
+
 #define DECLARE_COMPONENT(Derived, Base)                                        \
 DECLARE_DERIVED(Derived, Base)
 
@@ -68,6 +100,12 @@ DECLARE_DERIVED(Derived, Base)
 
 #define DECLARE_OBJECT(Derived, Base)                                           \
 DECLARE_DERIVED(Derived, Base)                                                  \
+private: template<typename T> friend Ref<T> CreateObject(const ObjectId& id);
+
+////////////////////////////////////////////////////////////////////////////
+
+#define DECLARE_TEMPLATE_OBJECT(Derived, Template, Base)                        \
+DECLARE_TEMPLATE_DERIVED(Derived, Template, Base)                               \
 private: template<typename T> friend Ref<T> CreateObject(const ObjectId& id);
 
 ////////////////////////////////////////////////////////////////////////////

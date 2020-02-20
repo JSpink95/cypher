@@ -4,6 +4,7 @@ layout(points) in;
 layout(max_vertices=4, triangle_strip) out;
 
 in vec3 gsPosition[];
+in vec3 gsColor[];
 in vec2 gsSize[];
 in vec2 gsUvScale[];
 in vec2 gsUvOffset[];
@@ -50,7 +51,7 @@ void main()
 	vec4 c = vec4(particleCentreWorldSpace + left + up, 1.0); // top right
 	vec4 d = vec4(particleCentreWorldSpace + left - up, 1.0); // bottom right
 
-	fColor = vec4(vec3(1.0, 0.3, 1.0) * 10.0, 1.0);
+	fColor = vec4(gsColor[0].rgb, 1.0);
 
 	gl_Position = viewProjection * b;
 	fTexcoord = (vec2(0.0, 0.0) + uvOffset) * uvScale;

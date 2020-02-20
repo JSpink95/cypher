@@ -16,13 +16,13 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-RTTI_BEGIN_WITH_BASE(ColliderComponent, Component)
-RTTI_END()
+// expose to ComponentRef type
+RTTI_TEMPLATE_WITH_BASE(ComponentRef, ComponentRefBase, ColliderComponent);
 
 //////////////////////////////////////////////////////////////////////////
 
-// expose to ComponentRef type
-RTTI_TEMPLATE_WITH_BASE(ComponentRef, ComponentRefBase, ColliderComponent);
+RTTI_BEGIN_WITH_BASE(ColliderComponent, Component)
+RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 

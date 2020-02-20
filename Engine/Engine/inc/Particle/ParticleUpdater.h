@@ -246,6 +246,19 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
+class ParticleSetColor : public ParticleEmissionProcess
+{
+    DECLARE_DERIVED(ParticleSetColor, ParticleEmissionProcess)
+public:
+    virtual void Initialise(Particle& particle) override;
+
+public:
+    float3 color = float3(1.0f);
+    f32 emissiveStrength = 1.0f;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
 class ParticleLinearDrag : public ParticleUpdateProcess
 {
     DECLARE_DERIVED(ParticleLinearDrag, ParticleUpdateProcess)

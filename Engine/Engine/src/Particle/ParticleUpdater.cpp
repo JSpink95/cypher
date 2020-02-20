@@ -126,6 +126,13 @@ RTTI_END()
 
 //////////////////////////////////////////////////////////////////////////
 
+RTTI_BEGIN_WITH_BASE(ParticleSetColor, ParticleEmissionProcess)
+    RTTI_PROPERTY(ParticleSetColor, float3, color, Color=true)
+    RTTI_PROPERTY(ParticleSetColor, f32, emissiveStrength, Clamp=(0.0, 1000.0))
+RTTI_END()
+
+//////////////////////////////////////////////////////////////////////////
+
 RTTI_BEGIN_WITH_BASE(ParticleLinearDrag, ParticleUpdateProcess)
     RTTI_PROPERTY(ParticleLinearDrag, f32, drag)
 RTTI_END()
@@ -291,6 +298,13 @@ void ParticleSetVelocityRandom::Initialise(Particle& particle)
     );
 
     particle.velocity = s * glm::normalize(direction);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void ParticleSetColor::Initialise(Particle& particle)
+{
+    particle.data.color = (color * emissiveStrength);
 }
 
 //////////////////////////////////////////////////////////////////////////

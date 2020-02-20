@@ -25,16 +25,17 @@
 
 //////////////////////////////////////////////////////////////////////////
 
+// expose to ComponentRef type
+RTTI_TEMPLATE_WITH_BASE(ComponentRef, ComponentRefBase, TransformComponent);
+
+//////////////////////////////////////////////////////////////////////////
+
 RTTI_BEGIN_WITH_BASE(TransformComponent, Component)
     RTTI_PROPERTY(TransformComponent, float3, position)
     RTTI_PROPERTY(TransformComponent, float3, rotation)
     RTTI_PROPERTY(TransformComponent, float3, scale)
+    RTTI_PROPERTY(TransformComponent, ComponentRef<TransformComponent>, parentTransform)
 RTTI_END()
-
-//////////////////////////////////////////////////////////////////////////
-
-// expose to ComponentRef type
-RTTI_TEMPLATE_WITH_BASE(ComponentRef, ComponentRefBase, TransformComponent);
 
 //////////////////////////////////////////////////////////////////////////
 

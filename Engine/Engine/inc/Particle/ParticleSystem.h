@@ -39,12 +39,14 @@ struct ParticleVertex
 {
     static inline VertexBufferLayout layout = {
         { "aPosition", ShaderData::Float3 },
+        { "aColor", ShaderData::Float3 },
         { "aSize", ShaderData::Float2 },
         { "aUvScale", ShaderData::Float2 },
         { "aUvOffset", ShaderData::Float2 },
     };
 
     float3 position = float3(0.0f);
+    float3 color = float3(1.0f);
     float2 size = float2(1.0f);
     float2 uv_scale = float2(1.0f);
     float2 uv_offset = float2(0.0f);

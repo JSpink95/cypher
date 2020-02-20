@@ -85,6 +85,7 @@ public:
         Super::OnConstruct();
 
         camera = std::make_shared<CameraPerspective>();
+        camera->SetScreenDimensions(float2(RenderPassManager::GetFramebufferSize()));
     }
 
 public:
@@ -261,6 +262,7 @@ Ref<Object> CreateDefaultParticleEffect(const std::string& id, u32 number)
     system->SetEmissionRate(0.005f);
     system->SetMaxParticlesAlive(1024);
     system->SetTickEnabled(true);
+    system->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\particle-default.xml"));
     
     Ref<ParticlePointEmitter> emitter = system->GetEmissionStage()->PushOutput<ParticlePointEmitter>();
     emitter->point = float3(0.0f);
@@ -277,6 +279,10 @@ Ref<Object> CreateDefaultParticleEffect(const std::string& id, u32 number)
     velocity->minDirections = float3(-0.3f, 1.0f, -0.3f);
     velocity->maxDirections = float3( 0.3f, 1.0f,  0.3f);
     velocity->strength = float2(5.0f, 10.0f);
+
+    Ref<ParticleSetColor> color = system->GetEmissionStage()->PushOutput<ParticleSetColor>();
+    color->color = float3(1.0f, 0.0f, 1.0f);
+    color->emissiveStrength = 50.0f;
 
     Ref<ParticleGravity> gravity = system->GetUpdateStage()->PushOutput<ParticleGravity>();
 
@@ -299,7 +305,7 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    window->SetWindowPosition(int2(1920, 200));
+    //window->SetWindowPosition(int2(1920, 200));
 
     gizmoObject = CreateObject<GameObject>(ObjectId::Create("Gizmo"));
     gizmoObject->transform->position = float3(0.0f, 0.0f, 0.0f);
@@ -307,7 +313,7 @@ void ParticleEditorApplication::OnPostCreate()
     Ref<StaticMeshComponent> gizmoMeshComponent = gizmoObject->CreateComponent<StaticMeshComponent>("StaticMesh");
     gizmoMeshComponent->SetMaterial("assets:\\materials\\wireframe.xml");
     gizmoMeshComponent->SetMesh("engine:\\mesh\\wireframe-sphere");
-    gizmoMeshComponent->SetRenderPass();
+    //gizmoMeshComponent->SetRenderPass();
 
 	editorController = CreateObject<GameObject>(ObjectId::Create("EditorController"));
 
@@ -396,7 +402,7 @@ void ParticleEditorApplication::OnImGuiRender()
 
 void ParticleEditorApplication::AddNewDefaultEffect(const std::string& id, bool makeActive/* = false*/, const float3& atLocation/* = float3(0.0f)*/)
 {
-    Ref<Object> effect = Deserialise::ObjectFromXML("assets:\\entity\\test.xml");
+    Ref<Object> effect = CreateDefaultParticleEffect(id, editableParticleSystems.size());// Deserialise::ObjectFromXML("assets:\\entity\\test.xml");
 
     Ref<TransformComponent> transform = effect->CreateComponent<TransformComponent>("RootTransform");
     transform->position = atLocation;
