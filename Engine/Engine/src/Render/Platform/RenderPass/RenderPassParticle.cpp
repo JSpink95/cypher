@@ -48,7 +48,7 @@ void RenderPassParticle::OnRenderCreate()
 
     FramebufferData fb;
     fb.resolution = RenderPassManager::GetFramebufferSize();
-    fb.colorBuffers.at(GBuffer::CB_Albedo) = { true, false };
+    fb.colorBuffers.at(GBuffer::CB_Albedo) = { true, true };
     fb.colorBuffers.at(GBuffer::CB_DepthStencil) = { true, true };
 
     framebuffer = GetApiManager()->CreateFramebuffer(fb);

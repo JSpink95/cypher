@@ -260,7 +260,7 @@ Ref<Object> CreateDefaultParticleEffect(const std::string& id, u32 number)
     Ref<ParticleSystemComponent> system = effect->CreateComponent<ParticleSystemComponent>("ParticleSystem");
     system->SetEmissionRate(0.005f);
     system->SetMaxParticlesAlive(1024);
-    system->tickFunction.enabled = true;
+    system->SetTickEnabled(true);
     
     Ref<ParticlePointEmitter> emitter = system->GetEmissionStage()->PushOutput<ParticlePointEmitter>();
     emitter->point = float3(0.0f);
@@ -299,18 +299,15 @@ void ParticleEditorApplication::OnPostCreate()
     Application::OnPostCreate();
     
     window->Recentre();
-    //window->SetWindowPosition(int2(-1920, 200));
+    window->SetWindowPosition(int2(1920, 200));
 
     gizmoObject = CreateObject<GameObject>(ObjectId::Create("Gizmo"));
     gizmoObject->transform->position = float3(0.0f, 0.0f, 0.0f);
 
     Ref<StaticMeshComponent> gizmoMeshComponent = gizmoObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-    gizmoMeshComponent->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\wireframe.xml"));
+    gizmoMeshComponent->SetMaterial("assets:\\materials\\wireframe.xml");
     gizmoMeshComponent->SetMesh("engine:\\mesh\\wireframe-sphere");
-
-    {
-        //RenderPassManager::GetPassAsType<RenderPassDebug>(RenderPassDebug::Id)->AddObject(gizmoObject);
-    }
+    gizmoMeshComponent->SetRenderPass();
 
 	editorController = CreateObject<GameObject>(ObjectId::Create("EditorController"));
 
@@ -321,13 +318,9 @@ void ParticleEditorApplication::OnPostCreate()
     controller->SetTickEnabled(true);
 
     Ref<StaticMeshComponent> orbitLocationGizmoMesh = editorController->CreateComponent<StaticMeshComponent>("GizmoMesh");
-    orbitLocationGizmoMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\wireframe.xml"));
+    orbitLocationGizmoMesh->SetMaterial("assets:\\materials\\wireframe.xml");
     orbitLocationGizmoMesh->SetMesh("engine:\\mesh\\wireframe-sphere");
     orbitLocationGizmoMesh->scale = float3(0.2f);
-
-    {
-        //RenderPassManager::GetPassAsType<RenderPassDebug>(RenderPassDebug::Id)->AddObject(editorController);
-    }
 
 	lightObject = CreateObject<GameObject>(ObjectId::Create("MainLightSource"));
 	lightObject->transform->position = float3(0.0f, 6.0f, 0.0f);
@@ -338,18 +331,18 @@ void ParticleEditorApplication::OnPostCreate()
     gridObject = CreateObject<GameObject>(ObjectId::Create("Grid"));
 
     Ref<StaticMeshComponent> gridMesh = gridObject->CreateComponent<StaticMeshComponent>("StaticMesh");
-    gridMesh->SetMaterial(MaterialLibrary::GetMaterial("assets:\\materials\\dev-material.xml"));
+    gridMesh->SetMaterial("assets:\\materials\\dev-material.xml");
     gridMesh->SetMesh("assets:\\models\\plane.obj");
     gridMesh->scale = float3(4.0f, 1.0f, 4.0f);
 
-    RTTI::SaveObjectToBinary(gridObject, "assets:\\test.asset");
+    //RTTI::SaveObjectToBinary(gridObject, "assets:\\test.asset");
 
     // create an initial particle system
-    //AddNewDefaultEffect("particle-system", true);
+    AddNewDefaultEffect("particle-system", true);
 
-    activeParticleSystem = Deserialise::ObjectFromXML("assets:\\entity\\test.xml");
+    //activeParticleSystem = Deserialise::ObjectFromXML("assets:\\entity\\test.xml");
 
-    editableParticleSystems.push_back(activeParticleSystem);
+    //editableParticleSystems.push_back(activeParticleSystem);
 
     //std::unordered_map<ComponentId, Ref<Component>> components;
 
@@ -390,7 +383,8 @@ void ParticleEditorApplication::OnImGuiRender()
 
         if (activeParticleSystem)
         {
-            RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
+            RTTI::DisplayEdit<Ref<RTTIObject>>("ParticleSystem", std::dynamic_pointer_cast<RTTIObject>(activeParticleSystem));
+            //RTTI::DisplayObjectProperties(activeParticleSystem->GetId().GetStringId(), activeParticleSystem.get());
         }
 
         ImGui::End();

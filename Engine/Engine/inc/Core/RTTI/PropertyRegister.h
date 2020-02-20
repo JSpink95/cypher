@@ -503,7 +503,8 @@ public:
 
     virtual void DisplayEdit(void* base) override
     {
-
+        map_type* map = AsType<map_type>(base);
+        RTTI::DisplayMapEdit<TMap, TKey, TValue>(propertyName.c_str(), *map);
     }
 };
 

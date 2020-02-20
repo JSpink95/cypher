@@ -30,12 +30,18 @@ public:
     virtual void OnRender(RenderPassType::Enum pass, Ref<Material> materialOverride) override;
 
 public:
-    inline void SetMaterial(Ref<Material> newMaterial) { material = newMaterial; }
+    void SetMaterial(const std::string& name);
+    void SetMaterial(Ref<Material> newMaterial);
+
     void SetMesh(const std::string& name);
+    void SetMesh(Ref<Mesh> mesh);
+
+    void SetRenderPass(const HashedString& newRenderPassId);
 
 public:
     Ref<Material> material = nullptr;
     Ref<Mesh> mesh;
+    HashedString renderPassId;
 
 public:
     static Ref<Component> Create(Ref<Object> object, pugi::xml_node node);

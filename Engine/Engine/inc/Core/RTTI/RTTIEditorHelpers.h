@@ -52,20 +52,23 @@ namespace RTTI
     template<template<typename> typename TList, typename TValue>
     void DisplayListEdit(const std::string& id, TList<TValue>& list, s32& selected);
 
-    //////////////////////////////////////////////////////////////////////////
-    // specialised displays
+    template<template<typename, typename> typename TMap, typename TKey, typename TValue>
+    void DisplayMapEdit(const std::string& id, TMap<TKey, TValue>& map);
 
-    template<> void DisplayEdit<bool>(const std::string& id, bool& editable);
-    template<> void DisplayEdit<s32>(const std::string& id, s32& editable);
-    template<> void DisplayEdit<f32>(const std::string& id, f32& editable);
-    template<> void DisplayEdit<float2>(const std::string& id, float2& editable);
-    template<> void DisplayEdit<float3>(const std::string& id, float3& editable);
-    template<> void DisplayEdit<std::string>(const std::string& id, std::string& editable);
-    template<> void DisplayEdit<Ref<Material>>(const std::string& id, Ref<Material>& editable);
-    template<> void DisplayEdit<Ref<Mesh>>(const std::string& id, Ref<Mesh>& editable);
-    template<> void DisplayEdit<Ref<RTTIObject>>(const std::string& id, Ref<RTTIObject>& value);
+//////////////////////////////////////////////////////////////////////////
+// specialised displays
 
-    //////////////////////////////////////////////////////////////////////////
+template<> void DisplayEdit<bool>(const std::string& id, bool& editable);
+template<> void DisplayEdit<s32>(const std::string& id, s32& editable);
+template<> void DisplayEdit<f32>(const std::string& id, f32& editable);
+template<> void DisplayEdit<float2>(const std::string& id, float2& editable);
+template<> void DisplayEdit<float3>(const std::string& id, float3& editable);
+template<> void DisplayEdit<std::string>(const std::string& id, std::string& editable);
+template<> void DisplayEdit<Ref<Material>>(const std::string& id, Ref<Material>& editable);
+template<> void DisplayEdit<Ref<Mesh>>(const std::string& id, Ref<Mesh>& editable);
+template<> void DisplayEdit<Ref<RTTIObject>>(const std::string& id, Ref<RTTIObject>& value);
+
+//////////////////////////////////////////////////////////////////////////
 
 }
 
@@ -92,7 +95,7 @@ void RTTI::DisplayListEdit(const std::string& id, TList<TValue>& list, s32& sele
 
         ImGui::Combo("##list_types", &selected, RTTI::Helper::ImGuiStringGetter, &strings, strings.size());
         ImGui::SameLine();
-        
+
         const bool add = ImGui::Button("+##add_item");
 
         std::vector<TList<TValue>::iterator> idsToRemove;
@@ -140,6 +143,27 @@ void RTTI::DisplayListEdit(const std::string& id, TList<TValue>& list, s32& sele
         }
 
         ImGui::TreePop();
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+template<template<typename, typename> typename TMap, typename TKey, typename TValue>
+void RTTI::DisplayMapEdit(const std::string& id, TMap<TKey, TValue>& map)
+{
+    s32 element = 0;
+    for (auto&[key, value] : map)
+    {
+        const std::string keyId = std::to_string(element) + ":key";
+        const std::string valueId = std::to_string(element) + ":value";
+
+        if (ImGui::TreeNode(keyId.c_str()))
+        {
+            RTTI::DisplayEdit<Ref<RTTIObject>>(valueId, std::dynamic_pointer_cast<RTTIObject>(value));
+            ImGui::TreePop();
+        }
+
+        element += 1;
     }
 }
 
